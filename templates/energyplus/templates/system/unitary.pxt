@@ -5,7 +5,8 @@ parameter "unitary_name"
 
 parameter "doas", :default => false
 parameter "control_zone_name", :default => ""
-
+# RB - added control_type parameter to address VAV control issue with ECC Kitchen
+parameter "control_type", :default => ""
 parameter "op_sch", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
 
 parameter "fan_type", :default => "SYSTEM-MODEL" # (ON-OFF | VAV | SYSTEM-MODEL )
@@ -223,14 +224,17 @@ parameter "disable_ems", :default => false, :type => "Enumeration", :valuelist =
 %>
 
 <%
-if (control_zone_name.empty?)
-  control_type = "Setpoint"
-
-# TRC - enable variable speed operation for cPVVG system type
-elsif ((fan_speed == "VARIABLE") && (heat_coil_type == "WATER" || (heat_coil_type == "DX-AIR" && dx_comp_speed == "CONSTANT")) && (cool_coil_type == "WATER" || (cool_coil_type == "DX-AIR" || dx_comp_speed == "CONSTANT")))
-  control_type = "SingleZoneVAV"
-else
-  control_type = "Load"
+# Added if statement to allow ECC Kitchen (and others in the future) to pass control_type. 
+# Zones that do not pass control_type value will be subject to full conditional statement as originally written.
+if control_type == ""
+  if (control_zone_name.empty?)
+    control_type = "Setpoint"
+  # TRC - enable variable speed operation for cPVVG system type
+   elsif ((fan_speed == "VARIABLE") && (heat_coil_type == "WATER" || (heat_coil_type == "DX-AIR" && dx_comp_speed == "CONSTANT")) && (cool_coil_type == "WATER" || (cool_coil_type == "DX-AIR" || dx_comp_speed == "CONSTANT")))
+    control_type = "SingleZoneVAV"
+  else
+    control_type = "Load"
+  end
 end
 
 if fan_mode_sch == "" and fan_mode == "SCHEDULE"
