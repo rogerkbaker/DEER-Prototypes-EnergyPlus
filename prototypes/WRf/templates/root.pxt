@@ -1,4 +1,162 @@
 <%#INTERFACE
+  parameter "dg1_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 5:00,0,           !- Field 4
+  Until: 5:40,1,           !- Field 6
+  Until: 10:00,0,          !- Field 8
+  Until: 10:40,1,          !- Field 10
+  Until: 15:00,0,          !- Field 12
+  Until: 15:40,1,          !- Field 14
+  Until: 22:00,0,          !- Field 16
+  Until: 22:50,1,          !- Field 18
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg1_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 5:00,0,           !- Field 4
+  Until: 5:30,1,           !- Field 6
+  Until: 10:00,0,          !- Field 8
+  Until: 10:30,1,          !- Field 10
+  Until: 15:00,0,          !- Field 12
+  Until: 15:30,1,          !- Field 14
+  Until: 22:00,0,          !- Field 16
+  Until: 22:40,1,          !- Field 18
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg2_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 6:00,0,           !- Field 4
+  Until: 6:40,1,           !- Field 6
+  Until: 11:00,0,          !- Field 8
+  Until: 11:40,1,          !- Field 10
+  Until: 16:00,0,          !- Field 12
+  Until: 16:40,1,          !- Field 14
+  Until: 23:00,0,          !- Field 16
+  Until: 23:50,1,          !- Field 18
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg2_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 6:00,0,           !- Field 4
+  Until: 6:30,1,           !- Field 6
+  Until: 11:00,0,          !- Field 8
+  Until: 11:30,1,          !- Field 10
+  Until: 16:00,0,          !- Field 12
+  Until: 16:30,1,          !- Field 14
+  Until: 23:00,0,          !- Field 16
+  Until: 23:40,1,          !- Field 18
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg3_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 00:00,0,          !- Field 16
+  Until: 00:50,1,          !- Field 18
+  Until: 7:00,0,           !- Field 4
+  Until: 7:40,1,           !- Field 6
+  Until: 12:00,0,          !- Field 8
+  Until: 12:40,1,          !- Field 10
+  Until: 17:00,0,          !- Field 12
+  Until: 17:40,1,          !- Field 14
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg3_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 00:00,0,          !- Field 16
+  Until: 00:40,1,          !- Field 18
+  Until: 7:00,0,           !- Field 4
+  Until: 7:30,1,           !- Field 6
+  Until: 12:00,0,          !- Field 8
+  Until: 12:30,1,          !- Field 10
+  Until: 17:00,0,          !- Field 12
+  Until: 17:30,1,          !- Field 14
+  Until: 24:00,0;          !- Field 20
+  "
+  parameter "dg4_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 5:00,0,           !- Field 4
+  Until: 5:20,1,           !- Field 6
+  Until: 22:00,0,          !- Field 8
+  Until: 22:40,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+  parameter "dg4_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 5:00,0,           !- Field 4
+  Until: 5:30,1,           !- Field 6
+  Until: 22:00,0,          !- Field 8
+  Until: 22:50,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+  parameter "dg5_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 6:00,0,           !- Field 4
+  Until: 6:20,1,           !- Field 6
+  Until: 23:00,0,          !- Field 8
+  Until: 23:40,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+  parameter "dg5_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 6:00,0,           !- Field 4
+  Until: 6:30,1,           !- Field 6
+  Until: 23:00,0,          !- Field 8
+  Until: 23:50,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+  parameter "dg6_defrost_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 4:00,0,           !- Field 4
+  Until: 4:20,1,           !- Field 6
+  Until: 21:00,0,          !- Field 8
+  Until: 21:40,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+  parameter "dg6_htg_power_sch", :default =>
+  "
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,     !- Field 3
+  Until: 4:00,0,           !- Field 4
+  Until: 4:30,1,           !- Field 6
+  Until: 21:00,0,          !- Field 8
+  Until: 21:50,1,          !- Field 10
+  Until: 24:00,0;          !- Field 12
+  "
+
+
 import "general.pxt", :group => "general" do
   include "*"
   exclude "min*|max*|*convergence"
@@ -77,11 +235,11 @@ group "space_loads" do # hardcode building-level defaults
   end
 
   import "zoneloads/zonetemplate.pxt", :group => "warehouse_schs", :prefix => "warehouse_" do
-    parameter "oa_sch", :default => "Through: 12/31,\nFor: SummerDesignDay WinterDesignDay,\nUntil: 24:00,1,\nFor: Weekdays Weekends,\nUntil: 06:00,0,\nUntil: 22:00,1,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
-    parameter "light_sch", :default => "Through: 12/31,\nFor: Weekdays Weekends,\nUntil: 07:00,0.05,\nUntil: 08:00,0.25,\nUntil: 09:00,0.45,\nUntil: 21:00,0.55,\nUntil: 22:00,0.3,\nUntil: 24:00,0.05,\nFor: AllOtherDays,\nUntil: 24:00,0;"
-    parameter "equip_sch", :default => "Through: 12/31,\nFor: Weekdays Weekends,\nUntil: 07:00,0.05,\nUntil: 08:00,0.4,\nUntil: 09:00,0.7,\nUntil: 21:00,0.9,\nUntil: 22:00,0.3,\nUntil: 24:00,0.05,\nFor: AllOtherDays,\nUntil: 24:00,0;"
-    parameter "occ_sch", :default => "Through: 12/31,\nFor: Weekdays Weekends,\nUntil: 07:00,0,\nUntil: 08:00,0.15,\nUntil: 09:00,0.7,\nUntil: 12:00,0.9,\nUntil: 13:00,0.5,\nUntil: 21:00,0.85,\nUntil: 22:00,0.2,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
-    parameter "gas_sch", :default => "Through: 12/31,\nFor: Weekdays Weekends,\nUntil: 07:00,0,\nUntil: 10:00,0.5,\nUntil: 18:00,0.9,\nUntil: 22:00,0.75,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "oa_sch", :default => "Through: 12/31,\nFor: SummerDesignDay WinterDesignDay Weekdays Weekends,\nUntil: 06:00,0,\nUntil: 22:00,1,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "light_sch", :default => "Through: 12/31,\nFor: SummerDesignDay,\nUntil: 24:00,1,\nFor: WinterDesignDay,\nUntil: 24:00,0,\nFor:  Weekdays Weekends,\nUntil: 07:00,0.05,\nUntil: 08:00,0.25,\nUntil: 09:00,0.45,\nUntil: 21:00,0.55,\nUntil: 22:00,0.3,\nUntil: 24:00,0.05,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "equip_sch", :default => "Through: 12/31,\nFor: SummerDesignDay,\nUntil: 24:00,1,\nFor: WinterDesignDay,\nUntil: 24:00,0,\nFor:  Weekdays Weekends,\nUntil: 07:00,0.05,\nUntil: 08:00,0.4,\nUntil: 09:00,0.7,\nUntil: 21:00,0.9,\nUntil: 22:00,0.3,\nUntil: 24:00,0.05,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "occ_sch", :default => "Through: 12/31,\nFor: SummerDesignDay,\nUntil: 24:00,1,\nFor: WinterDesignDay,\nUntil: 24:00,0,\nFor:  Weekdays Weekends,\nUntil: 07:00,0,\nUntil: 08:00,0.15,\nUntil: 09:00,0.7,\nUntil: 12:00,0.9,\nUntil: 13:00,0.5,\nUntil: 21:00,0.85,\nUntil: 22:00,0.2,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "gas_sch", :default => "Through: 12/31,\nFor: SummerDesignDay,\nUntil: 24:00,1,\nFor: WinterDesignDay,\nUntil: 24:00,0,\nFor:  Weekdays Weekends,\nUntil: 07:00,0,\nUntil: 10:00,0.5,\nUntil: 18:00,0.9,\nUntil: 22:00,0.75,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
     parameter "dhw_sch", :default => "Through: 12/31,\nFor: SummerDesignDay,\nUntil: 24:00,1,\nFor: WinterDesignDay,\nUntil: 24:00,0,\nFor: Weekdays Weekends,\nUntil: 04:00,0.02,\nUntil: 05:00,0.05,\nUntil: 07:00,0.07,\nUntil: 08:00,0.1,\nUntil: 09:00,0.3,\nUntil: 11:00,0.36,\nUntil: 12:00,0.46,\nUntil: 13:00,0.57,\nUntil: 14:00,0.43,\nUntil: 15:00,0.57,\nUntil: 16:00,0.43,\nUntil: 17:00,0.38,\nUntil: 18:00,0.4,\nUntil: 19:00,0.3,\nUntil: 20:00,0.4,\nUntil: 21:00,0.3,\nUntil: 22:00,0.18,\nUntil: 24:00,0.03,\nFor: AllOtherDays,\nUntil: 24:00,0;"
   end
 
@@ -101,7 +259,7 @@ group "space_hvac" do
   end
 
   import "zonehvac/hvac-zone.pxt", :group => "warehouse_hvac_schs", :prefix => "warehouse_" do
-    parameter "oa_sch", :default => "Through: 12/31,\nFor: SummerDesignDay WinterDesignDay,\nUntil: 24:00,1,\nFor: Weekdays Weekends,\nUntil: 06:00,0,\nUntil: 22:00,1,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
+    parameter "oa_sch", :default => "Through: 12/31,\nFor: SummerDesignDay WinterDesignDay Weekdays Weekends,\nUntil: 06:00,0,\nUntil: 22:00,1,\nUntil: 24:00,0,\nFor: AllOtherDays,\nUntil: 24:00,0;"
   end
 
 end
@@ -364,28 +522,28 @@ import "ref-chiller.pxt", :group => "lt_chiller", :prefix => "lt_chiller_" do
   parameter "rated_fan_pwr", :default =>2800
   parameter "rated_air_flow", :default =>20.67
   parameter "temp_term_defrost_fraction", :default =>0.8
-  parameter "defrost_sch", :default =>
-  "
-  Through: 12/31,          !- Field 1
-  For:AllDays,             !- Field 2
-  Interpolate:Average,     !- Field 3
-  Until: 5:00,0,           !- Field 4
-  Until: 5:20,1,           !- Field 6
-  Until: 22:00,0,          !- Field 8
-  Until: 22:40,1,          !- Field 10
-  Until: 24:00,0;          !- Field 12
-  "
-  parameter "htg_power_sch", :default =>
-  "
-  Through: 12/31,          !- Field 1
-  For:AllDays,             !- Field 2
-  Interpolate:Average,     !- Field 3
-  Until: 5:00,0,           !- Field 4
-  Until: 5:30,1,           !- Field 6
-  Until: 22:00,0,          !- Field 8
-  Until: 22:50,1,          !- Field 10
-  Until: 24:00,0;          !- Field 12
-  "
+#  parameter "defrost_sch", :default =>
+#  "
+#  Through: 12/31,          !- Field 1
+#  For:AllDays,             !- Field 2
+#  Interpolate:Average,     !- Field 3
+#  Until: 5:00,0,           !- Field 4
+#  Until: 5:20,1,           !- Field 6
+#  Until: 22:00,0,          !- Field 8
+#  Until: 22:40,1,          !- Field 10
+#  Until: 24:00,0;          !- Field 12
+#  "
+#  parameter "htg_power_sch", :default =>
+#  "
+#  Through: 12/31,          !- Field 1
+#  For:AllDays,             !- Field 2
+#  Interpolate:Average,     !- Field 3
+#  Until: 5:00,0,           !- Field 4
+#  Until: 5:30,1,           !- Field 6
+#  Until: 22:00,0,          !- Field 8
+#  Until: 22:50,1,          !- Field 10
+#  Until: 24:00,0;          !- Field 12
+#  "
 end
 
 #Medium Temp Chillers
@@ -405,6 +563,8 @@ import "ref-chiller.pxt", :group => "mt_chiller", :prefix => "mt_chiller_" do
   parameter "rated_fan_pwr", :default =>2800
   parameter "rated_air_flow", :default =>20.67
   parameter "temp_term_defrost_fraction", :default =>0.8
+  
+
 end
 
 %>
@@ -740,8 +900,20 @@ insert "ref-sys.pxt",
 
 #LT Chillers insertion
 for chi_name in LT_system_air_chiller_names
+  if chi_name == "LT_Airchiller1" || chi_name == "LT_Airchiller4" || chi_name == "LT_Airchiller7"
+    defrost_sch = dg4_defrost_sch
+    htg_power_sch = dg4_htg_power_sch
+  elsif chi_name == "LT_Airchiller2" || chi_name == "LT_Airchiller5" || chi_name == "LT_Airchiller8"
+    defrost_sch = dg5_defrost_sch
+    htg_power_sch = dg5_htg_power_sch
+  else
+    defrost_sch = dg6_defrost_sch
+    htg_power_sch = dg6_htg_power_sch
+  end
   insert "ref-chiller.pxt", **lt_chiller,
-    :chiller_name => chi_name
+    :chiller_name => chi_name,
+    :htg_power_sch => htg_power_sch,
+    :defrost_sch => defrost_sch
 end
 
 #LT Compressor insertion
@@ -779,8 +951,20 @@ insert "ref-sys.pxt",
 
 #MT chiller insertion
 for chi_name in MT_system_air_chiller_names
+  if chi_name == "MT_Airchiller1" || chi_name == "MT_Airchiller4" || chi_name == "MT_Airchiller7"
+    defrost_sch = dg1_defrost_sch
+    htg_power_sch = dg1_htg_power_sch
+  elsif chi_name == "MT_Airchiller2" || chi_name == "MT_Airchiller5" || chi_name == "MT_Airchiller8"
+    defrost_sch = dg2_defrost_sch
+    htg_power_sch = dg2_htg_power_sch
+  else
+    defrost_sch = dg3_defrost_sch
+    htg_power_sch = dg3_htg_power_sch
+  end
   insert "ref-chiller.pxt", **mt_chiller,
-    :chiller_name => chi_name
+    :chiller_name => chi_name,
+    :htg_power_sch => htg_power_sch,
+    :defrost_sch => defrost_sch
 end
 
 
