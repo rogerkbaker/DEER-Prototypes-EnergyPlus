@@ -1,0 +1,482 @@
+  Version,25.1;
+
+  GlobalGeometryRules,
+    UpperLeftCorner,         !- Starting Vertex Position
+    Counterclockwise,        !- Vertex Entry Direction
+    Relative,                !- Coordinate System
+    Relative,                !- Daylighting Reference Point Coordinate System
+    Relative;                !- Rectangular Surface Coordinate System
+
+  Zone,
+    Financial,               !- Name
+    0,                       !- Direction of Relative North {deg}
+    0,                       !- X Origin {m}
+    0,                       !- Y Origin {m}
+    0,                       !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office,                  !- Name
+    0,                       !- Direction of Relative North {deg}
+    0,                       !- X Origin {m}
+    0,                       !- Y Origin {m}
+    0,                       !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Retail,                  !- Name
+    0,                       !- Direction of Relative North {deg}
+    0,                       !- X Origin {m}
+    0,                       !- Y Origin {m}
+    0,                       !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  BuildingSurface:Detailed,
+    Financial_east_ext_wall, !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,0,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,0,0,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Financial_floor,         !- Name
+    Floor,                   !- Surface Type
+    Financial_floor SlabOnOrBelowGradeF073,  !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,0,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,0,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.144,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  Construction:FfactorGroundFloor,
+    Financial_floor SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    167.23,                  !- Area {m2}
+    36.57;                   !- PerimeterExposed {m}
+
+  BuildingSurface:Detailed,
+    Financial_northeast_int_wall,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    Retail_south_int_wall,   !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Financial_roof,          !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,0,3.3528,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,0,3.3528,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Financial_south_ext_wall,!- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,0,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,0,0,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,0,0,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,0,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Financial_west_ext_wall, !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,0,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,0,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Retail_south_int_wall,   !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    Financial_northeast_int_wall,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    financial_northwest_int_wall,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Financial,               !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    office_south_int_wall,   !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    office_east_int_wall,    !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    retail_west_int_wall,    !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,18.288,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    office_floor,            !- Name
+    Floor,                   !- Surface Type
+    office_floor SlabOnOrBelowGradeF073,  !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,18.288,0,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,18.288,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  Construction:FfactorGroundFloor,
+    office_floor SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    83.61,                   !- Area {m2}
+    18.28;                   !- PerimeterExposed {m}
+
+  BuildingSurface:Detailed,
+    office_north_ext_wall,   !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,18.288,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,18.288,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    office_roof,             !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.144,3.3528,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,9.144,3.3528,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    office_south_int_wall,   !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    financial_northwest_int_wall,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    office_west_ext_wall,    !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    0,18.288,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    retail_east_ext_wall,    !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,9.144,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,18.288,0,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    retail_floor,            !- Name
+    Floor,                   !- Surface Type
+    retail_floor SlabOnOrBelowGradeF073,  !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,18.288,0,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,9.144,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,18.288,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  Construction:FfactorGroundFloor,
+    retail_floor SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    83.61,                   !- Area {m2}
+    18.28;                   !- PerimeterExposed {m}
+
+  BuildingSurface:Detailed,
+    retail_north_ext_wall,   !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    18.288,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,18.288,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,18.288,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    retail_roof,             !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,9.144,3.3528,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,9.144,3.3528,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,18.288,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    retail_west_int_wall,    !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Retail,                  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    office_east_int_wall,    !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    0,                       !- View Factor to Ground
+    4,                       !- Number of Vertices
+    9.144,18.288,3.3528,  !- X,Y,Z ==> Vertex 1 {m}
+    9.144,18.288,0,  !- X,Y,Z ==> Vertex 2 {m}
+    9.144,9.144,0,  !- X,Y,Z ==> Vertex 3 {m}
+    9.144,9.144,3.3528;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    Financial_east_window,   !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    Financial_east_ext_wall, !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    18.288,0.0254,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,0.0254,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,9.1186,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,9.1186,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    Financial_south_window,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    Financial_south_ext_wall,!- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    0.0254,0,2.340534818942,  !- X,Y,Z ==> Vertex 1 {m}
+    0.0254,0,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    18.2626,0,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    18.2626,0,2.340534818942;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    Financial_west_window,   !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    Financial_west_ext_wall, !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    0,9.1186,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.1186,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    0,0.0254,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    0,0.0254,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    office_north_window,     !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    office_north_ext_wall,   !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    9.1186,18.288,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    9.1186,18.288,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    0.0254,18.288,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    0.0254,18.288,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    office_west_window,      !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    office_west_ext_wall,    !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    0,18.2626,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    0,18.2626,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.1694,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.1694,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    retail_east_window,      !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    retail_east_ext_wall,    !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    18.288,9.1694,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    18.288,9.1694,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    18.288,18.2626,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    18.288,18.2626,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    retail_north_window,     !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    retail_north_ext_wall,   !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    18.2626,18.288,2.342882681564,  !- X,Y,Z ==> Vertex 1 {m}
+    18.2626,18.288,1.5,  !- X,Y,Z ==> Vertex 2 {m}
+    9.1694,18.288,1.5,  !- X,Y,Z ==> Vertex 3 {m}
+    9.1694,18.288,2.342882681564;  !- X,Y,Z ==> Vertex 4 {m}
+

@@ -1,0 +1,3018 @@
+
+  GlobalGeometryRules,
+    UpperLeftCorner,         !- Starting Vertex Position
+    Counterclockwise,        !- Vertex Entry Direction
+    Relative,                !- Coordinate System
+    Relative,                !- Daylighting Reference Point Coordinate System
+    Relative;                !- Rectangular Surface Coordinate System
+
+  Zone,
+    Corridor EL4 Core Spc (G.C3),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Dining EL1 West Perim Spc (G.W1),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL2 Core Plnm (G.4),     !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL2 North Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL2 South Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL3 North Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL3 South Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL3 West Plnm (G.4),     !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL4 Core Plnm (G.4),     !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL4 North Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    EL4 South Plnm (G.4),    !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Kitchen EL1 East Perim Spc (G.E2),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL2 Core Spc (G.C1),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL2 North Perim Spc (G.N3),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL2 South Perim Spc (G.S2),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL3 North Perim Spc (G.N3),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL3 South Perim Spc (G.S2),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Office EL3 West Perim Spc (G.W1),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    Patient EL4 North Perim Spc (G.N1),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  Zone,
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Name
+    ,                        !- Direction of Relative North {deg}
+    ,                        !- X Origin {m}
+    ,                        !- Y Origin {m}
+    ,                        !- Z Origin {m}
+    ,                        !- Type
+    1;                       !- Multiplier
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL1 East Perim Spc (G.E2) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,16.45148856,-2.205453552e-11,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00761929896,-6.61635456e-11,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,-0.00761929896,-2.205450504e-11,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,16.45148856,2.205453552e-11;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:b,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:b Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,7.5744324e-11,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,1.247397048e-11,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:b Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:b,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36009104,1.247397048e-11,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,7.5744324e-11,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:c,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:c Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00761929896,-8.8218264e-11,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,8.8218264e-11,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:c Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:c,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,8.8218264e-11,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00761929896,-8.8218264e-11,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:d,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:d Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:d Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:d,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:e,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:e Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36009104,-9.58056504e-12,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,16.45148856,9.58056504e-12,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45148856,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:e Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:e,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,16.45148856,9.58056504e-12,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,-9.58056504e-12,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:f,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:f Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 090:f Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 090:f,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 0:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,16.45148856,-7.78425672e-23,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,16.45148856,2.802639048e-23,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 270:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,16.45148856,0,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 270:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL1 East Perim Spc (G.E2) - Wall 270:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,16.45148856,0,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL1 West Perim Spc (G.W1) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,16.45161048,0,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.45161048,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,16.45161048,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,16.45161048,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.45161048,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.45161048,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    0,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,16.45161048,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    0,16.45161048,0,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.35561048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.35561048,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Plnm (G.4) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Plnm (G.4) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL2 Core Spc (G.C1) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 Core Spc (G.C1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 Core Spc (G.C1) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 Core Spc (G.C1) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Perim Spc (G.N3) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL2 North Perim Spc (G.N3) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,0,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45161048,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Perim Spc (G.N3) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,16.45161048,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,16.45161048,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45161048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Perim Spc (G.N3) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Perim Spc (G.N3) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45161048,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45161048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Perim Spc (G.N3) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Perim Spc (G.N3) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,16.45161048,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45161048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL2 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36021296,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45161048,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Plnm (G.4) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45161048,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 North Plnm (G.4) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 North Plnm (G.4) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45161048,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Perim Spc (G.S2) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL2 South Perim Spc (G.S2) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Perim Spc (G.S2) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Perim Spc (G.S2) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Perim Spc (G.S2) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Perim Spc (G.S2) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Perim Spc (G.S2) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL2 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Plnm (G.4) - Wall 090:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Plnm (G.4) - Wall 090:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL2 South Plnm (G.4) - Wall 090:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL2 South Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL3 North Perim Spc (G.N3) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45161048,0,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45161048,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45161048,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45161048,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45161048,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45161048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,16.45161048,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,16.45161048,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Perim Spc (G.N3) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Perim Spc (G.N3) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36009104,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45148856,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL3 North Perim Spc (G.N3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,16.45148856,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Plnm (G.4) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 North Plnm (G.4) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 North Plnm (G.4) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL3 South Perim Spc (G.S2) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Perim Spc (G.S2) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Perim Spc (G.S2) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,-0.00761929896,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL3 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00761929896,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Plnm (G.4) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 South Plnm (G.4) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,6.083808,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 South Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00761929896,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,-0.00761929896,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,-0.00761929896,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 West Perim Spc (G.W1) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    EL3 West Perim Spc (G.W1) - Floor:a SlabOnOrBelowGradeF073,  !- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    GroundFCfactorMethod,    !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,0,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36009104,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 West Perim Spc (G.W1) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,0,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,10.36009104,0,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,10.36009104,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 West Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 West Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.083808,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 West Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Office EL3 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL3 West Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.083808,2.7432;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL3 West Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.083808,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.083808,2.7432,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,10.36021296,2.7432,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12729696,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - RoofCeiling:a,  !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12729696,7.9248,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12729696,7.9248,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12729696,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12729696,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,9.12729696,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,9.12729696,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,9.12729696,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,7.30151448,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,7.30151448,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Plnm (G.4) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Plnm (G.4) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,9.12729696,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,9.12729696,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,7.30151448,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:b,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:b Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12729696,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:b Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:b,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:c,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:c Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,9.12729696,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:c Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:c,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,7.30151448,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:d,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:d Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,9.12729696,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Floor:d Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Floor:d,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,7.30151448,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Wall 000:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12729696,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 000:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Wall 000:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,9.12729696,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,9.12729696,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Wall 180:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,7.30151448,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 180:a Reversed,  !- Name
+    Wall,                    !- Surface Type
+    Interior Wall,           !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 Core Spc (G.C3) - Wall 180:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.30151448,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Corridor EL4 Core Spc (G.C3),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,9.12729696,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,9.12729696,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.30151448,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.30151448,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL2 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,10.36009104,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:b,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:b Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.44389904,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:b Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:b,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12720552,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:c,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:c Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,16.44389904,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:c Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:c,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,16.44389904,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,9.12720552,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:d,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:d Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,10.36009104,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:d Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:d,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,10.36009104,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,9.12720552,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:e,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:e Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,10.37231352,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,10.36021296,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:e Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:e,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.37231352,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,9.12720552,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:f,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:f Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.37231352,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Floor:f Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL3 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Perim Spc (G.N1) - Floor:f,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,10.36021296,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.37231352,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,16.45148856,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.45148856,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,16.45148856,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,16.45148856,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12720552,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12720552,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.45148856,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Patient EL4 North Perim Spc (G.N1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 North Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12720552,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - RoofCeiling:a,  !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12720552,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,7.9248,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.45148856,7.9248,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12720552,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - Wall 000:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,16.45148856,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,16.45148856,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,9.12720552,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,16.45148856,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 North Plnm (G.4) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 North Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,16.45148856,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,16.45148856,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,9.12720552,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,9.12720552,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,7.301484,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.301484,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Dining EL1 West Perim Spc (G.W1),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    35.576256,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    35.576256,7.301484,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.301484,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00762298704,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:b,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:b Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,7.301484,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,7.301484,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:b Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    Kitchen EL1 East Perim Spc (G.E2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:b,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    50.8254,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    50.8254,7.301484,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    35.576256,7.301484,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    35.576256,-0.00762298704,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:c,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:c Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,7.301484,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.082284,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.082284,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,7.301484,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:c Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL2 Core Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:c,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.082284,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,7.301484,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,7.301484,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.082284,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:d,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:d Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,6.082284,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,6.082284,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:d Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL2 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:d,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    135.45312,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    135.45312,6.082284,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    50.8254,6.082284,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    50.8254,-0.00762298704,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:e,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:e Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.301484,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,7.301484,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:e Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL3 West Plnm (G.4),     !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:e,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.301484,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,7.301484,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.08377752,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:f,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:f Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,6.08377752,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Floor:f Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    EL3 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Perim Spc (G.S2) - Floor:f,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    135.45312,6.08377752,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    135.45312,-0.00762298704,3.9624;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,7.301484,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,7.301484,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,-0.00762298704,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,7.301484,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    0,7.301484,3.9624,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00762298704,3.9624,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00762298704,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - Floor:a,  !- Name
+    Floor,                   !- Surface Type
+    Interior Floor,          !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Plnm (G.4) - Floor:a Reversed,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,7.301484,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.301484,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - Floor:a Reversed,  !- Name
+    Ceiling,                 !- Surface Type
+    Radiant Interior Ceiling,!- Construction Name
+    PatientRoom EL4 South Perim Spc (G.S2),  !- Zone Name
+    ,                        !- Space Name
+    Surface,                 !- Outside Boundary Condition
+    EL4 South Plnm (G.4) - Floor:a,  !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.301484,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.301484,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00762298704,6.7056;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - RoofCeiling:a,  !- Name
+    Roof,                    !- Surface Type
+    Exterior Roof,           !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00762298704,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.301484,7.9248,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.301484,7.9248,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00762298704,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - Wall 090:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    169.34688,-0.00762298704,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,7.301484,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,7.301484,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - Wall 180:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,-0.00762298704,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,-0.00762298704,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    EL4 South Plnm (G.4) - Wall 270:a,  !- Name
+    Wall,                    !- Surface Type
+    Exterior Wall,           !- Construction Name
+    EL4 South Plnm (G.4),    !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    ,                        !- View Factor to Ground
+    ,                        !- Number of Vertices
+    0,7.301484,7.9248,  !- X,Y,Z ==> Vertex 1 {m}
+    0,7.301484,6.7056,  !- X,Y,Z ==> Vertex 2 {m}
+    0,-0.00762298704,6.7056,  !- X,Y,Z ==> Vertex 3 {m}
+    0,-0.00762298704,7.9248;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 0:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL1 East Perim Spc (G.E2) - Wall 0:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    46.998636,16.45148856,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    46.998636,16.45148856,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    39.40302,16.45148856,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    39.40302,16.45148856,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL1 East Perim Spc (G.E2) - Wall 180:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL1 East Perim Spc (G.E2) - Wall 180:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    39.40302,-0.00761929896,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    39.40302,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    46.998636,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    46.998636,-0.00761929896,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 000:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL1 West Perim Spc (G.W1) - Wall 000:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    26.64811536,16.45161048,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    26.64811536,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    8.92814064,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    8.92814064,16.45161048,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 180:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL1 West Perim Spc (G.W1) - Wall 180:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    8.92814064,-0.00761929896,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    8.92814064,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    26.64811536,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    26.64811536,-0.00761929896,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL1 West Perim Spc (G.W1) - Wall 270:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL1 West Perim Spc (G.W1) - Wall 270:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    0,12.31721184,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    0,12.31721184,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    0,4.12674816,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    0,4.12674816,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL2 North Perim Spc (G.N3) - Wall 000:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL2 North Perim Spc (G.N3) - Wall 000:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    114.2152656,16.45161048,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    114.2152656,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    72.0635592,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    72.0635592,16.45161048,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL2 South Perim Spc (G.S2) - Wall 180:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL2 South Perim Spc (G.S2) - Wall 180:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    72.0632544,-0.00761929896,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    72.0632544,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    114.2149608,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    114.2149608,-0.00761929896,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 000:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL3 North Perim Spc (G.N3) - Wall 000:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    160.8408264,16.45161048,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    160.8408264,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    143.9588688,16.45161048,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    143.9588688,16.45161048,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL3 North Perim Spc (G.N3) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL3 North Perim Spc (G.N3) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,11.8868952,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,11.8868952,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,14.91712536,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,14.91712536,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL3 South Perim Spc (G.S2) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,1.526779776,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,1.526779776,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,4.55703432,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,4.55703432,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL3 South Perim Spc (G.S2) - Wall 180:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL3 South Perim Spc (G.S2) - Wall 180:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    143.9588688,-0.00761929896,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    143.9588688,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    160.8408264,-0.00761929896,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    160.8408264,-0.00761929896,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL3 West Perim Spc (G.W1) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL3 West Perim Spc (G.W1) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,7.15697832,2.505456,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.15697832,0.9144,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,9.2869512,0.9144,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,9.2869512,2.505456;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 Core Spc (G.C3) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,7.75968984,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,7.75968984,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,8.66906064,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,8.66906064,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 Core Spc (G.C3) - Wall 270:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 Core Spc (G.C3) - Wall 270:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    0,8.66906064,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    0,8.66906064,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    0,7.75968984,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    0,7.75968984,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 000:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 North Perim Spc (G.N1) - Wall 000:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    126.8480064,16.45148856,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    126.8480064,16.45148856,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    42.4988736,16.45148856,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    42.4988736,16.45148856,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 North Perim Spc (G.N1) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,10.96530192,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,10.96530192,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,14.61345312,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,14.61345312,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 North Perim Spc (G.N1) - Wall 270:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 North Perim Spc (G.N1) - Wall 270:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    0,14.61345312,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    0,14.61345312,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    0,10.96530192,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    0,10.96530192,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 090:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 South Perim Spc (G.S2) - Wall 090:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    169.34688,1.826654208,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    169.34688,1.826654208,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    169.34688,5.46722808,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    169.34688,5.46722808,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 180:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 South Perim Spc (G.S2) - Wall 180:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    42.4988736,-0.00762298704,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    42.4988736,-0.00762298704,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    126.8480064,-0.00762298704,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    126.8480064,-0.00762298704,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    EL4 South Perim Spc (G.S2) - Wall 270:a - Sub:a,  !- Name
+    Window,                  !- Surface Type
+    Exterior Window,         !- Construction Name
+    EL4 South Perim Spc (G.S2) - Wall 270:a,  !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    ,                        !- Number of Vertices
+    0,5.4671976,6.467856,  !- X,Y,Z ==> Vertex 1 {m}
+    0,5.4671976,4.8768,  !- X,Y,Z ==> Vertex 2 {m}
+    0,1.826645064,4.8768,  !- X,Y,Z ==> Vertex 3 {m}
+    0,1.826645064,6.467856;  !- X,Y,Z ==> Vertex 4 {m}
+
+  Construction:FfactorGroundFloor,
+    EL1 East Perim Spc (G.E2) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    250.987305852813,        !- Area {m2}
+    30.498288;               !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL1 West Perim Spc (G.W1) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    585.557772179104,        !- Area {m2}
+    87.611712;               !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL2 Core Spc (G.C1) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    361.892083749869,        !- Area {m2}
+    0;                       !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL2 North Perim Spc (G.N3) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    515.511401542877,        !- Area {m2}
+    84.62772;                !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL2 South Perim Spc (G.S2) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    515.503603856743,        !- Area {m2}
+    84.62772;                !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL3 North Perim Spc (G.N3) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    206.464497934694,        !- Area {m2}
+    39.985188;               !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL3 South Perim Spc (G.S2) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    206.461374928398,        !- Area {m2}
+    39.985188;               !- PerimeterExposed {m}
+
+  Construction:FfactorGroundFloor,
+    EL3 West Perim Spc (G.W1) - Floor:a SlabOnOrBelowGradeF073,  !- Name
+    1.26343630645111,        !- F-Factor {W/m-K}
+    144.93931104983,         !- Area {m2}
+    4.27628304;              !- PerimeterExposed {m}
+

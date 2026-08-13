@@ -1,0 +1,3871 @@
+!  Version,25.2;
+
+<%#INITIALIZE
+require "modelkit/energyplus"
+
+parameter "unitary_name"
+
+parameter "doas", :default => false
+parameter "control_zone_name", :default => ""
+
+parameter "op_sch", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+
+parameter "fan_type", :default => "SYSTEM-MODEL" # (ON-OFF | VAV | SYSTEM-MODEL )
+parameter "fan_speed", :default => "CONSTANT"  # (CONSTANT | DUAL| VARIABLE)  Fan:SystemModel allows multi-speed => DUAL
+parameter "fan_curve", :default => "T24"  # TRC: Added existing parameter to this template (MZVAV-FC | MZVAV-VSD | T24)
+parameter "fan_sizing_method", :default => "TotalEfficiencyAndPressure" # (only relevant when fan_type = "SYSTEM-MODEL". Options: PowerPerFlow | PowerPerFlowPerPressure | TotalEfficiencyAndPressure )
+parameter "fan_power_per_flow", :default => 0.85['W/CFM']  # (only relevant when fan_type = "SYSTEM-MODEL" and fan_sizing_method = "PowerPerFlow")
+parameter "fan_power_per_flow_pressure", :default => 1.67  # W/((m3/s)-Pa) (only relevant when fan_type = "SYSTEM-MODEL" and fan_sizing_method = "PowerPerFlowPerPressure")
+parameter "fan_low_speed_flow_frac", :default => 0.66 # (only relevant when fan_type = "SYSTEM-MODEL" and fan_speed = "DUAL")
+parameter "fan_low_speed_power_frac", :default => 0.4 # (only relevant when fan_type = "SYSTEM-MODEL" and fan_speed = "DUAL")
+
+#TRC - "SWHC023-05" measure: Adding the following variables to parameterize the multi-speed operation air flow ratio and associated supply fan power for UnitarySystems
+parameter "low_heating_supply_air_ratio", :default => 0.75
+parameter "low_cooling_supply_air_ratio", :default => 0.75
+parameter "ventilation_supply_air_ratio", :default => 0.4
+parameter "constant_fan_speed_power_frac", :default => 1
+parameter "fan_speed_1_flow_frac", :default => 0.4
+parameter "fan_speed_1_power_frac", :default => 0.124709051
+parameter "fan_speed_2_flow_frac", :default => 0.75
+parameter "fan_speed_2_power_frac", :default => 0.463912917
+parameter "fan_speed_3_flow_frac", :default => 1
+parameter "fan_speed_3_power_frac", :default => 1
+parameter "single_mode_operation", :default => "No"
+
+parameter "fan_config", :default => "DRAW-THROUGH"  # (DRAW-THROUGH | BLOW-THROUGH)
+parameter "fan_mode", :default => "CYCLING"  # (CYCLING | CONTINUOUS | SCHEDULE)  # If fan_mode is SCHEDULE, fan_mode_sch cannot be empty.
+parameter "fan_mode_sch", :default => ""  # 0 means cycling; 1 means continuous
+
+rule "fan_mode_cycling", :parameters => {:fan_mode => "CYCLING"} do
+  force :fan_mode_sch => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 0;"
+end
+
+rule "fan_mode_continuous", :parameters => {:fan_mode => "CONTINUOUS"} do
+  force :fan_mode_sch => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+end
+
+rule "fan_speed_dual", :parameters => {:fan_speed => "DUAL"} do
+  force :dx_comp_speed => "DUAL-EQUAL" # 2-speed fans require 2-speed/multispeed cooling coils to operate correctly
+end
+
+#G3.1.3.1 The systems shall be controlled to energize auxiliary heat only when the
+#outdoor air temperature is less than 40°F.
+
+parameter "fan_rise", :default => 0.5['in H2O']
+parameter "fan_eff", :name => "Supply Fan Efficiency", :description => "Total efficiency of supply fan",
+  :default => 0.65, :domain => Numeric  # Interval 0-1
+parameter "fan_motor_eff", :default => 0.85  # Efficiency of supply fan motor. Look up ASHRAE 90.1 Table 10.8-2
+parameter "fan_motor_frac", :default => 1.0  # Fraction of motor heat to air stream (zero means completely outside air stream)
+
+parameter "fan_flow",
+  :default => Autosize, :domain => Quantity
+
+parameter "fan_flow_min_method", :default=>"Fraction"
+parameter "fan_flow_min_frac", :default => 0.25  # For VARIABLE fan systems only
+parameter "fan_flow_min", :default=>0 # Fan Power Minimum Air Flow Rate (relevant when fan_flow_min_method = "FixedFlowRate")
+parameter "fan_subcat", :default => "Unitary Fans"  # End-use subcategory for the fan
+
+  # need fan_min_flow, fan_max_flow  ??   for VAV;  relates to fan_flow_min_frac obviously:  frac = min ÷ max
+
+parameter "cool_coil_type", :default => "DX-AIR"  # (DX-AIR | DX-EVAP | DX-WATER | WATER | NONE)
+parameter "cool_coil_cap", :default => Autosize
+parameter "cool_coil_cop", :default => 3.23
+parameter "cool_coil_evap_eff", :default => 0.9  # Evaporative Condenser Effectiveness
+
+#TRC - Add cool_flow_min_frac as the minimum flow ratio in cooling in the sizing:zone object and the UnitarySystem.
+#Differs from ATU_flow_min_frac because it cannot be autosized and it doesn't override the ventilation requirement.
+parameter "cool_flow_min_frac", :name => "Cooling Minimum Air Flow Fraction",:description => "Cooling Minimum Air Flow Fraction used in sizing:zone object",:default => nil
+#TRC - Add unitary_no_load_flow_method to parameterize the sizing of the no load (minimum) flow for UnitarySystems with DX cooling
+parameter "unitary_no_load_flow_method", :name => "No Load Supply Air Flow Rate Method",:description => "No Load Supply Air Flow Rate Method in AirLoopHVAC:UnitarySysteem",:default => "SupplyAirFlowRate"
+
+
+parameter "heat_coil_type", :default => "COMBUSTION"  # (COMBUSTION | RESISTANCE | DX-AIR | DX-WATER | WATER | STEAM | NONE)
+parameter "heat_coil_cap", :default => Autosize
+parameter "heat_coil_cop", :default => 3.23
+parameter "heat_coil_eff", :default => 0.8
+parameter "heat_coil_fuel", :default => "NaturalGas"  # (NaturalGas | Propane | ...)
+
+# should these be:
+#   coil_heat___
+#   coil_cool___
+#   coil_aux___     coil_supp___   coil_sec___
+
+# YES
+
+
+parameter "heat_coil_sizing_ratio",  # Only for ASHP or WSHP
+  :default => 1.0, :domain => Numeric
+
+
+#dx_min_temp  Minimum Outdoor Dry-Bulb Temperature for Compressor Operation (C)
+
+# add these to the rules:
+parameter "hp_min_temp", :default => 10.04['F']  # Only for ASHP
+parameter "hp_defrost_temp", :default => 35['F']  # Only for ASHP
+
+
+# ASHP only?  or can we call this hp_
+parameter "ashp_aux_heat_max_temp", :default => 40['F']
+parameter "ashp_supply_max_temp", :default => Autosize  # was 105['F']  # same as sat_max_temp?
+
+
+
+parameter "dx_type",  # Used to set performance curves; SPLIT only applies to variable-speed compressor; TERMINAL only applies to constant-speed compressor.
+  :default => "PNNL"  # (PACKAGED | SPLIT | TERMINAL)
+parameter "dx_comp_speed", :default => "CONSTANT"  # (CONSTANT | DUAL | VARIABLE)
+parameter "dx_crankcase_max_temp", :default => 4.4['C']
+parameter "dx_crankcase_cap", :default => 50['W']
+
+#   coil_dx_type
+#   coil_dx_comp_speed!#   coil_hp_min_temp   etc.
+
+parameter "aux_heat_coil_type", :default => "NONE"  # (COMBUSTION | RESISTANCE | NONE)
+parameter "aux_heat_coil_cap", :default => Autosize
+parameter "aux_heat_coil_eff", :default => 0.8
+parameter "aux_heat_coil_fuel", :default => "NaturalGas"  # (NaturalGas | Propane | ...)
+
+
+rule "cool_coil_type_dx_air", :parameters => {:cool_coil_type => "DX-AIR"} do
+  default :cool_coil_cop => 3.0
+  disable :cool_coil_evap_eff
+end
+
+rule "cool_coil_type_dx_evap", :parameters => {:cool_coil_type => "DX-EVAP"} do
+  default :cool_coil_cop => 3.3
+  default :cool_coil_evap_eff => 0.9
+end
+
+rule "cool_coil_type_dx_water", :parameters => {:cool_coil_type => "DX-WATER"} do
+  default :cool_coil_cop => 3.7
+  disable :cool_coil_evap_eff
+end
+
+rule "cool_coil_type_water", :parameters => {:cool_coil_type => "WATER"} do
+  disable :cool_coil_cop
+  disable :cool_coil_evap_eff
+end
+
+rule "cool_coil_type_none", :parameters => {:cool_coil_type => "NONE"} do
+  disable :cool_coil_cop
+  disable :cool_coil_evap_eff
+  disable :cool_coil_cap
+end
+
+rule "heat_coil_type_combustion", :parameters => {:heat_coil_type => "COMBUSTION"} do
+  default :heat_coil_eff => 0.8
+  #disable :heat_coil_cop  # do not use temporarily until rule override in import
+  default :heat_coil_fuel => "NaturalGas"
+end
+
+rule "heat_coil_type_resistance", :parameters => {:heat_coil_type => "RESISTANCE"} do
+  default :heat_coil_eff => 0.98
+  disable :heat_coil_cop
+  disable :heat_coil_fuel
+end
+
+
+rule "heat_coil_type_dx_water", :parameters => {:heat_coil_type => "DX-WATER"} do
+  disable :heat_coil_eff
+  default :heat_coil_cop => 3.2
+  disable :heat_coil_fuel
+end
+
+rule "heat_coil_type_water", :parameters => {:heat_coil_type => "WATER"} do
+  disable :heat_coil_eff
+  disable :heat_coil_cop
+  disable :heat_coil_fuel
+end
+
+rule "heat_coil_type_steam", :parameters => {:heat_coil_type => "STEAM"} do
+  disable :heat_coil_eff
+  disable :heat_coil_cop
+  disable :heat_coil_fuel
+end
+
+rule "heat_coil_type_none", :parameters => {:heat_coil_type => "NONE"} do
+  disable :heat_coil_eff
+  disable :heat_coil_cop
+  disable :heat_coil_fuel
+  disable :heat_coil_cap
+  force :aux_heat_coil_type => "NONE"
+end
+
+
+rule "aux_heat_coil_type_combustion", :parameters => {:aux_heat_coil_type => "COMBUSTION"} do
+  default :aux_heat_coil_eff => 0.8
+  default :aux_heat_coil_fuel => "NaturalGas"
+end
+
+rule "aux_heat_coil_type_resistance", :parameters => {:aux_heat_coil_type => "RESISTANCE"} do
+  default :aux_heat_coil_eff => 1.0
+  disable :aux_heat_coil_fuel
+end
+
+rule "aux_heat_coil_type_none", :parameters => {:aux_heat_coil_type => "NONE"} do
+  disable :aux_heat_coil_eff
+  disable :aux_heat_coil_fuel
+  disable :aux_heat_coil_cap
+end
+
+parameter "sat_temp_max", :default => Autosize
+#  Autosizing both of these eliminates a warning: this value was not matching the Sizing:System or Sizing:Zone supply temps
+
+  # interesting these are AHU only
+  # what about SAT for ZN-* systems? e.g., PTAC
+# UnitarySystem has:
+#   Minimum Supply Air Temperature {C}  if DOAS = Yes, this is like a defrost min temp; means something else for SingleZoneVAV
+#   Maximum Supply Air Temperature {C}  default 80 C; ~ same as terminal max heating temp; SingleZoneVAV is more specific
+
+
+parameter "clear_water_storage_tank", :default => ""  # Name of tank for collecting cooling coil condensate
+
+parameter "disable_ems", :default => false, :type => "Enumeration", :valuelist => "true,false"
+
+%>
+
+<%
+if (control_zone_name.empty?)
+  control_type = "Setpoint"
+
+# TRC - enable variable speed operation for cPVVG system type
+elsif ((fan_speed == "VARIABLE") && (heat_coil_type == "WATER" || (heat_coil_type == "DX-AIR" && dx_comp_speed == "CONSTANT")) && (cool_coil_type == "WATER" || (cool_coil_type == "DX-AIR" || dx_comp_speed == "CONSTANT")))
+  control_type = "SingleZoneVAV"
+else
+  control_type = "Load"
+end
+
+if fan_mode_sch == "" and fan_mode == "SCHEDULE"
+  fan_mode_sch = op_sch
+end
+
+if (dx_comp_speed == "CONSTANT")
+  dx_comp_speed_num = 1
+  cool_coil_cd = 0.07
+  cool_coil_cop_1 = cool_coil_cop
+  if heat_coil_type.include?("DX")
+    heat_coil_cd = 0.11
+    heat_coil_cop_1 = heat_coil_cop
+  end
+elsif (dx_comp_speed == "TWO-SPEED")
+  dx_comp_speed_num = 2
+  cool_coil_cd = 0
+  cool_coil_cop_1 = cool_coil_cop * 1.0148883375
+  cool_coil_cop_2 = cool_coil_cop
+  if heat_coil_type.include?("DX")
+    heat_coil_cd = 0
+    heat_coil_cop_1 = heat_coil_cop * 1.0148883375
+    heat_coil_cop_2 = heat_coil_cop
+  end
+elsif (dx_comp_speed == "DUAL")
+  dx_comp_speed_num = 2
+  cool_coil_cd = 0.11
+  cool_coil_cop_1 = cool_coil_cop / 0.9
+  cool_coil_cop_2 = cool_coil_cop
+  if heat_coil_type.include?("DX")
+    heat_coil_cd = 0.11
+    heat_coil_cop_1 = heat_coil_cop / 0.9
+    heat_coil_cop_2 = heat_coil_cop
+  end
+elsif (dx_comp_speed == "DUAL-EQUAL")
+  dx_comp_speed_num = 2
+  cool_coil_cd = 0.25
+  cool_coil_cop_1 = cool_coil_cop
+  cool_coil_cop_2 = cool_coil_cop
+  if heat_coil_type.include?("DX")
+    heat_coil_cd = 0.11
+    heat_coil_cop_1 = heat_coil_cop / 0.9
+    heat_coil_cop_2 = heat_coil_cop
+  end
+elsif (dx_comp_speed == "VARIABLE")
+  dx_comp_speed_num = 4
+  cool_coil_cd = 0.25
+  cool_coil_cop_1 = cool_coil_cop / 0.7
+  cool_coil_cop_2 = cool_coil_cop / 0.75
+  cool_coil_cop_3 = cool_coil_cop / 0.9
+  cool_coil_cop_4 = cool_coil_cop
+  if heat_coil_type.include?("DX")
+    heat_coil_cd = 0.24
+    heat_coil_cop_1 = heat_coil_cop / 0.7
+    heat_coil_cop_2 = heat_coil_cop / 0.75
+    heat_coil_cop_3 = heat_coil_cop / 0.9
+    heat_coil_cop_4 = heat_coil_cop
+  end
+end
+
+%>
+<% # NOTE: No need to include availability schedule on UnitarySystem -- fan schedules can be specified in the fan objects, and PNNL models all have continuous availability for unitarysystems
+# Need continuous availability for night cycle to work properly
+%>
+
+<% if (fan_type == "ON-OFF")
+  iv_sup_fan_obj = "Fan:OnOff"
+elsif (fan_type == "SYSTEM-MODEL")
+  iv_sup_fan_obj = "Fan:SystemModel"
+elsif (fan_type == "VAV")
+  iv_sup_fan_obj = "Fan:VariableVolume"
+end %>
+
+<% if (fan_config == "DRAW-THROUGH")
+  iv_fan_placement = "DrawThrough"
+elsif (fan_config == "BLOW-THROUGH")
+  iv_fan_placement = "BlowThrough"
+else
+  iv_fan_placement = "BlowThrough"
+end %>
+<% if (heat_coil_type == "COMBUSTION")
+  iv_heat_coil_obj = "Coil:Heating:Fuel"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = ""
+elsif (heat_coil_type == "RESISTANCE")
+  iv_heat_coil_obj = "Coil:Heating:Electric"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = ""
+elsif (heat_coil_type == "DX-AIR")
+ if (dx_comp_speed_num == 1)
+  iv_heat_coil_obj = "Coil:Heating:DX:SingleSpeed"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = heat_coil_sizing_ratio
+ elsif (dx_comp_speed_num > 1)
+  iv_heat_coil_obj = "Coil:Heating:DX:MultiSpeed"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = heat_coil_sizing_ratio
+ end
+elsif (heat_coil_type == "DX-WATER")
+  if dx_comp_speed_num == 1
+   iv_heat_coil_obj = "Coil:Heating:WaterToAirHeatPump:EquationFit"
+  elsif dx_comp_speed_num > 1
+   iv_heat_coil_obj = "Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit"
+  end
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = heat_coil_sizing_ratio
+elsif (heat_coil_type == "WATER")
+  iv_heat_coil_obj = "Coil:Heating:Water"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = ""
+elsif (heat_coil_type == "STEAM")
+  iv_heat_coil_obj = "Coil:Heating:Steam"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = ""
+elsif (heat_coil_type == "NONE")
+  iv_heat_coil_obj = ""
+  iv_heat_coil_nm = ""
+  iv_dx_heat_coil_szratio = ""
+elsif (heat_coil_type == "MULTI-STAGE-GAS")
+  iv_heat_coil_obj = "Coil:Heating:Gas:MultiStage"
+  iv_heat_coil_nm = unitary_name + " Heating Coil"
+  iv_dx_heat_coil_szratio = ""
+end %>
+ <% # Added for steam boiler variant. Behzad Rizi 2024-01-08 %>
+
+<% if (cool_coil_type == "DX-AIR")
+ if (dx_comp_speed_num == 1)
+  iv_cool_coil_obj = "Coil:Cooling:DX:SingleSpeed"
+ elsif (dx_comp_speed_num > 1)
+  iv_cool_coil_obj = "Coil:Cooling:DX:MultiSpeed"
+ end
+  iv_cool_coil_nm = unitary_name + " Cooling Coil"
+elsif (cool_coil_type == "DX-WATER")
+  if (dx_comp_speed_num == 1)
+    iv_cool_coil_obj = "Coil:Cooling:WaterToAirHeatPump:EquationFit"
+  elsif (dx_comp_speed_num > 1)
+   iv_cool_coil_obj = "Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit"
+  end
+  iv_cool_coil_nm = unitary_name + " Cooling Coil"
+elsif (cool_coil_type == "WATER")
+  iv_cool_coil_obj = "Coil:Cooling:Water"
+  iv_cool_coil_nm = unitary_name + " Cooling Coil"
+elsif (cool_coil_type == "NONE")
+  iv_cool_coil_obj = ""
+  iv_cool_coil_nm = ""
+end %>
+
+<% if (doas && cool_coil_type.include?("DX"))
+  iv_use_doas_dx_cool = "Yes"
+else
+  iv_use_doas_dx_cool = "No"
+end %>
+
+<% if (aux_heat_coil_type == "COMBUSTION")
+  iv_sup_heat_coil_obj = "Coil:Heating:Fuel"
+  iv_sup_heat_coil_nm = unitary_name + " Aux Heating Coil"
+elsif (aux_heat_coil_type == "RESISTANCE")
+  iv_sup_heat_coil_obj = "Coil:Heating:Electric"
+  iv_sup_heat_coil_nm = unitary_name + " Aux Heating Coil"
+elsif (aux_heat_coil_type == "NONE")
+  iv_sup_heat_coil_obj = ""
+  iv_sup_heat_coil_nm = ""
+end %>
+
+<%# TRC - add option to set no load fraction of supply air flow rate for cPVVG system type
+    #0.67 is the EnergyPlus default for SupplyAirFlowRate method %>
+
+<% if (unitary_no_load_flow_method == "FractionOfAutosizedCoolingValue")
+  if (cool_flow_min_frac)
+   iv_noload_frac_cool_supply = cool_flow_min_frac
+  else ("0.67")
+   iv_noload_frac_cool_supply = 0.67
+  end
+else
+  iv_noload_frac_cool_supply = ""
+end %>
+
+<% if (heat_coil_type == "DX-AIR")
+  iv_max_supply_air_temp = ashp_supply_max_temp
+else
+  iv_max_supply_air_temp = sat_temp_max
+end %>
+
+<% if (aux_heat_coil_type == "NONE")
+  iv_max_oa_db_temp_supp = ""
+else
+  iv_max_oa_db_temp_supp = ashp_aux_heat_max_temp
+end %>
+
+<% if (cool_coil_type == "DX-AIR" and dx_comp_speed_num > 1)
+  iv_des_spec_ms_hp_obj = "UnitarySystemPerformance:Multispeed"
+  iv_des_spec_ms_hp_nm = unitary_name + " Multispeed Performance"
+else
+  iv_des_spec_ms_hp_obj = ""
+  iv_des_spec_ms_hp_nm = ""
+end %>
+
+  AirLoopHVAC:UnitarySystem,
+    <%= unitary_name %> Unitary,  !- Name
+    <%= control_type %>,     !- Control Type
+    <%= control_zone_name %>,!- Controlling Zone or Thermostat Location
+    None,                    !- Dehumidification Control Type
+    ,                        !- Availability Schedule Name
+    <%= unitary_name %> Unitary Inlet Node,  !- Air Inlet Node Name
+    <%= unitary_name %> Unitary Outlet Node,  !- Air Outlet Node Name
+    <%= iv_sup_fan_obj %>,   !- Supply Fan Object Type
+    <%= unitary_name %> Supply Fan,  !- Supply Fan Name
+    <%= iv_fan_placement %>, !- Fan Placement
+    <%= unitary_name %> Fan Mode Schedule,  !- Supply Air Fan Operating Mode Schedule Name
+    <%= iv_heat_coil_obj %>, !- Heating Coil Object Type
+    <%= iv_heat_coil_nm %>,  !- Heating Coil Name
+    <%= iv_dx_heat_coil_szratio %>,  !- DX Heating Coil Sizing Ratio
+    <%= iv_cool_coil_obj %>, !- Cooling Coil Object Type
+    <%= iv_cool_coil_nm %>,  !- Cooling Coil Name
+    <%= iv_use_doas_dx_cool %>,  !- Use DOAS DX Cooling Coil
+    ,                        !- Minimum Supply Air Temperature {C}
+    ,                        !- Latent Load Control
+    <%= iv_sup_heat_coil_obj %>,  !- Supplemental Heating Coil Object Type
+    <%= iv_sup_heat_coil_nm %>,  !- Supplemental Heating Coil Name
+    SupplyAirFlowRate,       !- Cooling Supply Air Flow Rate Method
+    <%= fan_flow %>,         !- Cooling Supply Air Flow Rate {m3/s}
+    ,                        !- Cooling Supply Air Flow Rate Per Floor Area {m3/s-m2}
+    ,                        !- Cooling Fraction of Autosized Cooling Supply Air Flow Rate
+    ,                        !- Cooling Supply Air Flow Rate Per Unit of Capacity {m3/s-W}
+    SupplyAirFlowRate,       !- Heating Supply Air Flow Rate Method
+    <%= fan_flow %>,         !- Heating Supply Air Flow Rate {m3/s}
+    ,                        !- Heating Supply Air Flow Rate Per Floor Area {m3/s-m2}
+    ,                        !- Heating Fraction of Autosized Heating Supply Air Flow Rate
+    ,                        !- Heating Supply Air Flow Rate Per Unit of Capacity {m3/s-W}
+    <%= unitary_no_load_flow_method %>,  !- No Load Supply Air Flow Rate Method
+    <%= fan_flow %>,         !- No Load Supply Air Flow Rate {m3/s}
+    ,                        !- No Load Supply Air Flow Rate Per Floor Area {m3/s-m2}
+    <%= iv_noload_frac_cool_supply %>,  !- No Load Fraction of Autosized Cooling Supply Air Flow Rate
+    ,                        !- No Load Fraction of Autosized Heating Supply Air Flow Rate
+    ,                        !- No Load Supply Air Flow Rate Per Unit of Capacity During Cooling Operation {m3/s-W}
+    ,                        !- No Load Supply Air Flow Rate Per Unit of Capacity During Heating Operation {m3/s-W}
+    No,                      !- No Load Supply Air Flow Rate Control Set To Low Speed
+    <%= iv_max_supply_air_temp %>,  !- Maximum Supply Air Temperature {C}
+    <%= iv_max_oa_db_temp_supp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Supplemental Heater Operation {C}
+    ,                        !- Outdoor Dry-Bulb Temperature Sensor Node Name
+    ,                        !- Ancillary On-Cycle Electric Power {W}
+    ,                        !- Ancillary Off-Cycle Electric Power {W}
+    ,                        !- Design Heat Recovery Water Flow Rate {m3/s}
+    ,                        !- Maximum Temperature for Heat Recovery {C}
+    ,                        !- Heat Recovery Water Inlet Node Name
+    ,                        !- Heat Recovery Water Outlet Node Name
+    <%= iv_des_spec_ms_hp_obj %>,  !- Design Specification Multispeed Object Type
+    <%= iv_des_spec_ms_hp_nm %>;  !- Design Specification Multispeed Object Name
+
+  Schedule:Compact,
+    <%= unitary_name %> Schedule,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    <%= op_sch %>;
+
+  Schedule:Compact,
+    <%= unitary_name %> Fan Mode Schedule,  !- Name
+    Fan Mode Control,        !- Schedule Type Limits Name
+    <%= fan_mode_sch %>;
+
+<% if (fan_type == "ON-OFF") %>
+
+ <% if (fan_config == "BLOW-THROUGH" or (cool_coil_type == "NONE" and heat_coil_type == "NONE"))
+  iv_air_inlet_node = unitary_name + " Unitary Inlet Node"
+ elsif (heat_coil_type == "NONE")
+  iv_air_inlet_node = unitary_name + " Cooling Coil Outlet Node"
+ else
+  iv_air_inlet_node = unitary_name + " Heating Coil Outlet Node"
+ end %>
+
+ <% if ((fan_config == "DRAW-THROUGH" and aux_heat_coil_type == "NONE") or
+  (cool_coil_type == "NONE" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE"))
+  iv_air_outlet_node = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node = unitary_name + " Supply Fan Outlet Node"
+ end %>
+
+  Fan:OnOff,
+    <%= unitary_name %> Supply Fan,  !- Name
+    <%= unitary_name %> Schedule,  !- Availability Schedule Name
+    <%= fan_eff %>,          !- Fan Total Efficiency
+    <%= fan_rise %>,         !- Pressure Rise {Pa}
+    <%= fan_flow %>,         !- Maximum Flow Rate {m3/s}
+    <%= fan_motor_eff %>,    !- Motor Efficiency
+    <%= fan_motor_frac %>,   !- Motor In Airstream Fraction
+    <%= iv_air_inlet_node %>,!- Air Inlet Node Name
+    <%= iv_air_outlet_node %>,  !- Air Outlet Node Name
+    ,                        !- Fan Power Ratio Function of Speed Ratio Curve Name
+    ,                        !- Fan Efficiency Ratio Function of Speed Ratio Curve Name
+    <%= fan_subcat %>;       !- End-Use Subcategory
+
+<% elsif (fan_type == "SYSTEM-MODEL") %>
+
+ <% if (fan_config == "BLOW-THROUGH" or (cool_coil_type == "NONE" and heat_coil_type == "NONE"))
+  iv_air_inlet_node = unitary_name + " Unitary Inlet Node"
+ elsif (heat_coil_type == "NONE")
+  iv_air_inlet_node = unitary_name + " Cooling Coil Outlet Node"
+ else
+  iv_air_inlet_node = unitary_name + " Heating Coil Outlet Node"
+ end %>
+
+ <% if ((fan_config == "DRAW-THROUGH" and aux_heat_coil_type == "NONE") or
+  (cool_coil_type == "NONE" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE"))
+  iv_air_outlet_node = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node = unitary_name + " Supply Fan Outlet Node"
+ end %>
+
+ <% if fan_speed == "VARIABLE"
+  iv_speed_control = "Continuous"
+ else
+  iv_speed_control = "Discrete"
+ end %>
+
+ <% if fan_speed == "VARIABLE"
+  iv_elec_pwr_func_flow_curve_nm = unitary_name + " Supply Fan Curve"
+ else
+  iv_elec_pwr_func_flow_curve_nm = ""
+ end %>
+
+ <% if fan_speed == "CONSTANT"
+  iv_num_speeds = 1
+  iv_spd1_flow_frac = 1
+  iv_spd1_pwr_frac = constant_fan_speed_power_frac
+  iv_spd2_flow_frac = ""
+  iv_spd2_pwr_frac = ""
+  iv_spd3_flow_frac = ""
+  iv_spd3_pwr_frac = ""
+
+ elsif fan_speed == "DUAL"
+  iv_num_speeds = 2
+  iv_spd1_flow_frac = fan_low_speed_flow_frac
+  iv_spd1_pwr_frac = fan_low_speed_power_frac
+  iv_spd2_flow_frac = 1
+  iv_spd2_pwr_frac = 1
+  iv_spd3_flow_frac = ""
+  iv_spd3_pwr_frac = ""
+
+ elsif fan_speed == "THREE-SPEED"
+  iv_num_speeds = 3
+  iv_spd1_flow_frac = fan_speed_1_flow_frac
+  iv_spd1_pwr_frac = fan_speed_1_power_frac
+  iv_spd2_flow_frac = fan_speed_2_flow_frac
+  iv_spd2_pwr_frac = fan_speed_2_power_frac
+  iv_spd3_flow_frac = fan_speed_3_flow_frac
+  iv_spd3_pwr_frac = fan_speed_3_power_frac
+
+ elsif fan_speed == "VARIABLE"
+  iv_num_speeds = ""
+  iv_spd1_flow_frac = ""
+  iv_spd1_pwr_frac = ""
+  iv_spd2_flow_frac = ""
+  iv_spd2_pwr_frac = ""
+  iv_spd3_flow_frac = ""
+  iv_spd3_pwr_frac = ""
+ end %>
+
+  Fan:SystemModel,
+    <%= unitary_name %> Supply Fan,  !- Name
+    <%= unitary_name %> Schedule,  !- Availability Schedule Name
+    <%= iv_air_inlet_node %>,!- Air Inlet Node Name
+    <%= iv_air_outlet_node %>,  !- Air Outlet Node Name
+    <%= fan_flow %>,         !- Design Maximum Air Flow Rate {m3/s}
+    <%= iv_speed_control %>, !- Speed Control Method
+    <%= fan_flow_min_frac %>,!- Electric Power Minimum Flow Rate Fraction
+    <%= fan_rise %>,         !- Design Pressure Rise {Pa}
+    <%= fan_motor_eff %>,    !- Motor Efficiency
+    <%= fan_motor_frac %>,   !- Motor In Air Stream Fraction
+    Autosize,                !- Design Electric Power Consumption {W}
+    <%= fan_sizing_method %>,!- Design Power Sizing Method
+    <%= fan_power_per_flow %>,  !- Electric Power Per Unit Flow Rate {W/(m3/s)}
+    <%= fan_power_per_flow_pressure %>,  !- Electric Power Per Unit Flow Rate Per Unit Pressure {W/((m3/s)-Pa)}
+    <%= fan_eff %>,          !- Fan Total Efficiency
+    <%= iv_elec_pwr_func_flow_curve_nm %>,  !- Electric Power Function of Flow Fraction Curve Name
+    <%= fan_rise %>,         !- Night Ventilation Mode Pressure Rise {Pa}
+    ,                        !- Night Ventilation Mode Flow Fraction
+    ,                        !- Motor Loss Zone Name
+    ,                        !- Motor Loss Radiative Fraction
+    <%= fan_subcat %>,       !- End-Use Subcategory
+    <%= iv_num_speeds %>,    !- Number of Speeds
+    <%= iv_spd1_flow_frac %>,!- Speed 1 Flow Fraction
+    <%= iv_spd1_pwr_frac %>, !- Speed 1 Electric Power Fraction
+    <%= iv_spd2_flow_frac %>,!- Speed 2 Flow Fraction
+    <%= iv_spd2_pwr_frac %>, !- Speed 2 Electric Power Fraction
+    <%= iv_spd3_flow_frac %>,!- Speed 3 Flow Fraction
+    <%= iv_spd3_pwr_frac %>; !- Speed 3 Electric Power Fraction
+
+ <% if fan_speed == "VARIABLE" %>
+ <%
+ # TRC: Added if/else conditional statement for fan curve performance for SWHC018
+ # TRC: Fan curve values sourced from ANSI/ASHRAE/IES Standard 90.1-2016 Performance Rating Method Reference Manual
+ %>
+  <% if fan_curve == "MZVAV-FC" # TRC: Fan Type - Multi zone VAV with forward curve fans riding the curve %>
+
+  Curve:Quartic,
+    <%= unitary_name %> Supply Fan Curve,  !- Name
+    0.1224,                  !- Coefficient1 Constant
+    0.612,                   !- Coefficient2 x
+    0.5983,                  !- Coefficient3 x**2
+    -0.3334,                 !- Coefficient4 x**3
+    0.0,                     !- Coefficient5 x**4
+    0.0,                     !- Minimum Value of x
+    1.0,                     !- Maximum Value of x
+    0.3,                     !- Minimum Curve Output
+    1.0,                     !- Maximum Curve Output
+    Dimensionless,           !- Input Unit Type for X
+    Dimensionless;           !- Output Unit Type
+
+  <% elsif fan_curve == "MZVAV-VSD" # TRC: Fan Type - Multi zone VAV with VSD and fixed SP setpoint %>
+
+  Curve:Quartic,
+    <%= unitary_name %> Supply Fan Curve,  !- Name
+    0.0013,                  !- Coefficient1 Constant
+    0.1470,                  !- Coefficient2 x
+    0.9506,                  !- Coefficient3 x**2
+    -0.0998,                 !- Coefficient4 x**3
+    0.0,                     !- Coefficient5 x**4
+    0.0,                     !- Minimum Value of x
+    1.0,                     !- Maximum Value of x
+    0.2,                     !- Minimum Curve Output
+    1.0,                     !- Maximum Curve Output
+    Dimensionless,           !- Input Unit Type for X
+    Dimensionless;           !- Output Unit Type
+
+  <% elsif fan_curve == "T24" %>
+
+  Curve:Quartic,
+    <%= unitary_name %> Supply Fan Curve,  !- Name
+    0.0407598940,            !- Coefficient1 Constant
+    0.08804497,              !- Coefficient2 x
+    -0.072926120,            !- Coefficient3 x**2
+    0.9437398230,            !- Coefficient4 x**3
+    0.0,                     !- Coefficient5 x**4
+    0.0,                     !- Minimum Value of x
+    1.0,                     !- Maximum Value of x
+    0.0,                     !- Minimum Curve Output
+    1.0,                     !- Maximum Curve Output
+    Dimensionless,           !- Input Unit Type for X
+    Dimensionless;           !- Output Unit Type
+
+  <% end %>
+ <% end %>
+<% elsif (fan_type == "VARIABLE") %>
+
+<% if (fan_config == "BLOW-THROUGH" or (cool_coil_type == "NONE" and heat_coil_type == "NONE"))
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (heat_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+<% if ((fan_config == "DRAW-THROUGH" and aux_heat_coil_type == "NONE") or
+  (cool_coil_type == "NONE" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE"))
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+  Fan:VariableVolume,
+    <%= unitary_name %> Supply Fan,  !- Name
+    <%= unitary_name %> Schedule,  !- Availability Schedule Name
+    <%= fan_eff %>,          !- Fan Total Efficiency
+    <%= fan_rise %>,         !- Pressure Rise {Pa}
+    <%= fan_flow %>,         !- Maximum Flow Rate {m3/s}
+    <%= fan_flow_min_method %>,  !- Fan Power Minimum Flow Rate Input Method
+    <%= fan_flow_min_frac %>,!- Fan Power Minimum Flow Fraction
+    <%= fan_flow_min %>,     !- Fan Power Minimum Air Flow Rate {m3/s}
+    <%= fan_motor_eff %>,    !- Motor Efficiency
+    <%= fan_motor_frac %>,   !- Motor In Airstream Fraction
+    0.0408,                  !- Fan Power Coefficient 1
+    0.088,                   !- Fan Power Coefficient 2
+    -0.0729,                 !- Fan Power Coefficient 3
+    0.9437,                  !- Fan Power Coefficient 4
+    0.0,                     !- Fan Power Coefficient 5
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= fan_subcat %>;       !- End-Use Subcategory
+
+<% end %>
+<% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (cool_coil_type == "DX-AIR")
+  iv_cond_type = "AirCooled"
+  iv_evap_cond_effec = ""
+  iv_evap_cond_airflow_rt = ""
+elsif (cool_coil_type == "DX-EVAP")
+  iv_cond_type = "EvaporativelyCooled"
+  iv_evap_cond_effec = cool_coil_evap_eff
+  iv_evap_cond_airflow_rt = "Autosize"
+end %>
+
+<% if (cool_coil_type == "DX-AIR" and dx_comp_speed_num == 1) %>
+
+ <% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+ else
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+ end %>
+
+ <% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+ end %>
+
+ <% if (cool_coil_type == "DX-AIR")
+  iv_cond_type = "AirCooled"
+  iv_evap_cond_effec = ""
+  iv_evap_cond_airflow_rt = ""
+ elsif (cool_coil_type == "DX-EVAP")
+  iv_cond_type = "EvaporativelyCooled"
+  iv_evap_cond_effec = cool_coil_evap_eff
+  iv_evap_cond_airflow_rt = "Autosize"
+ end %>
+
+  Coil:Cooling:DX:SingleSpeed,
+    <%= unitary_name %> Cooling Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= cool_coil_cap %>,    !- Gross Rated Total Cooling Capacity {W}
+    Autosize,                !- Gross Rated Sensible Heat Ratio
+    <%= cool_coil_cop_1 %>,  !- Gross Rated Cooling COP {W/W}
+    <%= fan_flow %>,         !- Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= unitary_name %> Cool-Cap-fT,  !- Total Cooling Capacity Function of Temperature Curve Name
+    <%= unitary_name %> Cool-Cap-fFF,  !- Total Cooling Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-EIR-fT,  !- Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> Cool-EIR-fFF,  !- Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-PLF-fPLR,  !- Part Load Fraction Correlation Curve Name
+    -25.0,                   !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
+    1000,                    !- Nominal Time for Condensate Removal to Begin {s}
+    1.5,                     !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+    3,                       !- Maximum Cycling Rate {cycles/hr}
+    45,                      !- Latent Capacity Time Constant {s}
+    ,                        !- Condenser Air Inlet Node Name
+    <%= iv_cond_type %>,     !- Condenser Type
+    <%= iv_evap_cond_effec %>,  !- Evaporative Condenser Effectiveness {dimensionless}
+    <%= iv_evap_cond_airflow_rt %>,  !- Evaporative Condenser Air Flow Rate {m3/s}
+    ,                        !- Evaporative Condenser Pump Rated Power Consumption {W}
+    <%= dx_crankcase_cap %>, !- Crankcase Heater Capacity {W}
+    ,                        !- Crankcase Heater Capacity Function of Temperature Curve Name
+    <%= dx_crankcase_max_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Crankcase Heater Operation {C}
+    ,                        !- Supply Water Storage Tank Name
+    <%= clear_water_storage_tank %>;  !- Condensate Collection Water Storage Tank Name
+
+ <% if (dx_type == "TERMINAL") %>
+! Performance curves for DX Cooling Coil taken from NREL document http://www.nrel.gov/docs/fy13osti/57617.pdf model FRA103BT1 from Frigidaire.
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT,  !- Name
+    0.8477,                  !- Coefficient1 Constant
+    0.007225,                !- Coefficient2 x
+    0.0008902,               !- Coefficient3 x**2
+    0.002077,                !- Coefficient4 y
+    -0.00009272,             !- Coefficient5 y**2
+    -0.0004184,              !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    18.0,                    !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT,  !- Name
+    0.5111,                  !- Coefficient1 Constant
+    0.01505,                 !- Coefficient2 x
+    -0.0004509,              !- Coefficient3 x**2
+    0.007401,                !- Coefficient4 y
+    0.0003901,               !- Coefficient5 y**2
+    -0.0005426,              !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    18.0,                    !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF,  !- Name
+    0.7957,                  !- Coefficient1 Constant
+    0.2053,                  !- Coefficient2 x
+    0.999,                   !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF,  !- Name
+    1.092,                   !- Coefficient1 Constant
+    -0.8983,                 !- Coefficient2 x
+    0.952,                   !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR,  !- Name
+    0.85,                    !- Coefficient1 Constant
+    0.15,                    !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+ <% elsif (dx_type == "PNNL") %>
+! Following performance curves taken from single-speed DX system in PNNL model 90.1-2004 (Retail Strip Mall,Small Office )
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT,  !- Name
+    0.766956,                !- Coefficient1 Constant
+    0.0107756,               !- Coefficient2 x
+    -4.14703e-05,            !- Coefficient3 x**2
+    0.00134961,              !- Coefficient4 y
+    -0.000261144,            !- Coefficient5 y**2
+    0.000457488,             !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT,  !- Name
+    0.297145,                !- Coefficient1 Constant
+    0.0430933,               !- Coefficient2 x
+    -0.000748766,            !- Coefficient3 x**2
+    0.00597727,              !- Coefficient4 y
+    0.000482112,             !- Coefficient5 y**2
+    -0.000956448,            !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR,  !- Name
+    0.85,                    !- Coefficient1 Constant
+    0.15,                    !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF,  !- Name
+    0.8,                     !- Coefficient1 Constant
+    0.2,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5,                     !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF,  !- Name
+    1.156,                   !- Coefficient1 Constant
+    -0.1816,                 !- Coefficient2 x
+    0.0256,                  !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+ <% elsif (dx_type == "DOE") %>
+! Following performance curves taken from single-speed DX system in DOE model 90.1-2004 (Retail Supermarket Office PSZ)
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT,  !- Name
+    0.9712123,               !- Coefficient1 Constant
+    -0.015275502,            !- Coefficient2 x
+    0.0014434524,            !- Coefficient3 x**2
+    -0.00039321,             !- Coefficient4 y
+    -0.0000068364,           !- Coefficient5 y**2
+    -0.0002905956,           !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT,  !- Name
+    0.28687133,              !- Coefficient1 Constant
+    0.023902164,             !- Coefficient2 x
+    -0.000810648,            !- Coefficient3 x**2
+    0.013458546,             !- Coefficient4 y
+    0.0003389364,            !- Coefficient5 y**2
+    -0.0004870044,           !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR,  !- Name
+    0.90949556,              !- Coefficient1 Constant
+    0.09864773,              !- Coefficient2 x
+    -0.00819488,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Cubic,
+    <%= unitary_name %> Cool-Cap-fFF,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 x**3
+    -100,                    !- Minimum Value of x
+    100;                     !- Maximum Value of x
+
+  Curve:Cubic,
+    <%= unitary_name %> Cool-EIR-fFF,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 x**3
+    -100,                    !- Minimum Value of x
+    100;                     !- Maximum Value of x
+
+ <% else %>
+! Following performance curves taken from single-speed DX system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT,  !- Name
+    1.5509020010000003,      !- Coefficient1 Constant
+    -0.0750500892,           !- Coefficient2 x
+    0.00309713544,           !- Coefficient3 x**2
+    0.00240111,              !- Coefficient4 y
+    -0.000050544,            !- Coefficient5 y**2
+    -0.00042728148,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT,  !- Name
+    -0.3042829970000005,     !- Coefficient1 Constant
+    0.1180477062,            !- Coefficient2 x
+    -0.00342466704,          !- Coefficient3 x**2
+    -0.0062619138,           !- Coefficient4 y
+    0.00069542712,           !- Coefficient5 y**2
+    -0.00046997496,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF,  !- Name
+    0.718605468,             !- Coefficient1 Constant
+    0.410099989,             !- Coefficient2 x
+    -0.128705457,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF,  !- Name
+    1.32299905,              !- Coefficient1 Constant
+    -0.477711207,            !- Coefficient2 x
+    0.154712157,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+ <% end # if (dx_type == "TERMINAL") %>
+<% elsif (cool_coil_type == "DX-AIR" and dx_comp_speed_num > 1) %>
+
+<% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (cool_coil_type == "DX-AIR")
+  iv_cond_type = "AirCooled"
+elsif (cool_coil_type == "DX-EVAP")
+  iv_cond_type = "EvaporativelyCooled"
+end %>
+
+<% if (cool_coil_type == "DX-AIR")
+  iv_spd1_evap_cond_eff = ""
+  iv_spd1_evap_cond_airflow_rate = ""
+elsif (cool_coil_type == "DX-EVAP")
+  iv_spd1_evap_cond_eff = cool_coil_evap_eff
+  iv_spd1_evap_cond_airflow_rate = "Autosize"
+end %>
+
+<% if (dx_comp_speed_num == 2)
+  iv_spd2_cool_cap = cool_coil_cap
+else
+  iv_spd2_cool_cap = "Autosize"
+end %>
+
+<% if (cool_coil_type == "DX-AIR")
+  iv_spd2_evap_cond_eff = ""
+  iv_spd2_evap_cond_airflow_rate = ""
+elsif (cool_coil_type == "DX-EVAP")
+  iv_spd2_evap_cond_eff = cool_coil_evap_eff
+  iv_spd2_evap_cond_airflow_rate = "Autosize"
+end %>
+
+<% if (dx_comp_speed_num < 3)
+  iv_spd3_tot_cool_cap = ""
+  iv_spd3_gross_shr = ""
+  iv_spd3_cop = ""
+  iv_spd3_rated_airflow_rate = ""
+  iv_spd3_cool_cap_vs_temp_curve_nm = ""
+  iv_spd3_cool_cap_vs_flow_curve_nm = ""
+  iv_spd3_eir_vs_temp_curve_nm = ""
+  iv_spd3_eir_vs_flow_curve_nm = ""
+  iv_spd3_plf_curve_nm = ""
+  iv_spd3_time_cond_removal_begin = ""
+  iv_spd3_ratio_evap_rate = ""
+  iv_spd3_max_cyc_rate = ""
+  iv_spd3_latent_cap_time_const = ""
+  iv_spd3_waste_heat_frac_of_pwr = ""
+  iv_spd3_waste_heat_vs_temp_curve_nm = ""
+  iv_spd3_evap_cond_eff = ""
+  iv_spd3_evap_cond_airflow_rate = ""
+else
+  iv_spd3_tot_cool_cap = "Autosize"
+  iv_spd3_gross_shr = "Autosize"
+  iv_spd3_cop = cool_coil_cop_3
+  iv_spd3_rated_airflow_rate = "Autosize"
+  iv_spd3_cool_cap_vs_temp_curve_nm = unitary_name + " Cool-Cap-fT3"
+  iv_spd3_cool_cap_vs_flow_curve_nm = unitary_name + " Cool-Cap-fFF3"
+  iv_spd3_eir_vs_temp_curve_nm = unitary_name + " Cool-EIR-fT3"
+  iv_spd3_eir_vs_flow_curve_nm = unitary_name + " Cool-EIR-fFF3"
+  iv_spd3_plf_curve_nm = unitary_name + " Cool-PLF-fPLR3"
+  iv_spd3_time_cond_removal_begin = 1000
+  iv_spd3_ratio_evap_rate = 1.5
+  iv_spd3_max_cyc_rate = 3
+  iv_spd3_latent_cap_time_const = 45
+  iv_spd3_waste_heat_frac_of_pwr = 0.2
+  iv_spd3_waste_heat_vs_temp_curve_nm = unitary_name + " Cool-Waste"
+ if (cool_coil_type == "DX-AIR")
+  iv_spd3_evap_cond_eff = ""
+  iv_spd3_evap_cond_airflow_rate = ""
+ elsif (cool_coil_type == "DX-EVAP")
+  iv_spd3_evap_cond_eff = cool_coil_evap_eff
+  iv_spd3_evap_cond_airflow_rate = "Autosize"
+ end %>
+
+ <% if (dx_comp_speed_num < 4)
+  iv_spd4_tot_cool_cap = ""
+  iv_spd4_gross_shr = ""
+  iv_spd4_cop = ""
+  iv_spd4_rated_airflow_rt = ""
+  iv_spd4_cool_cap_vs_temp_curve_nm = ""
+  iv_spd4_cool_cap_vs_flow_cirve_nm = ""
+  iv_spd4_eir_vs_temp_curve_nm = ""
+  iv_spd4_eir_vs_flow_curve_nm = ""
+  iv_spd4_plf_curve_nm = ""
+  iv_spd4_nom_time_cond_removal = ""
+  iv_spd4_ratio_moisture_evap_rate = ""
+  iv_spd4_max_cycling_rate = ""
+  iv_spd4_latent_cap_time_const = ""
+  iv_spd4_waste_heat_frac_power = ""
+  iv_spd4_waste_heat_vs_temp_curve_nm = ""
+  iv_spd4_evap_cond_eff = ""
+  iv_spd4_evap_cond_af_rate = ""
+ else
+  iv_spd4_tot_cool_cap = cool_coil_cap
+  iv_spd4_gross_shr = "Autosize"
+  iv_spd4_cop = cool_coil_cop_4
+  iv_spd4_rated_airflow_rt = "Autosize"
+  iv_spd4_cool_cap_vs_temp_curve_nm = unitary_name + " Cool-Cap-fT4"
+  iv_spd4_cool_cap_vs_flow_cirve_nm = unitary_name + " Cool-Cap-fFF4"
+  iv_spd4_eir_vs_temp_curve_nm = unitary_name + " Cool-EIR-fT4"
+  iv_spd4_eir_vs_flow_curve_nm = unitary_name + " Cool-EIR-fFF4"
+  iv_spd4_plf_curve_nm = unitary_name + " Cool-PLF-fPLR4"
+  iv_spd4_nom_time_cond_removal = 1000
+  iv_spd4_ratio_moisture_evap_rate = 1.5
+  iv_spd4_max_cycling_rate = 3
+  iv_spd4_latent_cap_time_const = 45
+  iv_spd4_waste_heat_frac_power = 0.2
+  iv_spd4_waste_heat_vs_temp_curve_nm = unitary_name + " Cool-Waste"
+  if (cool_coil_type == "DX-AIR")
+   iv_spd4_evap_cond_eff = ""
+   iv_spd4_evap_cond_af_rate = ""
+  elsif (cool_coil_type == "DX-EVAP")
+   iv_spd4_evap_cond_eff = cool_coil_evap_eff
+   iv_spd4_evap_cond_af_rate = "Autosize"
+  end
+ end
+end %>
+
+  Coil:Cooling:DX:MultiSpeed,
+    <%= unitary_name %> Cooling Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    ,                        !- Condenser Air Inlet Node Name
+    <%= iv_cond_type %>,     !- Condenser Type
+    -25.0,                   !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
+    ,                        !- Supply Water Storage Tank Name
+    <%= clear_water_storage_tank %>,  !- Condensate Collection Water Storage Tank Name
+    No,                      !- Apply Part Load Fraction to Speeds Greater than 1
+    No,                      !- Apply Latent Degradation to Speeds Greater than 1
+    <%= dx_crankcase_cap %>, !- Crankcase Heater Capacity {W}
+    ,                        !- Crankcase Heater Capacity Function of Temperature Curve Name
+    <%= dx_crankcase_max_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Crankcase Heater Operation {C}
+    ,                        !- Basin Heater Capacity {W/K}
+    ,                        !- Basin Heater Setpoint Temperature {C}
+    ,                        !- Basin Heater Operating Schedule Name
+    Electricity,             !- Fuel Type
+    <%= dx_comp_speed_num %>,!- Number of Speeds
+    Autosize,                !- Speed 1 Gross Rated Total Cooling Capacity {W}
+    Autosize,                !- Speed 1 Gross Rated Sensible Heat Ratio
+    <%= cool_coil_cop_1 %>,  !- Speed 1 Gross Rated Cooling COP {W/W}
+    <%= fan_flow %>,         !- Speed 1 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 1 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 1 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= unitary_name %> Cool-Cap-fT1,  !- Speed 1 Total Cooling Capacity Function of Temperature Curve Name
+    <%= unitary_name %> Cool-Cap-fFF1,  !- Speed 1 Total Cooling Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-EIR-fT1,  !- Speed 1 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> Cool-EIR-fFF1,  !- Speed 1 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-PLF-fPLR1,  !- Speed 1 Part Load Fraction Correlation Curve Name
+    1000,                    !- Speed 1 Nominal Time for Condensate Removal to Begin {s}
+    1.5,                     !- Speed 1 Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+    3,                       !- Speed 1 Maximum Cycling Rate {cycles/hr}
+    45,                      !- Speed 1 Latent Capacity Time Constant {s}
+    0.2,                     !- Speed 1 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= unitary_name %> Cool-Waste,  !- Speed 1 Waste Heat Function of Temperature Curve Name
+    <%= iv_spd1_evap_cond_eff %>,  !- Speed 1 Evaporative Condenser Effectiveness {dimensionless}
+    <%= iv_spd1_evap_cond_airflow_rate %>,  !- Speed 1 Evaporative Condenser Air Flow Rate {m3/s}
+    ,                        !- Speed 1 Rated Evaporative Condenser Pump Power Consumption {W}
+    <%= iv_spd2_cool_cap %>, !- Speed 2 Gross Rated Total Cooling Capacity {W}
+    Autosize,                !- Speed 2 Gross Rated Sensible Heat Ratio
+    <%= cool_coil_cop_2 %>,  !- Speed 2 Gross Rated Cooling COP {W/W}
+    Autosize,                !- Speed 2 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 2 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 2 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= unitary_name %> Cool-Cap-fT2,  !- Speed 2 Total Cooling Capacity Function of Temperature Curve Name
+    <%= unitary_name %> Cool-Cap-fFF2,  !- Speed 2 Total Cooling Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-EIR-fT2,  !- Speed 2 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> Cool-EIR-fFF2,  !- Speed 2 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> Cool-PLF-fPLR2,  !- Speed 2 Part Load Fraction Correlation Curve Name
+    1000,                    !- Speed 2 Nominal Time for Condensate Removal to Begin {s}
+    1.5,                     !- Speed 2 Ratio of Initial Moisture Evaporation Rate and steady state Latent Capacity {dimensionless}
+    3,                       !- Speed 2 Maximum Cycling Rate {cycles/hr}
+    45,                      !- Speed 2 Latent Capacity Time Constant {s}
+    0.2,                     !- Speed 2 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= unitary_name %> Cool-Waste,  !- Speed 2 Waste Heat Function of Temperature Curve Name
+    <%= iv_spd2_evap_cond_eff %>,  !- Speed 2 Evaporative Condenser Effectiveness {dimensionless}
+    <%= iv_spd2_evap_cond_airflow_rate %>,  !- Speed 2 Evaporative Condenser Air Flow Rate {m3/s}
+    ,                        !- Speed 2 Rated Evaporative Condenser Pump Power Consumption {W}
+    <%= iv_spd3_tot_cool_cap %>,  !- Speed 3 Gross Rated Total Cooling Capacity {W}
+    <%= iv_spd3_gross_shr %>,!- Speed 3 Gross Rated Sensible Heat Ratio
+    <%= iv_spd3_cop %>,      !- Speed 3 Gross Rated Cooling COP {W/W}
+    <%= iv_spd3_rated_airflow_rate %>,  !- Speed 3 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 3 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 3 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_spd3_cool_cap_vs_temp_curve_nm %>,  !- Speed 3 Total Cooling Capacity Function of Temperature Curve Name
+    <%= iv_spd3_cool_cap_vs_flow_curve_nm %>,  !- Speed 3 Total Cooling Capacity Function of Flow Fraction Curve Name
+    <%= iv_spd3_eir_vs_temp_curve_nm %>,  !- Speed 3 Energy Input Ratio Function of Temperature Curve Name
+    <%= iv_spd3_eir_vs_flow_curve_nm %>,  !- Speed 3 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= iv_spd3_plf_curve_nm %>,  !- Speed 3 Part Load Fraction Correlation Curve Name
+    <%= iv_spd3_time_cond_removal_begin %>,  !- Speed 3 Nominal Time for Condensate Removal to Begin {s}
+    <%= iv_spd3_ratio_evap_rate %>,  !- Speed 3 Ratio of Initial Moisture Evaporation Rate and steady state Latent Capacity {dimensionless}
+    <%= iv_spd3_max_cyc_rate %>,  !- Speed 3 Maximum Cycling Rate {cycles/hr}
+    <%= iv_spd3_latent_cap_time_const %>,  !- Speed 3 Latent Capacity Time Constant {s}
+    <%= iv_spd3_waste_heat_frac_of_pwr %>,  !- Speed 3 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= iv_spd3_waste_heat_vs_temp_curve_nm %>,  !- Speed 3 Waste Heat Function of Temperature Curve Name
+    <%= iv_spd3_evap_cond_eff %>,  !- Speed 3 Evaporative Condenser Effectiveness {dimensionless}
+    <%= iv_spd3_evap_cond_airflow_rate %>,  !- Speed 3 Evaporative Condenser Air Flow Rate {m3/s}
+    ,                        !- Speed 3 Rated Evaporative Condenser Pump Power Consumption {W}
+    <%= iv_spd4_tot_cool_cap %>,  !- Speed 4 Gross Rated Total Cooling Capacity {W}
+    <%= iv_spd4_gross_shr %>,!- Speed 4 Gross Rated Sensible Heat Ratio
+    <%= iv_spd4_cop %>,      !- Speed 4 Gross Rated Cooling COP {W/W}
+    <%= iv_spd4_rated_airflow_rt %>,  !- Speed 4 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 4 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 4 Rated Evaporator Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_spd4_cool_cap_vs_temp_curve_nm %>,  !- Speed 4 Total Cooling Capacity Function of Temperature Curve Name
+    <%= iv_spd4_cool_cap_vs_flow_cirve_nm %>,  !- Speed 4 Total Cooling Capacity Function of Flow Fraction Curve Name
+    <%= iv_spd4_eir_vs_temp_curve_nm %>,  !- Speed 4 Energy Input Ratio Function of Temperature Curve Name
+    <%= iv_spd4_eir_vs_flow_curve_nm %>,  !- Speed 4 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= iv_spd4_plf_curve_nm %>,  !- Speed 4 Part Load Fraction Correlation Curve Name
+    <%= iv_spd4_nom_time_cond_removal %>,  !- Speed 4 Nominal Time for Condensate Removal to Begin {s}
+    <%= iv_spd4_ratio_moisture_evap_rate %>,  !- Speed 4 Ratio of Initial Moisture Evaporation Rate and steady state Latent Capacity {dimensionless}
+    <%= iv_spd4_max_cycling_rate %>,  !- Speed 4 Maximum Cycling Rate {cycles/hr}
+    <%= iv_spd4_latent_cap_time_const %>,  !- Speed 4 Latent Capacity Time Constant {s}
+    <%= iv_spd4_waste_heat_frac_power %>,  !- Speed 4 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= iv_spd4_waste_heat_vs_temp_curve_nm %>,  !- Speed 4 Waste Heat Function of Temperature Curve Name
+    <%= iv_spd4_evap_cond_eff %>,  !- Speed 4 Evaporative Condenser Effectiveness {dimensionless}
+    <%= iv_spd4_evap_cond_af_rate %>,  !- Speed 4 Evaporative Condenser Air Flow Rate {m3/s}
+    ;                        !- Speed 4 Rated Evaporative Condenser Pump Power Consumption {W}
+
+<% if (dx_comp_speed_num == 2) %>
+  <% if dx_type == "PNNL" %>
+! Following performance curves taken from multi-speed DX PNNL model 90.1-2004 (RetailStandAlone and possibly others)
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT1,  !- Name
+    0.766956,                !- Coefficient1 Constant
+    0.0107756,               !- Coefficient2 x
+    -4.14703e-05,            !- Coefficient3 x**2
+    0.00134961,              !- Coefficient4 y
+    -0.000261144,            !- Coefficient5 y**2
+    0.000457488,             !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT1,  !- Name
+    0.297145,                !- Coefficient1 Constant
+    0.0430933,               !- Coefficient2 x
+    -0.000748766,            !- Coefficient3 x**2
+    0.00597727,              !- Coefficient4 y
+    0.000482112,             !- Coefficient5 y**2
+    -0.000956448,            !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR1,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF1,  !- Name
+    0.8,                     !- Coefficient1 Constant
+    0.2,                     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF1,  !- Name
+    1.156,                   !- Coefficient1 Constant
+    -0.1816,                 !- Coefficient2 x
+    0.0256,                  !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT2,  !- Name
+    0.766956,                !- Coefficient1 Constant
+    0.0107756,               !- Coefficient2 x
+    -4.14703e-05,            !- Coefficient3 x**2
+    0.00134961,              !- Coefficient4 y
+    -0.000261144,            !- Coefficient5 y**2
+    0.000457488,             !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT2,  !- Name
+    0.297145,                !- Coefficient1 Constant
+    0.0430933,               !- Coefficient2 x
+    -0.000748766,            !- Coefficient3 x**2
+    0.00597727,              !- Coefficient4 y
+    0.000482112,             !- Coefficient5 y**2
+    -0.000956448,            !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR2,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF2,  !- Name
+    0.8,                     !- Coefficient1 Constant
+    0.2,                     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF2,  !- Name
+    1.156,                   !- Coefficient1 Constant
+    -0.1816,                 !- Coefficient2 x
+    0.0256,                  !- Coefficient3 x**2
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  <% elsif dx_type == "PNNL-Lennox10ton" %>
+  ! Following performance curves taken from multi-speed DX PNNL model 90.1-2004 (RestaurantFastFood)
+    <% for i in 1..2 %>
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT<%= i %>,  !- Name
+    0.42415,                 !- Coefficient1 Constant
+    0.04426,                 !- Coefficient2 x
+    -0.00042,                !- Coefficient3 x**2
+    0.00333,                 !- Coefficient4 y
+    -8.0e-05,                !- Coefficient5 y**2
+    -0.00021,                !- Coefficient6 x*y
+    17,                      !- Minimum Value of x
+    22,                      !- Maximum Value of x
+    29,                      !- Minimum Value of y
+    46;                      !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT<%= i %>,  !- Name
+    1.23649,                 !- Coefficient1 Constant
+    -0.02431,                !- Coefficient2 x
+    0.00057,                 !- Coefficient3 x**2
+    -0.01434,                !- Coefficient4 y
+    0.00063,                 !- Coefficient5 y**2
+    -0.00038,                !- Coefficient6 x*y
+    17,                      !- Minimum Value of x
+    22,                      !- Maximum Value of x
+    29,                      !- Minimum Value of y
+    46;                      !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR<%= i %>,  !- Name
+    0.771,                   !- Coefficient1 Constant
+    0.229,                   !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    0,                       !- Maximum Value of x
+    1;                       !- Minimum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF<%= i %>,  !- Name
+    0.77136,                 !- Coefficient1 Constant
+    0.34053,                 !- Coefficient2 x
+    -0.11088,                !- Coefficient3 x**2
+    0.75918,                 !- Minimum Value of x
+    1.13877;                 !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF<%= i %>,  !- Name
+    1.2055,                  !- Coefficient1 Constant
+    -0.32953,                !- Coefficient2 x
+    0.12308,                 !- Coefficient3 x**2
+    0.75918,                 !- Minimum Value of x
+    1.13877;                 !- Maximum Value of x
+
+    <% end %>
+  <% elsif dx_type == "Measured_CoolCStandard10Ton" %>
+  ! Following performance curves taken from two-speed DX coils from DOE retail-supermarket model 2004
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT1,  !- Name
+    0.52357,                 !- Coefficient1 Constant
+    0.03478,                 !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    -0.001915,               !- Coefficient4 y
+    -0.00010838,             !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    11.1,                    !- Minimum Value of x
+    29.4,                    !- Maximum Value of x
+    10,                      !- Minimum Value of y
+    50.3;                    !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT1,  !- Name
+    0.9847,                  !- Coefficient1 Constant
+    -0.04285,                !- Coefficient2 x
+    0.0013562,               !- Coefficient3 x**2
+    0.009934,                !- Coefficient4 y
+    0.0006398,               !- Coefficient5 y**2
+    -0.001169,               !- Coefficient6 x*y
+    11.1,                    !- Minimum Value of x
+    29.4,                    !- Maximum Value of x
+    10,                      !- Minimum Value of y
+    50.3;                    !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT2,  !- Name
+    0.4136,                  !- Coefficient1 Constant
+    0.03105,                 !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.006952,                !- Coefficient4 y
+    -0.0002128,              !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    11.1,                    !- Minimum Value of x
+    29.4,                    !- Maximum Value of x
+    10,                      !- Minimum Value of y
+    50.3;                    !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT2,  !- Name
+    1.1389,                  !- Coefficient1 Constant
+    -0.04518,                !- Coefficient2 x
+    0.0014298,               !- Coefficient3 x**2
+    0.006044,                !- Coefficient4 y
+    0.0006745,               !- Coefficient5 y**2
+    -0.0012325,              !- Coefficient6 x*y
+    11.1,                    !- Minimum Value of x
+    29.4,                    !- Maximum Value of x
+    10,                      !- Minimum Value of y
+    50.3;                    !- Maximum Value of y
+
+  <% for i in 1..2 %>
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR<%= i %>,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF<%= i %>,  !- Name
+    0.7685,                  !- Coefficient1 Constant
+    0.2315,                  !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.776,                   !- Minimum Value of x
+    1.197;                   !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF<%= i %>,  !- Name
+    1.192,                   !- Coefficient1 Constant
+    -0.1917,                 !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.776,                   !- Minimum Value of x
+    1.197;                   !- Maximum Value of x
+
+  <% end %>
+  <% else %>
+! Following performance curves taken from two-speed ASHP system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT1,  !- Name
+    1.658788451,             !- Coefficient1 Constant
+    -0.0834530076,           !- Coefficient2 x
+    0.00342409032,           !- Coefficient3 x**2
+    0.0024332436,            !- Coefficient4 y
+    -0.000045036,            !- Coefficient5 y**2
+    -0.00053367984,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT1,  !- Name
+    -0.5829157010000001,     !- Coefficient1 Constant
+    0.1581006726,            !- Coefficient2 x
+    -0.00439794684,          !- Coefficient3 x**2
+    -0.020335122,            !- Coefficient4 y
+    0.00107983368,           !- Coefficient5 y**2
+    -0.0006395922,           !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR1,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF1,  !- Name
+    0.655239515,             !- Coefficient1 Constant
+    0.511655216,             !- Coefficient2 x
+    -0.166894731,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF1,  !- Name
+    1.639108268,             !- Coefficient1 Constant
+    -0.998953996,            !- Coefficient2 x
+    0.359845728,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT2,  !- Name
+    1.472738138,             !- Coefficient1 Constant
+    -0.0672218352,           !- Coefficient2 x
+    0.0029199042,            !- Coefficient3 x**2
+    0.0000516006,            !- Coefficient4 y
+    -0.0000297756,           !- Coefficient5 y**2
+    -0.00035908596,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT2,  !- Name
+    -0.4881955970000001,     !- Coefficient1 Constant
+    0.0991621818,            !- Coefficient2 x
+    -0.00236967444,          !- Coefficient3 x**2
+    0.019503441,             !- Coefficient4 y
+    0.0004297698,            !- Coefficient5 y**2
+    -0.00109743984,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR2,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF2,  !- Name
+    0.618281092,             !- Coefficient1 Constant
+    0.569060264,             !- Coefficient2 x
+    -0.187341356,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF2,  !- Name
+    1.570774717,             !- Coefficient1 Constant
+    -0.914152018,            !- Coefficient2 x
+    0.343377302,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+<% end # if dx_type == "PNNL" %>
+<% elsif (dx_comp_speed_num > 2) %>
+<% if (dx_type == "PACKAGED" or dx_type == "TERMINAL") %>
+! Following performance curves taken from four-speed ASHP system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT1,  !- Name
+    1.7139851972,            !- Coefficient1 Constant
+    -0.0746167716,           !- Coefficient2 x
+    0.00297468936,           !- Coefficient3 x**2
+    0.00577633536,           !- Coefficient4 y
+    -0.000103131468,         !- Coefficient5 y**2
+    -0.00066888504,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT1,  !- Name
+    -0.0459238618,           !- Coefficient1 Constant
+    0.06829090668,           !- Coefficient2 x
+    -0.00219033396,          !- Coefficient3 x**2
+    -0.01723331952,          !- Coefficient4 y
+    0.00103872132,           !- Coefficient5 y**2
+    -0.000199631628,         !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR1,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT2,  !- Name
+    1.15285674,              !- Coefficient1 Constant
+    -0.0245373048,           !- Coefficient2 x
+    0.00176665212,           !- Coefficient3 x**2
+    0.0058603014,            !- Coefficient4 y
+    -0.00007723512,          !- Coefficient5 y**2
+    -0.00066472488,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT2,  !- Name
+    1.7046091386,            !- Coefficient1 Constant
+    -0.10488220416,          !- Coefficient2 x
+    0.00218213676,           !- Coefficient3 x**2
+    -0.01672851276,          !- Coefficient4 y
+    0.000954018,             !- Coefficient5 y**2
+    -0.000126467244,         !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR2,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT3,  !- Name
+    0.6461992122,            !- Coefficient1 Constant
+    0.0213513228,            !- Coefficient2 x
+    0.00065910348,           !- Coefficient3 x**2
+    0.00693808596,           !- Coefficient4 y
+    -0.000067378068,         !- Coefficient5 y**2
+    -0.00068810796,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT3,  !- Name
+    -0.0062540160000003,     !- Coefficient1 Constant
+    0.0463319604,            !- Coefficient2 x
+    -0.00142349076,          !- Coefficient3 x**2
+    0.0118725714,            !- Coefficient4 y
+    0.00048109464,           !- Coefficient5 y**2
+    -0.00051695172,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR3,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT4,  !- Name
+    0.9177891678000001,      !- Coefficient1 Constant
+    -0.0060322572,           !- Coefficient2 x
+    0.00136327212,           !- Coefficient3 x**2
+    0.00532574064,           !- Coefficient4 y
+    -0.000056581092,         !- Coefficient5 y**2
+    -0.00063857808,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT4,  !- Name
+    -0.5184327770000003,     !- Coefficient1 Constant
+    0.0992787624,            !- Coefficient2 x
+    -0.00276048324,          !- Coefficient3 x**2
+    0.013988232,             !- Coefficient4 y
+    0.00043519356,           !- Coefficient5 y**2
+    -0.00055720224,          !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR4,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+<% elsif (dx_type == "SPLIT") %>
+! Following performance curves taken from four-speed SPLIT Heat Pump system in BeOpt (based on Fujitsu 12RLS SPLIT unit testing in NREL report at http://www.nrel.gov/docs/fy11osti/52175.pdf)
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT1,  !- Name
+    1.008993521905866,       !- Coefficient1 Constant
+    0.006512749025457,       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.003917565735935,       !- Coefficient4 y
+    -0.000222646705889,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT1,  !- Name
+    0.429214441601141,       !- Coefficient1 Constant
+    -0.003604841598515,      !- Coefficient2 x
+    0.000045783162727,       !- Coefficient3 x**2
+    0.026490875804937,       !- Coefficient4 y
+    -0.000159212286878,      !- Coefficient5 y**2
+    -0.000159062656483,      !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR1,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT2,  !- Name
+    1.008993521905866,       !- Coefficient1 Constant
+    0.006512749025457,       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.003917565735935,       !- Coefficient4 y
+    -0.000222646705889,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT2,  !- Name
+    0.429214441601141,       !- Coefficient1 Constant
+    -0.003604841598515,      !- Coefficient2 x
+    0.000045783162727,       !- Coefficient3 x**2
+    0.026490875804937,       !- Coefficient4 y
+    -0.000159212286878,      !- Coefficient5 y**2
+    -0.000159062656483,      !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR2,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT3,  !- Name
+    1.008993521905866,       !- Coefficient1 Constant
+    0.006512749025457,       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.003917565735935,       !- Coefficient4 y
+    -0.000222646705889,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT3,  !- Name
+    0.429214441601141,       !- Coefficient1 Constant
+    -0.003604841598515,      !- Coefficient2 x
+    0.000045783162727,       !- Coefficient3 x**2
+    0.026490875804937,       !- Coefficient4 y
+    -0.000159212286878,      !- Coefficient5 y**2
+    -0.000159062656483,      !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR3,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Cap-fT4,  !- Name
+    1.008993521905866,       !- Coefficient1 Constant
+    0.006512749025457,       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.003917565735935,       !- Coefficient4 y
+    -0.000222646705889,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-EIR-fT4,  !- Name
+    0.429214441601141,       !- Coefficient1 Constant
+    -0.003604841598515,      !- Coefficient2 x
+    0.000045783162727,       !- Coefficient3 x**2
+    0.026490875804937,       !- Coefficient4 y
+    -0.000159212286878,      !- Coefficient5 y**2
+    -0.000159062656483,      !- Coefficient6 x*y
+    13.88,                   !- Minimum Value of x
+    23.88,                   !- Maximum Value of x
+    18.33,                   !- Minimum Value of y
+    51.66;                   !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-PLF-fPLR4,  !- Name
+    <%= 1 - cool_coil_cd %>, !- Coefficient1 Constant
+    <%= cool_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-Cap-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cool-EIR-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+<% end %>
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cool-Waste,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+<% end %>
+<% elsif (cool_coil_type == "DX-WATER") %>
+  <% if (dx_comp_speed_num == 1) %>
+
+<% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+  Coil:Cooling:WaterToAirHeatPump:EquationFit,
+    <%= unitary_name %> Cooling Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= unitary_name %> Water Source Inlet Node,  !- Water Inlet Node Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Water Outlet Node Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    Autosize,                !- Rated Air Flow Rate {m3/s}
+    Autosize,                !- Rated Water Flow Rate {m3/s}
+    Autosize,                !- Gross Rated Total Cooling Capacity {W}
+    Autosize,                !- Gross Rated Sensible Cooling Capacity {W}
+    <%= cool_coil_cop %>,    !- Gross Rated Cooling COP {W/W}
+    30,                      !- Rated Entering Water Temperature {C}
+    27,                      !- Rated Entering Air Dry-Bulb Temperature {C}
+    19,                      !- Rated Entering Air Wet-Bulb Temperature {C}
+    <%= unitary_name %> WSHP Tot Cool Cap,  !- Total Cooling Capacity Curve Name
+    <%= unitary_name %> WSHP Sens Cool Cap,  !- Sensible Cooling Capacity Curve Name
+    <%= unitary_name %> WSHP Cool Power,  !- Cooling Power Consumption Curve Name
+    0,                       !- Part Load Fraction Correlation Curve Name
+    0,                       !- Nominal Time for Condensate Removal to Begin {s}
+    0.0,                     !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+    0.0,                     !- Maximum Cycling Rate {cycles/hr}
+    0.0,                     !- Latent Capacity Time Constant {s}
+    60;                      !- Fan Delay Time {s}
+
+  Curve:QuadLinear,
+    <%= unitary_name %> WSHP Tot Cool Cap,  !- Name
+    -4.30266987344639,       !- Coefficient1 Constant
+    7.18536990534372,        !- Coefficient2 w
+    -2.23946714486189,       !- Coefficient3 x
+    0.139995928440879,       !- Coefficient4 y
+    0.102660179888915,       !- Coefficient5 z
+    -100,                    !- Minimum Value of w
+    100,                     !- Maximum Value of w
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100,                     !- Maximum Value of y
+    -100,                    !- Minimum Value of z
+    100;                     !- Maximum Value of z
+
+  Curve:QuintLinear,
+    <%= unitary_name %> WSHP Sens Cool Cap,  !- Name
+    6.0019444814887,         !- Coefficient1 Constant
+    22.6300677244073,        !- Coefficient2 v
+    -26.7960783730934,       !- Coefficient3 w
+    -1.72374720346819,       !- Coefficient4 x
+    0.490644802367817,       !- Coefficient5 y
+    0.0693119353468141,      !- Coefficient6 z
+    -100,                    !- Minimum Value of v
+    100,                     !- Maximum Value of v
+    -100,                    !- Minimum Value of w
+    100,                     !- Maximum Value of w
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100,                     !- Maximum Value of y
+    -100,                    !- Minimum Value of z
+    100;                     !- Maximum Value of z
+
+  Curve:QuadLinear,
+    <%= unitary_name %> WSHP Cool Power,  !- Name
+    -5.67775976415698,       !- Coefficient1 Constant
+    0.438988156976704,       !- Coefficient2 w
+    5.845277342193,          !- Coefficient3 x
+    0.141605667000125,       !- Coefficient4 y
+    -0.168727936032429,      !- Coefficient5 z
+    -100,                    !- Minimum Value of w
+    100,                     !- Maximum Value of w
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100,                     !- Maximum Value of y
+    -100,                    !- Minimum Value of z
+    100;                     !- Maximum Value of z
+
+  <% elsif (dx_comp_speed_num > 1) %>
+<% if (fan_config == "DRAW-THROUGH")
+  iv_indoor_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+else
+  iv_indoor_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_indoor_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_indoor_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+<%# Reference ratings normalized for 3 GPM/ton and 400 CFM/ton. %>
+
+  Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit,
+    <%= unitary_name %> Cooling Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= unitary_name %> Water Source Inlet Node,  !- Water-to-Refrigerant HX Water Inlet Node Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Water-to-Refrigerant HX Water Outlet Node Name
+    <%= iv_indoor_air_inlet_node_nm %>,  !- Indoor Air Inlet Node Name
+    <%= iv_indoor_air_outlet_node_nm %>,  !- Indoor Air Outlet Node Name
+    1,                       !- Number of Speeds {dimensionless}
+    1,                       !- Nominal Speed Level {dimensionless}
+    Autosize,                !- Gross Rated Total Cooling Capacity At Selected Nominal Speed Level {W}
+    Autosize,                !- Rated Air Flow Rate At Selected Nominal Speed Level {m3/s}
+    Autosize,                !- Rated Water Flow Rate At Selected Nominal Speed Level {m3/s}
+    1000,                    !- Nominal Time for Condensate to Begin Leaving the Coil {s}
+    1.5,                     !- Initial Moisture Evaporation Rate Divided by Steady-State AC Latent Capacity {dimensionless}
+    0,                       !- Maximum Cycling Rate {cycles/hr}
+    <%= unitary_name %> VS Energy Part Load Fraction,  !- Latent Capacity Time Constant {s}
+    1.0,                     !- Fan Delay Time {s}
+    0.75,                    !- Flag for Using Hot Gas Reheat, 0 or 1 {dimensionless}
+    <%= cool_coil_cop %>,    !- Energy Part Load Fraction Curve Name
+    0.000053726168,          !- Speed 1 Reference Unit Gross Rated Total Cooling Capacity {W}
+    0.00000005386608,        !- Speed 1 Reference Unit Gross Rated Sensible Heat Ratio {dimensionless}
+    <%= unitary_name %> Cooling VS Temp1 Test,  !- Speed 1 Reference Unit Gross Rated Cooling COP {W/W}
+    <%= unitary_name %> Cooling VS AirFrac Test,  !- Speed 1 Reference Unit Rated Air Flow Rate {m3/s}
+    <%= unitary_name %> Cooling VS WaterFrac Test,  !- Speed 1 Reference Unit Rated Water Flow Rate {m3/s}
+    <%= unitary_name %> Cooling EIR VS Temp1 Test,  !- Speed 1 Total Cooling Capacity Function of Temperature Curve Name
+    <%= unitary_name %> Cooling EIR VS AirFrac Test,  !- Speed 1 Total Cooling Capacity Function of Air Flow Fraction Curve Name
+    <%= unitary_name %> Cooling EIR VS WaterFrac Test,  !- Speed 1 Total Cooling Capacity Function of Water Flow Fraction Curve Name
+    0.1,                     !- Speed 1 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> Cooling WasteHeat VS Temp1 Test,  !- Speed 1 Energy Input Ratio Function of Air Flow Fraction Curve Name
+    ,                        !- Speed 1 Energy Input Ratio Function of Water Flow Fraction Curve Name
+    ,                        !- Speed 1 Reference Unit Waste Heat Fraction of Input Power At Rated Conditions {dimensionless}
+    ;                        !- Speed 1 Waste Heat Function of Temperature Curve Name
+
+  Curve:Quadratic,
+    <%= unitary_name %> VS Energy Part Load Fraction,  !- Name
+    0.85,                    !- Coefficient1 Constant
+    0.15,                    !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cooling VS Temp1 Test,  !- Name
+    1.43085,                 !- Coefficient1 Constant
+    -0.0453653,              !- Coefficient2 x
+    0.00199378,              !- Coefficient3 x**2
+    -0.00805944,             !- Coefficient4 y
+    3.93414E-05,             !- Coefficient5 y**2
+    -1.81187E-04,            !- Coefficient6 x*y
+    10.0,                    !- Minimum Value of x
+    25.6,                    !- Maximum Value of x
+    7.2,                     !- Minimum Value of y
+    48.9;                    !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cooling VS AirFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cooling VS WaterFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cooling EIR VS Temp1 Test,  !- Name
+    0.138848,                !- Coefficient1 Constant
+    0.0457985,               !- Coefficient2 x
+    -0.00138661,             !- Coefficient3 x**2
+    0.0141485,               !- Coefficient4 y
+    0.000386055,             !- Coefficient5 y**2
+    -4.38194E-04,            !- Coefficient6 x*y
+    10.0,                    !- Minimum Value of x
+    25.6,                    !- Maximum Value of x
+    7.2,                     !- Minimum Value of y
+    48.9;                    !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cooling EIR VS AirFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Cooling EIR VS WaterFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Cooling WasteHeat VS Temp1 Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    10.0,                    !- Minimum Value of x
+    25.6,                    !- Maximum Value of x
+    7.2,                     !- Minimum Value of y
+    48.9;                    !- Maximum Value of y
+
+  <% end # if (dx_comp_speed_num == 1) %>
+<% elsif (cool_coil_type == "WATER") %>
+
+<% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and heat_coil_type == "NONE" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+  Coil:Cooling:Water,
+    <%= unitary_name %> Cooling Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    Autosize,                !- Design Water Flow Rate {m3/s}
+    Autosize,                !- Design Air Flow Rate {m3/s}
+    Autosize,                !- Design Inlet Water Temperature {C}
+    Autosize,                !- Design Inlet Air Temperature {C}
+    Autosize,                !- Design Outlet Air Temperature {C}
+    Autosize,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
+    <%= unitary_name %> CoolC Inlet Node,  !- Water Inlet Node Name
+    <%= unitary_name %> CoolC Outlet Node,  !- Water Outlet Node Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    SimpleAnalysis,          !- Type of Analysis
+    CrossFlow,               !- Heat Exchanger Configuration
+    <%= clear_water_storage_tank %>;  !- Condensate Collection Water Storage Tank Name
+
+  Branch,
+    <%= unitary_name %> CHW Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    Coil:Cooling:Water,      !- Component 1 Object Type
+    <%= unitary_name %> Cooling Coil,  !- Component 1 Name
+    <%= unitary_name %> CoolC Inlet Node,  !- Component 1 Inlet Node Name
+    <%= unitary_name %> CoolC Outlet Node;  !- Component 1 Outlet Node Name
+
+<% end %>
+<% if (heat_coil_type == "COMBUSTION") %>
+
+ <% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_inlet_air_node_nm = unitary_name + " Unitary Inlet Node"
+ elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_inlet_air_node_nm = unitary_name + " Supply Fan Outlet Node"
+ else
+  iv_inlet_air_node_nm = unitary_name + " Cooling Coil Outlet Node"
+ end %>
+
+ <% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  if false  #(control_type == "Setpoint" and not doas)
+   iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  else
+   iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  end
+ else
+  if false  #(control_type == "Setpoint" and not doas)
+   iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+  else
+   iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+  end %>
+<%#
+  See below: 'and not doas' is probably not the right thing to key off of.
+  At least for DOAS, it must _NOT_ have a setpoint node specified in this field.
+  Probably 'Temperature Setpoint Node Name' can be removed in all cases.
+    for control_type=Load, no setpoint
+    for control_type=Setpoint and used in AirLoop, no setpoint
+%>
+! TEMPORARY: probably breaks ZN-* types
+!  <%= unitary_name %> Unitary Outlet Node;  !- Temperature Setpoint Node Name
+
+  Coil:Heating:Fuel,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= heat_coil_fuel %>,   !- Fuel Type
+    <%= heat_coil_eff %>,    !- Burner Efficiency
+    <%= heat_coil_cap %>,    !- Nominal Capacity {W}
+    <%= iv_inlet_air_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>;  !- Air Outlet Node Name
+
+<% end %>
+<% elsif (heat_coil_type == "MULTI-STAGE-GAS") %>
+
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+ if false  #(control_type == "Setpoint" and not doas)
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+ end
+else
+ if false  #(control_type == "Setpoint" and not doas)
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+ end
+end %>
+
+  Coil:Heating:Gas:MultiStage,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    ,                        !- Temperature Setpoint Node Name
+    ,                        !- Part Load Fraction Correlation Curve Name
+    ,                        !- Off Cycle Parasitic Gas Load {W}
+    2,                       !- Number of Stages
+    0.8,                     !- Stage 1 Gas Burner Efficiency {W/W}
+    autosize,                !- Stage 1 Nominal Capacity {W}
+    ,                        !- Stage 1 On Cycle Parasitic Electric Load {W}
+    0.8,                     !- Stage 2 Gas Burner Efficiency {W/W}
+    autosize;                !- Stage 2 Nominal Capacity {W}
+
+<% elsif (heat_coil_type == "RESISTANCE") %>
+
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+ if (control_type == "Setpoint" and not doas)
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = ""
+ end
+else
+ if (control_type == "Setpoint" and not doas)
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+  iv_temp_setpt_node_nm = unitary_name + " Heating Coil Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+  iv_temp_setpt_node_nm = ""
+ end
+end %>
+
+  Coil:Heating:Electric,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= heat_coil_eff %>,    !- Efficiency
+    <%= heat_coil_cap %>,    !- Nominal Capacity {W}
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= iv_temp_setpt_node_nm %>;  !- Temperature Setpoint Node Name
+
+<% elsif (heat_coil_type == "DX-AIR" and dx_comp_speed_num == 1) %>
+
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+  Coil:Heating:DX:SingleSpeed,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= heat_coil_cap %>,    !- Gross Rated Heating Capacity {W}
+    <%= heat_coil_cop_1 %>,  !- Gross Rated Heating COP {W/W}
+    <%= fan_flow %>,         !- Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Rated Supply Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Rated Supply Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_outlet_node_nm %>,!- Air Outlet Node Name
+    <%= unitary_name %> HP_Heat-Cap-fT,  !- Heating Capacity Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-Cap-fFF,  !- Heating Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fT,  !- Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fFF,  !- Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-PLF-fPLR,  !- Part Load Fraction Correlation Curve Name
+    <%= unitary_name %> DefrostEIR,  !- Defrost Energy Input Ratio Function of Temperature Curve Name
+    <%= hp_min_temp %>,      !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
+    ,                        !- Outdoor Dry-Bulb Temperature to Turn On Compressor {C}
+    <%= hp_defrost_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Defrost Operation {C}
+    <%= dx_crankcase_cap %>, !- Crankcase Heater Capacity {W}
+    ,                        !- Crankcase Heater Capacity Function of Temperature Curve Name
+    <%= dx_crankcase_max_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Crankcase Heater Operation {C}
+    ReverseCycle,            !- Defrost Strategy
+    OnDemand,                !- Defrost Control
+    ,                        !- Defrost Time Period Fraction
+    Autosize,                !- Resistive Defrost Heater Capacity {W}
+    ,                        !- Region number for calculating HSPF
+    ,                        !- Evaporator Air Inlet Node Name
+    ,                        !- Zone Name for Evaporator Placement
+    ,                        !- Secondary Coil Air Flow Rate {m3/s}
+    ;                        !- Secondary Coil Fan Flow Scaling Factor {m3/s}
+
+<% if dx_type == "PNNL"%>
+! Following performance curves taken from single-speed DX PNNL model 90.1-2004 (Small Office )
+
+  Curve:Cubic,
+    <%= unitary_name %> HP_Heat-Cap-fT,  !- Name
+    0.758746,                !- Coefficient1 Constant
+    0.027626,                !- Coefficient2 x
+    0.000148716,             !- Coefficient3 x**2
+    3.4992e-06,              !- Coefficient4 x**3
+    -20,                     !- Minimum Value of x
+    20;                      !- Maximum Value of x
+
+  Curve:Cubic,
+    <%= unitary_name %> HP_Heat-EIR-fT,  !- Name
+    1.19248,                 !- Coefficient1 Constant
+    -0.0300438,              !- Coefficient2 x
+    0.00103745,              !- Coefficient3 x**2
+    -2.3328e-05,             !- Coefficient4 x**3
+    -20,                     !- Minimum Value of x
+    20;                      !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR,  !- Name
+    0.85,                    !- Coefficient1 Constant
+    0.15,                    !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Cubic,
+    <%= unitary_name %> HP_Heat-Cap-fFF,  !- Name
+    0.84,                    !- Coefficient1 Constant
+    0.16,                    !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 x**3
+    0.5,                     !- Minimum Value of x
+    1.5;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF,  !- Name
+    1.3824,                  !- Coefficient1 Constant
+    -0.4336,                 !- Coefficient2 x
+    0.0512,                  !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1;                       !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> DefrostEIR,  !- Name
+    0.297145,                !- Coefficient1 Constant
+    0.0430933,               !- Coefficient2 x
+    -0.000748766,            !- Coefficient3 x**2
+    0.00597727,              !- Coefficient4 y
+    0.000482112,             !- Coefficient5 y**2
+    -0.000956448,            !- Coefficient6 x*y
+    12.77778,                !- Minimum Value of x
+    23.88889,                !- Maximum Value of x
+    21.11111,                !- Minimum Value of y
+    46.11111;                !- Maximum Value of y
+
+<% else %>
+! Following performance curves taken from single-speed ASHP system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT,  !- Name
+    0.878143655,             !- Coefficient1 Constant
+    -0.0029148552,           !- Coefficient2 x
+    -0.000033372,            !- Coefficient3 x**2
+    0.0223866612,            !- Coefficient4 y
+    0.000163944,             !- Coefficient5 y**2
+    -0.00002187,             !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT,  !- Name
+    0.716518071,             !- Coefficient1 Constant
+    0.0102759012,            !- Coefficient2 x
+    0.00046073448,           !- Coefficient3 x**2
+    -0.0064803654,           !- Coefficient4 y
+    0.000456354,             !- Coefficient5 y**2
+    -0.00069764004,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF,  !- Name
+    0.694045465,             !- Coefficient1 Constant
+    0.474207981,             !- Coefficient2 x
+    -0.168253446,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF,  !- Name
+    2.185418751,             !- Coefficient1 Constant
+    -1.942827919,            !- Coefficient2 x
+    0.757409168,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> DefrostEIR,  !- Name
+    0.1528,                  !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+<% end # if dx_type == "PNNL"%>
+<% elsif (heat_coil_type == "DX-AIR" and dx_comp_speed_num > 1) %>
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+<% if (dx_comp_speed_num == 2)
+  iv_rated_heat_cap = heat_coil_cap
+else
+  iv_rated_heat_cap = "Autosize"
+end %>
+
+<% if (dx_comp_speed_num < 3)
+  iv_waste_heat_func_temp_curve_nm = unitary_name + " HP_Heat-Waste"
+  iv_total_heat_cap3 = ""
+  iv_rated_cop3 = ""
+  iv_rated_airflow3 = ""
+  iv_tot_heat_cap_temp_curve3_nm = ""
+  iv_tot_heat_cap_flow_curve3_nm = ""
+  iv_eir_temp_curve3_nm = ""
+  iv_eir_flow_curve3_nm = ""
+  iv_plf_curve3_nm = ""
+  iv_waste_ht_frac_power3 = ""
+
+else
+  iv_waste_heat_func_temp_curve2_nm = unitary_name + " HP_Heat-Waste"
+  iv_total_heat_cap3 = "Autosize"
+  iv_rated_cop3 = heat_coil_cop_3
+  iv_rated_airflow3 = "Autosize"
+  iv_tot_heat_cap_temp_curve3_nm = unitary_name + " HP_Heat-Cap-fT3"
+  iv_tot_heat_cap_flow_curve3_nm = unitary_name + " HP_Heat-Cap-fFF3"
+  iv_eir_temp_curve3_nm = unitary_name + " HP_Heat-EIR-fT3"
+  iv_eir_flow_curve3_nm = unitary_name + " HP_Heat-EIR-fFF3"
+  iv_plf_curve3_nm = unitary_name + " HP_Heat-PLF-fPLR3"
+  iv_waste_ht_frac_power3 = 0.2
+
+ if (dx_comp_speed_num < 4)
+  iv_waste_heat_func_temp_curve2_nm = unitary_name + " HP_Heat-Waste"
+  iv_total_heat_cap4 = ""
+  iv_rated_cop4 = ""
+  iv_rated_airflow4 = ""
+  iv_tot_heat_cap_temp_curve4_nm = ""
+  iv_tot_heat_cap_flow_curve4_nm = ""
+  iv_eir_temp_curve4_nm = ""
+  iv_eir_flow_curve4_nm = ""
+  iv_plf_curve4_nm = ""
+  iv_waste_ht_frac_power4 = ""
+  iv_waste_heat_func_temp_curve_nm = ""
+
+ else
+  iv_waste_heat_func_temp_curve3_nm = unitary_name + " HP_Heat-Waste"
+  iv_total_heat_cap4 = heat_coil_cap
+  iv_rated_cop4 = heat_coil_cop_4
+  iv_rated_airflow4 = "Autosize"
+  iv_tot_heat_cap_temp_curve4_nm = unitary_name + " HP_Heat-Cap-fT4"
+  iv_tot_heat_cap_flow_curve4_nm = unitary_name + " HP_Heat-Cap-fFF4"
+  iv_eir_temp_curve4_nm = unitary_name + " HP_Heat-EIR-fT4"
+  iv_eir_flow_curve4_nm = unitary_name + " HP_Heat-EIR-fFF4"
+  iv_plf_curve4_nm = unitary_name + " HP_Heat-PLF-fPLR4"
+  iv_waste_ht_frac_power4 = 0.2
+  iv_waste_heat_func_temp_curve4_nm = unitary_name + " HP_Heat-Waste"
+
+ end
+end %>
+
+  Coil:Heating:DX:MultiSpeed,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= hp_min_temp %>,      !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
+    ,                        !- Outdoor Dry-Bulb Temperature to Turn On Compressor {C}
+    <%= dx_crankcase_cap %>, !- Crankcase Heater Capacity {W}
+    ,                        !- Crankcase Heater Capacity Function of Temperature Curve Name
+    <%= dx_crankcase_max_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Crankcase Heater Operation {C}
+    <%= unitary_name %> DefrostEIR,  !- Defrost Energy Input Ratio Function of Temperature Curve Name
+    <%= hp_defrost_temp %>,  !- Maximum Outdoor Dry-Bulb Temperature for Defrost Operation {C}
+    ReverseCycle,            !- Defrost Strategy
+    Timed,                   !- Defrost Control
+    0.0,                     !- Defrost Time Period Fraction
+    ,                        !- Resistive Defrost Heater Capacity {W}
+    No,                      !- Apply Part Load Fraction to Speeds Greater than 1
+    Electricity,             !- Fuel Type
+    ,                        !- Region number for Calculating HSPF
+    <%= dx_comp_speed_num %>,!- Number of Speeds
+    Autosize,                !- Speed 1 Gross Rated Heating Capacity {W}
+    <%= heat_coil_cop_1 %>,  !- Speed 1 Gross Rated Heating COP {W/W}
+    <%= fan_flow %>,         !- Speed 1 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 1 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 1 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= unitary_name %> HP_Heat-Cap-fT1,  !- Speed 1 Heating Capacity Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-Cap-fFF1,  !- Speed 1 Heating Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fT1,  !- Speed 1 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fFF1,  !- Speed 1 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-PLF-fPLR1,  !- Speed 1 Part Load Fraction Correlation Curve Name
+    0.2,                     !- Speed 1 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= unitary_name %> HP_Heat-Waste,  !- Speed 1 Waste Heat Function of Temperature Curve Name
+    <%= iv_rated_heat_cap %>,!- Speed 2 Gross Rated Heating Capacity {W}
+    <%= heat_coil_cop_2 %>,  !- Speed 2 Gross Rated Heating COP {W/W}
+    Autosize,                !- Speed 2 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 2 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 2 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= unitary_name %> HP_Heat-Cap-fT2,  !- Speed 2 Heating Capacity Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-Cap-fFF2,  !- Speed 2 Heating Capacity Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fT2,  !- Speed 2 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> HP_Heat-EIR-fFF2,  !- Speed 2 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= unitary_name %> HP_Heat-PLF-fPLR2,  !- Speed 2 Part Load Fraction Correlation Curve Name
+    0.2,                     !- Speed 2 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= iv_waste_heat_func_temp_curve2_nm %>,  !- Speed 2 Waste Heat Function of Temperature Curve Name
+    <%= iv_total_heat_cap3 %>,  !- Speed 3 Gross Rated Heating Capacity {W}
+    <%= iv_rated_cop3 %>,    !- Speed 3 Gross Rated Heating COP {W/W}
+    <%= iv_rated_airflow3 %>,!- Speed 3 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 3 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 3 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_tot_heat_cap_temp_curve3_nm %>,  !- Speed 3 Heating Capacity Function of Temperature Curve Name
+    <%= iv_tot_heat_cap_flow_curve3_nm %>,  !- Speed 3 Heating Capacity Function of Flow Fraction Curve Name
+    <%= iv_eir_temp_curve3_nm %>,  !- Speed 3 Energy Input Ratio Function of Temperature Curve Name
+    <%= iv_eir_flow_curve3_nm %>,  !- Speed 3 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= iv_plf_curve3_nm %>, !- Speed 3 Part Load Fraction Correlation Curve Name
+    <%= iv_waste_ht_frac_power3 %>,  !- Speed 3 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= iv_waste_heat_func_temp_curve3_nm %>,  !- Speed 3 Waste Heat Function of Temperature Curve Name
+    <%= iv_total_heat_cap4 %>,  !- Speed 4 Gross Rated Heating Capacity {W}
+    <%= iv_rated_cop4 %>,    !- Speed 4 Gross Rated Heating COP {W/W}
+    <%= iv_rated_airflow4 %>,!- Speed 4 Rated Air Flow Rate {m3/s}
+    ,                        !- 2017 Speed 4 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    ,                        !- 2023 Speed 4 Rated Supply Air Fan Power Per Volume Flow Rate {W/(m3/s)}
+    <%= iv_tot_heat_cap_temp_curve4_nm %>,  !- Speed 4 Heating Capacity Function of Temperature Curve Name
+    <%= iv_tot_heat_cap_flow_curve4_nm %>,  !- Speed 4 Heating Capacity Function of Flow Fraction Curve Name
+    <%= iv_eir_temp_curve4_nm %>,  !- Speed 4 Energy Input Ratio Function of Temperature Curve Name
+    <%= iv_eir_flow_curve4_nm %>,  !- Speed 4 Energy Input Ratio Function of Flow Fraction Curve Name
+    <%= iv_plf_curve4_nm %>, !- Speed 4 Part Load Fraction Correlation Curve Name
+    <%= iv_waste_ht_frac_power4 %>,  !- Speed 4 Rated Waste Heat Fraction of Power Input {dimensionless}
+    <%= iv_waste_heat_func_temp_curve4_nm %>;  !- Speed 4 Waste Heat Function of Temperature Curve Name
+
+<% if (dx_comp_speed_num == 2) %>
+! Following performance curves taken from two-speed ASHP system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT1,  !- Name
+    0.84077409,              !- Coefficient1 Constant
+    -0.0014336586,           !- Coefficient2 x
+    -0.000150336,            !- Coefficient3 x**2
+    0.029628603,             !- Coefficient4 y
+    0.000161676,             !- Coefficient5 y**2
+    -0.00002349,             !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT1,  !- Name
+    0.539472334,             !- Coefficient1 Constant
+    0.0165103146,            !- Coefficient2 x
+    0.00083874528,           !- Coefficient3 x**2
+    -0.0040323402,           !- Coefficient4 y
+    0.00142404156,           !- Coefficient5 y**2
+    -0.00211806252,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR1,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF1,  !- Name
+    0.741466907,             !- Coefficient1 Constant
+    0.378645444,             !- Coefficient2 x
+    -0.119754733,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF1,  !- Name
+    2.153618211,             !- Coefficient1 Constant
+    -1.737190609,            !- Coefficient2 x
+    0.584269478,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT2,  !- Name
+    0.831506971,             !- Coefficient1 Constant
+    0.0018392166,            !- Coefficient2 x
+    -0.000187596,            !- Coefficient3 x**2
+    0.0266002056,            !- Coefficient4 y
+    0.000191484,             !- Coefficient5 y**2
+    -0.000065772,            !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT2,  !- Name
+    0.787746797,             !- Coefficient1 Constant
+    -0.0006523146,           !- Coefficient2 x
+    0.00078866784,           !- Coefficient3 x**2
+    -0.0023209056,           !- Coefficient4 y
+    0.00074760408,           !- Coefficient5 y**2
+    -0.00109173096,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR2,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF2,  !- Name
+    0.76634609,              !- Coefficient1 Constant
+    0.32840943,              !- Coefficient2 x
+    -0.094701495,            !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF2,  !- Name
+    2.001041353,             !- Coefficient1 Constant
+    -1.58869128,             !- Coefficient2 x
+    0.587593517,             !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> DefrostEIR,  !- Name
+    0.1528,                  !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+<% elsif (dx_comp_speed_num > 2) %>
+<% if (dx_type == "PACKAGED" or dx_type == "TERMINAL") %>
+! Following performance curves taken from four-speed ASHP system in BeOpt
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT1,  !- Name
+    0.8933210315759998,      !- Coefficient1 Constant
+    -0.00973374264,          !- Coefficient2 x
+    0.000063643968,          !- Coefficient3 x**2
+    0.0391130520048,         !- Coefficient4 y
+    -0.00000250816824,       !- Coefficient5 y**2
+    -0.000272588652,         !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT1,  !- Name
+    0.4666484870000001,      !- Coefficient1 Constant
+    0.020263329,             !- Coefficient2 x
+    0.00126839196,           !- Coefficient3 x**2
+    -0.0170161326,           !- Coefficient4 y
+    0.00317499588,           !- Coefficient5 y**2
+    -0.00349609608,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR1,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT2,  !- Name
+    0.9237345336,            !- Coefficient1 Constant
+    -0.00597077568,          !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.02781672876,           !- Coefficient4 y
+    0.000065916828,          !- Coefficient5 y**2
+    -0.000189254232,         !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT2,  !- Name
+    0.450656859,             !- Coefficient1 Constant
+    0.0292902642,            !- Coefficient2 x
+    0.00039314484,           !- Coefficient3 x**2
+    -0.0097895178,           !- Coefficient4 y
+    0.00053936928,           !- Coefficient5 y**2
+    -0.0011808828,           !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR2,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT3,  !- Name
+    0.9620542196000001,      !- Coefficient1 Constant
+    -0.00949277772,          !- Coefficient2 x
+    0.000109212948,          !- Coefficient3 x**2
+    0.0247078314,            !- Coefficient4 y
+    0.000034225092,          !- Coefficient5 y**2
+    -0.000125697744,         !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT3,  !- Name
+    0.5725180114,            !- Coefficient1 Constant
+    0.02289624912,           !- Coefficient2 x
+    0.000266018904,          !- Coefficient3 x**2
+    -0.0106675434,           !- Coefficient4 y
+    0.00049092156,           !- Coefficient5 y**2
+    -0.00068136876,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR3,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT4,  !- Name
+    0.93607915412,           !- Coefficient1 Constant
+    -0.005481563544,         !- Coefficient2 x
+    -0.0000085897908,        !- Coefficient3 x**2
+    0.02491053192,           !- Coefficient4 y
+    0.000053087076,          !- Coefficient5 y**2
+    -0.000155750364,         !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT4,  !- Name
+    0.668195855,             !- Coefficient1 Constant
+    0.0146719548,            !- Coefficient2 x
+    0.00044596332,           !- Coefficient3 x**2
+    -0.0114392286,           !- Coefficient4 y
+    0.00049710348,           !- Coefficient5 y**2
+    -0.00069095592,          !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR4,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+<% elsif (dx_type == "SPLIT") %>
+! Following performance curves taken from four-speed SPLIT Heat Pump system in BeOpt (based on Fujitsu 12RLS SPLIT unit testing in NREL report at http://www.nrel.gov/docs/fy11osti/52175.pdf)
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT1,  !- Name
+    1.1527124655908572,      !- Coefficient1 Constant
+    -0.010386676170938,      !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.011263752411403,       !- Coefficient4 y
+    -0.000392549621117,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT1,  !- Name
+    0.966475472847719,       !- Coefficient1 Constant
+    0.005914950101249,       !- Coefficient2 x
+    0.000191201688297,       !- Coefficient3 x**2
+    -0.012965668198361,      !- Coefficient4 y
+    0.000042253229429,       !- Coefficient5 y**2
+    -0.000524002558712,      !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR1,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF1,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT2,  !- Name
+    1.1527124655908572,      !- Coefficient1 Constant
+    -0.010386676170938,      !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.011263752411403,       !- Coefficient4 y
+    -0.000392549621117,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT2,  !- Name
+    0.966475472847719,       !- Coefficient1 Constant
+    0.005914950101249,       !- Coefficient2 x
+    0.000191201688297,       !- Coefficient3 x**2
+    -0.012965668198361,      !- Coefficient4 y
+    0.000042253229429,       !- Coefficient5 y**2
+    -0.000524002558712,      !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR2,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF2,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT3,  !- Name
+    1.1527124655908572,      !- Coefficient1 Constant
+    -0.010386676170938,      !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.011263752411403,       !- Coefficient4 y
+    -0.000392549621117,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT3,  !- Name
+    0.966475472847719,       !- Coefficient1 Constant
+    0.005914950101249,       !- Coefficient2 x
+    0.000191201688297,       !- Coefficient3 x**2
+    -0.012965668198361,      !- Coefficient4 y
+    0.000042253229429,       !- Coefficient5 y**2
+    -0.000524002558712,      !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR3,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF3,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Cap-fT4,  !- Name
+    1.1527124655908572,      !- Coefficient1 Constant
+    -0.010386676170938,      !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0.011263752411403,       !- Coefficient4 y
+    -0.000392549621117,      !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-EIR-fT4,  !- Name
+    0.966475472847719,       !- Coefficient1 Constant
+    0.005914950101249,       !- Coefficient2 x
+    0.000191201688297,       !- Coefficient3 x**2
+    -0.012965668198361,      !- Coefficient4 y
+    0.000042253229429,       !- Coefficient5 y**2
+    -0.000524002558712,      !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-PLF-fPLR4,  !- Name
+    <%= 1 - heat_coil_cd %>, !- Coefficient1 Constant
+    <%= heat_coil_cd %>,     !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    1,                       !- Maximum Value of x
+    0.7,                     !- Minimum Curve Output
+    1;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-Cap-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+  Curve:Quadratic,
+    <%= unitary_name %> HP_Heat-EIR-fFF4,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Minimum Value of x
+    2,                       !- Maximum Value of x
+    0,                       !- Minimum Curve Output
+    2;                       !- Maximum Curve Output
+
+<% end %>
+
+  Curve:Biquadratic,
+    <%= unitary_name %> DefrostEIR,  !- Name
+    0.1528,                  !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+  Curve:Biquadratic,
+    <%= unitary_name %> HP_Heat-Waste,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100;                     !- Maximum Value of y
+
+<% end %>
+<% elsif (heat_coil_type == "DX-WATER") %>
+
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+<% if (dx_comp_speed_num == 1) %>
+
+  Coil:Heating:WaterToAirHeatPump:EquationFit,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Water Inlet Node Name
+    <%= unitary_name %> Water Source Outlet Node,  !- Water Outlet Node Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    Autosize,                !- Rated Air Flow Rate {m3/s}
+    Autosize,                !- Rated Water Flow Rate {m3/s}
+    Autosize,                !- Gross Rated Heating Capacity {W}
+    <%= heat_coil_cop %>,    !- Gross Rated Heating COP {W/W}
+    20,                      !- Rated Entering Water Temperature {C}
+    20,                      !- Rated Entering Air Dry-Bulb Temperature {C}
+    1.0,                     !- Ratio of Rated Heating Capacity to Rated Cooling Capacity
+    <%= unitary_name %> WSHP Heat Cap,  !- Heating Capacity Curve Name
+    <%= unitary_name %> WSHP Heat Power,  !- Heating Power Consumption Curve Name
+    ;                        !- Part Load Fraction Correlation Curve Name
+
+  Curve:QuadLinear,
+    <%= unitary_name %> WSHP Heat Cap,  !- Name
+    0.237847462869254,       !- Coefficient1 Constant
+    -3.35823796081626,       !- Coefficient2 w
+    3.80640467406376,        !- Coefficient3 x
+    0.179200417311554,       !- Coefficient4 y
+    0.12860719846082,        !- Coefficient5 z
+    -100,                    !- Minimum Value of w
+    100,                     !- Maximum Value of w
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100,                     !- Maximum Value of y
+    -100,                    !- Minimum Value of z
+    100;                     !- Maximum Value of z
+
+  Curve:QuadLinear,
+    <%= unitary_name %> WSHP Heat Power,  !- Name
+    -3.79175529243238,       !- Coefficient1 Constant
+    3.38799239505527,        !- Coefficient2 w
+    1.5022612076303,         !- Coefficient3 x
+    -0.177653510577989,      !- Coefficient4 y
+    -0.103079864171839,      !- Coefficient5 z
+    -100,                    !- Minimum Value of w
+    100,                     !- Maximum Value of w
+    -100,                    !- Minimum Value of x
+    100,                     !- Maximum Value of x
+    -100,                    !- Minimum Value of y
+    100,                     !- Maximum Value of y
+    -100,                    !- Minimum Value of z
+    100;                     !- Maximum Value of z
+
+<% elsif (dx_comp_speed_num > 1) %>
+
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_indoor_air_Inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_indoor_air_Inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_indoor_air_Inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_indoor_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_indoor_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+  Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Water-to-Refrigerant HX Water Inlet Node Name
+    <%= unitary_name %> Water Source Outlet Node,  !- Water-to-Refrigerant HX Water Outlet Node Name
+    <%= iv_indoor_air_Inlet_node_nm %>,  !- Indoor Air Inlet Node Name
+    <%= iv_indoor_air_outlet_node_nm %>,  !- Indoor Air Outlet Node Name
+    1,                       !- Number of Speeds {dimensionless}
+    1,                       !- Nominal Speed Level {dimensionless}
+    Autosize,                !- Rated Heating Capacity At Selected Nominal Speed Level {W}
+    Autosize,                !- Rated Air Flow Rate At Selected Nominal Speed Level {m3/s}
+    Autosize,                !- Rated Water Flow Rate At Selected Nominal Speed Level {m3/s}
+    <%= unitary_name %> VS Energy Part Load Fraction,  !- Energy Part Load Fraction Curve Name
+    1.0,                     !- Speed 1 Reference Unit Gross Rated Heating Capacity {W}
+    <%= heat_coil_cop %>,    !- Speed 1 Reference Unit Gross Rated Heating COP {W/W}
+    0.000053726168,          !- Speed 1 Reference Unit Rated Air Flow Rate {m3/s}
+    0.00000005386608,        !- Speed 1 Reference Unit Rated Water Flow Rate {m3/s}
+    <%= unitary_name %> Heating VS Temp1 Test,  !- Speed 1 Heating Capacity Function of Temperature Curve Name
+    <%= unitary_name %> Heating VS AirFrac Test,  !- Speed 1 Total Heating Capacity Function of Air Flow Fraction Curve Name
+    <%= unitary_name %> Heating VS WaterFrac Test,  !- Speed 1 Heating Capacity Function of Water Flow Fraction Curve Name
+    <%= unitary_name %> Heating EIR VS Temp1 Test,  !- Speed 1 Energy Input Ratio Function of Temperature Curve Name
+    <%= unitary_name %> Heating EIR VS AirFrac Test,  !- Speed 1 Energy Input Ratio Function of Air Flow Fraction Curve Name
+    <%= unitary_name %> Heating EIR VS WaterFrac Test,  !- Speed 1 Energy Input Ratio Function of Water Flow Fraction Curve Name
+    0.1,                     !- Speed 1 Reference Unit Waste Heat Fraction of Input Power At Rated Conditions {dimensionless}
+    <%= unitary_name %> Heating WasteHeat VS Temp1 Test;  !- Speed 1 Waste Heat Function of Temperature Curve Name
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Heating VS Temp1 Test,  !- Name
+    0.617474,                !- Coefficient1 Constant
+    -0.00245669,             !- Coefficient2 x
+    -1.86550E-05,            !- Coefficient3 x**2
+    0.0254921,               !- Coefficient4 y
+    -1.00773E-04,            !- Coefficient5 y**2
+    -1.09447E-04,            !- Coefficient6 x*y
+    7.0,                     !- Minimum Value of x
+    27.0,                    !- Maximum Value of x
+    10.0,                    !- Minimum Value of y
+    30.0;                    !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Heating VS AirFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Heating VS WaterFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Heating EIR VS Temp1 Test,  !- Name
+    0.993257,                !- Coefficient1 Constant
+    0.0201512,               !- Coefficient2 x
+    7.72375E-05,             !- Coefficient3 x**2
+    -0.0317207,              !- Coefficient4 y
+    0.000740649,             !- Coefficient5 y**2
+    -3.03875E-04,            !- Coefficient6 x*y
+    7.0,                     !- Minimum Value of x
+    27.0,                    !- Maximum Value of x
+    10.0,                    !- Minimum Value of y
+    30.0;                    !- Maximum Value of y
+
+  Curve:Quadratic,
+    <%= unitary_name %> Heating EIR VS AirFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Quadratic,
+    <%= unitary_name %> Heating EIR VS WaterFrac Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0.0,                     !- Coefficient2 x
+    0.0,                     !- Coefficient3 x**2
+    0.0,                     !- Minimum Value of x
+    1.0;                     !- Maximum Value of x
+
+  Curve:Biquadratic,
+    <%= unitary_name %> Heating WasteHeat VS Temp1 Test,  !- Name
+    1.0,                     !- Coefficient1 Constant
+    0,                       !- Coefficient2 x
+    0,                       !- Coefficient3 x**2
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 y**2
+    0,                       !- Coefficient6 x*y
+    7.0,                     !- Minimum Value of x
+    27.0,                    !- Maximum Value of x
+    10.0,                    !- Minimum Value of y
+    30.0;                    !- Maximum Value of y
+
+  <% end # (dx_comp_speed_num > 1) %>
+<% elsif (heat_coil_type == "WATER") %>
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+  Coil:Heating:Water,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    Autosize,                !- U-Factor Times Area Value {W/K}
+    Autosize,                !- Maximum Water Flow Rate {m3/s}
+    <%= unitary_name %> HeatCDemand Inlet Node,  !- Water Inlet Node Name
+    <%= unitary_name %> HeatCDemand Outlet Node,  !- Water Outlet Node Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    UFactorTimesAreaAndDesignWaterFlowRate,  !- Performance Input Method
+    <%= heat_coil_cap %>,    !- Rated Capacity {W}
+    ,                        !- Rated Inlet Water Temperature {C}
+    ,                        !- Rated Inlet Air Temperature {C}
+    ,                        !- Rated Outlet Water Temperature {C}
+    ,                        !- Rated Outlet Air Temperature {C}
+    ;                        !- Rated Ratio for Air and Water Convection
+
+  Branch,
+    <%= unitary_name %> HW Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    Coil:Heating:Water,      !- Component 1 Object Type
+    <%= unitary_name %> Heating Coil,  !- Component 1 Name
+    <%= unitary_name %> HeatCDemand Inlet Node,  !- Component 1 Inlet Node Name
+    <%= unitary_name %> HeatCDemand Outlet Node;  !- Component 1 Outlet Node Name
+
+<% elsif (heat_coil_type == "STEAM") %>
+<% # Added for steam boiler variant. Behzad Rizi 2024-01-08 %>
+<% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"
+elsif (fan_config == "BLOW-THROUGH" and cool_coil_type == "NONE")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+else
+  iv_air_inlet_node_nm = unitary_name + " Cooling Coil Outlet Node"
+end %>
+
+<% if (fan_config == "BLOW-THROUGH" and aux_heat_coil_type == "NONE")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+else
+  iv_air_outlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+end %>
+
+  Coil:Heating:Steam,
+    <%= unitary_name %> Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    Autosize,                !- Maximum Steam Flow Rate {m3/s}
+    1,                       !- Degree of SubCooling {C}
+    10,                      !- Degree of Loop SubCooling {C}
+    <%= unitary_name %> HeatCDemand Inlet Node,  !- Water Inlet Node Name
+    <%= unitary_name %> HeatCDemand Outlet Node,  !- Water Outlet Node Name
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    ZoneLoadControl;         !- Coil Control Type
+
+  Branch,
+    <%= unitary_name %> HW Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    Coil:Heating:Steam,      !- Component 1 Object Type
+    <%= unitary_name %> Heating Coil,  !- Component 1 Name
+    <%= unitary_name %> HeatCDemand Inlet Node,  !- Component 1 Inlet Node Name
+    <%= unitary_name %> HeatCDemand Outlet Node;  !- Component 1 Outlet Node Name
+
+<% end %>
+<% if (cool_coil_type == "DX-WATER" or heat_coil_type == "DX-WATER") %>
+<% if dx_comp_speed_num == 1 %>
+
+  Branch,
+    <%= unitary_name %> HR Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    Coil:Cooling:WaterToAirHeatPump:EquationFit,  !- Component 1 Object Type
+    <%= unitary_name %> Cooling Coil,  !- Component 1 Name
+    <%= unitary_name %> Water Source Inlet Node,  !- Component 1 Inlet Node Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Component 1 Outlet Node Name
+    Coil:Heating:WaterToAirHeatPump:EquationFit,  !- Component 2 Object Type
+    <%= unitary_name %> Heating Coil,  !- Component 2 Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Component 2 Inlet Node Name
+    <%= unitary_name %> Water Source Outlet Node;  !- Component 2 Outlet Node Name
+
+<% elsif dx_comp_speed_num > 1 %>
+
+  Branch,
+    <%= unitary_name %> HR Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit,  !- Component 1 Object Type
+    <%= unitary_name %> Cooling Coil,  !- Component 1 Name
+    <%= unitary_name %> Water Source Inlet Node,  !- Component 1 Inlet Node Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Component 1 Outlet Node Name
+    Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit,  !- Component 2 Object Type
+    <%= unitary_name %> Heating Coil,  !- Component 2 Name
+    <%= unitary_name %> Water Source Intermediate Node,  !- Component 2 Inlet Node Name
+    <%= unitary_name %> Water Source Outlet Node;  !- Component 2 Outlet Node Name
+
+<% end %>
+<% end %>
+<% if (aux_heat_coil_type == "COMBUSTION") %>
+ <% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+ else
+  iv_air_inlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+ end %>
+
+ <% if (control_type == "Setpoint")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = ""
+ end %>
+
+  Coil:Heating:Fuel,
+    <%= unitary_name %> Aux Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= aux_heat_coil_fuel %>,  !- Fuel Type
+    <%= aux_heat_coil_eff %>,!- Burner Efficiency
+    <%= aux_heat_coil_cap %>,!- Nominal Capacity {W}
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= iv_temp_setpt_node_nm %>;  !- Temperature Setpoint Node Name
+
+<% elsif (aux_heat_coil_type == "RESISTANCE") %>
+ <% if (fan_config == "DRAW-THROUGH")
+  iv_air_inlet_node_nm = unitary_name + " Supply Fan Outlet Node"
+ else
+  iv_air_inlet_node_nm = unitary_name + " Heating Coil Outlet Node"
+ end %>
+
+ <% if (control_type == "Setpoint")
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = unitary_name + " Unitary Outlet Node"
+ else
+  iv_air_outlet_node_nm = unitary_name + " Unitary Outlet Node"
+  iv_temp_setpt_node_nm = ""
+ end %>
+
+  Coil:Heating:Electric,
+    <%= unitary_name %> Aux Heating Coil,  !- Name
+    ,                        !- Availability Schedule Name
+    <%= aux_heat_coil_eff %>,!- Efficiency
+    <%= aux_heat_coil_cap %>,!- Nominal Capacity {W}
+    <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
+    <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
+    <%= iv_temp_setpt_node_nm %>;  !- Temperature Setpoint Node Name
+
+<% end %>
+<% if (cool_coil_type == "DX-AIR" and dx_comp_speed_num == 2) %>
+  <% if dx_type.include? "PNNL" %>
+
+  UnitarySystemPerformance:Multispeed,
+    <%= unitary_name %> Multispeed Performance,  !- Name
+    2,                       !- Number of Speeds for Heating
+    2,                       !- Number of Speeds for Cooling
+    <%= single_mode_operation %>,  !- Single Mode Operation
+    <%= ventilation_supply_air_ratio %>,  !- No Load Supply Air Flow Rate Ratio
+    <%= low_heating_supply_air_ratio %>,  !- Heating Speed 1 Supply Air Flow Ratio
+    <%= low_cooling_supply_air_ratio %>,  !- Cooling Speed 1 Supply Air Flow Ratio
+    1,                       !- Heating Speed 2 Supply Air Flow Ratio
+    1;                       !- Cooling Speed 2 Supply Air Flow Ratio
+
+  <% else %>
+
+  UnitarySystemPerformance:Multispeed,
+    <%= unitary_name %> Multispeed Performance,  !- Name
+    2,                       !- Number of Speeds for Heating
+    2,                       !- Number of Speeds for Cooling
+    No,                      !- Single Mode Operation
+    ,                        !- No Load Supply Air Flow Rate Ratio
+    0.72,                    !- Heating Speed 1 Supply Air Flow Ratio
+    0.72,                    !- Cooling Speed 1 Supply Air Flow Ratio
+    1.0,                     !- Heating Speed 2 Supply Air Flow Ratio
+    1.0;                     !- Cooling Speed 2 Supply Air Flow Ratio
+
+  <% end %>
+<% elsif (cool_coil_type == "DX-AIR" and dx_comp_speed_num == 4) %>
+
+  UnitarySystemPerformance:Multispeed,
+    <%= unitary_name %> Multispeed Performance,  !- Name
+    4,                       !- Number of Speeds for Heating
+    4,                       !- Number of Speeds for Cooling
+    No,                      !- Single Mode Operation
+    ,                        !- No Load Supply Air Flow Rate Ratio
+    0.24,                    !- Heating Speed 1 Supply Air Flow Ratio
+    0.24,                    !- Cooling Speed 1 Supply Air Flow Ratio
+    0.47,                    !- Heating Speed 2 Supply Air Flow Ratio
+    0.47,                    !- Cooling Speed 2 Supply Air Flow Ratio
+    0.75,                    !- Heating Speed 3 Supply Air Flow Ratio
+    0.75,                    !- Cooling Speed 3 Supply Air Flow Ratio
+    1.0,                     !- Heating Speed 4 Supply Air Flow Ratio
+    1.0;                     !- Cooling Speed 4 Supply Air Flow Ratio
+
+<% end %>
+<%#
+# "DX-AIR" single-speed DX system in BeOpt
+# Cool-Cap-fFF  0.718605468,0.410099989,-0.128705457
+# Cool-EIR-fFF  1.32299905,-0.477711207,0.154712157
+
+# "DX-AIR" two-speed ASHP system in BeOpt
+# Cool-Cap-fFF1  0.655239515,0.511655216,-0.166894731
+# Cool-EIR-fFF1  1.639108268,-0.998953996,0.359845728
+# Cool-Cap-fFF2  0.618281092,0.569060264,-0.187341356
+# Cool-EIR-fFF2  1.570774717,-0.914152018,0.343377302
+
+# NOTE: The second set of 2-speed curves below never gets used! has same condition as above
+#       Only for cooling curves, not heating.
+
+# "DX-AIR" two-speed DX system in BeOpt
+# Cool-Cap-fFF1  0.65673024,0.516470835,-0.172887149
+# Cool-EIR-fFF1  1.562945114,-0.791859997,0.230030877
+# Cool-Cap-fFF2  0.690334551,0.464383753,-0.154507638
+# Cool-EIR-fFF2  1.31565404,-0.482467162,0.166239001
+
+# dx_type == "PACKAGED" and "SPLIT" for 4-speed ... curves look suspicious:
+# Cool-Cap-fFF1, Cool-EIR-fFF1    coeffs: 1,0,0
+# Cool-Cap-fFF2, Cool-EIR-fFF2    coeffs: 1,0,0
+# Cool-Cap-fFF3, Cool-EIR-fFF3    coeffs: 1,0,0
+# Cool-Cap-fFF4, Cool-EIR-fFF4    coeffs: 1,0,0
+# Same problem for heating curves...
+%>
+<%
+    #TRC - UnitarySystemSizing of the no load airflow does not account for ventilation rate when there is a DX coil, so in some cases the no load flow is less than the design ventilation rate.
+    #An EMS program is added to fix this for units configured with DX cooling, CONSTANT compressor speed and variable flow.
+    #This may remain an issue for any Unitary systems with multispeed compressors, two-speed fans or other configurations.
+
+if (cool_coil_type == "DX-AIR" && dx_comp_speed == "CONSTANT" && fan_speed == "VARIABLE")
+replacements = {' ' => '_','-' => '_','.' => '_','(' => '',')' => ''}
+unitary_name_ems = unitary_name.gsub(Regexp.union(replacements.keys), replacements)
+if (cool_flow_min_frac == nil) #if cool_flow_min_frac is default, set to EnergyPlus default for Constant Speed DX systems
+cool_flow_min_frac = 0.67
+end
+%>
+!- Value of disable_ems = <%= disable_ems %>
+<%
+# Solaris Technical 2024-05-07
+# Because this airflow EMS logic interferes with Modelkit's linked-sizing feature, create a parameter to disable it.
+if (!disable_ems)
+%>
+
+  EnergyManagementSystem:Actuator,
+    <%= unitary_name_ems %>_MINFLOW,  !- Name
+    <%= unitary_name %> UNITARY,  !- Actuated Component Unique Name
+    UnitarySystem,           !- Actuated Component Type
+    Autosized Supply Air Flow Rate During No Heating or Cooling Operation;  !- Actuated Component Control Type
+
+  EnergyManagementSystem:Actuator,
+    <%= unitary_name_ems %>_HMINFLOW,  !- Name
+    <%= unitary_name %> UNITARY,  !- Actuated Component Unique Name
+    UnitarySystem,           !- Actuated Component Type
+    Autosized Supply Air Flow Rate During Heating Operation;  !- Actuated Component Control Type
+
+  EnergyManagementSystem:ProgramCallingManager,
+    <%= unitary_name_ems %>_SizingAdjustment,  !- Name
+    UnitarySystemSizing,     !- EnergyPlus Model Calling Point
+    <%= unitary_name_ems %>_UnitaryDXMinFlowSizing;  !- Program Name 1
+
+  EnergyManagementSystem:Program,
+    <%= unitary_name_ems %>_UnitaryDXMinFlowSizing,  !- Name
+    Set Vent_Flow = <%= unitary_name_ems %>_OA_MFLOW / 1.225,  !- Program Line 1
+    Set Design_Flow = <%= unitary_name_ems %>_MFLOW,  !- Program Line 2
+    Set Design_HFlow = <%= unitary_name_ems %>_HMFLOW,  !- <none>
+    Set Design_Min_Flow = Design_Flow * <%= cool_flow_min_frac %>,  !- <none>
+    IF Vent_Flow >= Design_Flow,  !- <none>
+    Set Vent_Flow = Design_Flow * 0.999,  !- <none>
+    ENDIF,                   !- <none>
+    IF Design_HFlow <= Design_Min_Flow,  !- <none>
+    Set Design_HFlow = Design_Min_flow * 1.001,  !- <none>
+    Set <%= unitary_name_ems %>_HMINFLOW = Design_Min_Flow * 1.001,  !- <none>
+    ENDIF,                   !- <none>
+    IF Vent_Flow >= Design_HFlow,  !- <none>
+    Set <%= unitary_name_ems %>_HMINFLOW = Vent_Flow * 1.001,  !- <none>
+    ENDIF,                   !- <none>
+    IF Vent_Flow > Design_Min_Flow,  !- <none>
+    Set <%= unitary_name_ems %>_MINFLOW = Vent_Flow,  !- <none>
+    ENDIF;                   !- <none>
+
+  EnergyManagementSystem:InternalVariable,
+    <%= unitary_name_ems %>_OA_MFLOW,  !- Name
+    <%= unitary_name %> OA CONTROLLER,  !- Internal Data Index Key Name
+    Outdoor Air Controller Minimum Mass Flow Rate;  !- Internal Data Type
+
+  EnergyManagementSystem:InternalVariable,
+    <%= unitary_name_ems %>_MFLOW,  !- Name
+    <%= unitary_name %>,     !- Internal Data Index Key Name
+    Intermediate Air System Main Supply Volume Flow Rate;  !- Internal Data Type
+
+  EnergyManagementSystem:InternalVariable,
+    <%= unitary_name_ems %>_HMFLOW,  !- Name
+    <%= unitary_name %>,     !- Internal Data Index Key Name
+    Intermediate Air System Heating Volume Flow Rate;  !- Internal Data Type
+
+<% end %>
+<% end %>

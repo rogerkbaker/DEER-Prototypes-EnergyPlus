@@ -1,0 +1,483 @@
+  Version,25.2;
+
+!x!<%#INITIALIZE
+!x!
+!x!parameter "zone_name"
+!x!parameter "zone_area", :name => "Zone Floor Area", :description => "Zone floor area, used for internal mass calculation",
+!x!  :domain => Quantity
+!x!
+!x!# rename to infil_method or infil_type
+!x!parameter "infiltration_method", :name => "Infiltration Method", :description => "Selects infiltration calculation method",
+!x!  :default => "Flow/ExteriorArea", :domain => String  # (Flow/ExteriorArea | Flow/ExteriorWallArea |AirChanges/Hour)
+!x!parameter "infil_area", :name => "Infiltration Rate per Unit Exterior Surface Area", :description => "Air leakage rate when pressurized at 0.3 inch H2O (75 Pa)",
+!x!  :default => 0.4['CFM/ft2'], :domain => Quantity
+!x!parameter "infil_ach", :name => "Infiltration Air Changes per Hour", :description => "Infiltration rate as air changes per hour",
+!x!  :default => 1.0, :domain => Numeric
+!x!parameter "infil_sch", :name => "Infiltration Schedule", :description => "Schedule for infiltration rate multiplier",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1", :domain => String
+!x!parameter "infil_velocity_coef", :name => "Infiltration Velocity term coefficient", :description => "Infiltration Velocity term coefficient",
+!x!  :default => 0.224
+!x!parameter "infil_constant_coef", :name => "Infiltration Constant term coefficient", :description => "Infiltration Constant term coefficient",
+!x!  :default => 0
+!x!
+!x!parameter "occ_area", :name => "Occupant Density", :description => "Occupancy per area density",
+!x!  :default => 0['1/ft2'], :domain => Quantity
+!x!parameter "occ_zone", :name => "Occupants per Zone", :description => "Occupancy per Zone",
+!x!  :default => 0
+!x!parameter "occ_sch",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
+!x!parameter "thermal_comfort", :default=>false
+!x!
+!x!parameter "light_area", :name => "Lighting Power Density", :description => "Power per area density for interior electric lighting",
+!x!  :default => 0['W/ft2'], :domain => Quantity
+!x!
+!x!parameter "lights_fraction_return", :default=>0
+!x!parameter "lights_fraction_radiant", :default=>0.7
+!x!parameter "light_sch",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
+!x!
+!x!# add "equip_power" or "equip_zone" for fixed load
+!x!parameter "equip_area", :name => "Equipment Power Density", :description => "Power per area density for interior electric equipment",
+!x!  :default => 0['W/ft2'], :domain => Quantity
+!x!parameter "equip_zone", :name => "Equipment Power per Zone", :description => "Power for interior electric equipment",
+!x!  :default => 0['W'], :domain => Quantity
+!x!parameter "equipment_fraction_latent", :default=>0
+!x!parameter "equipment_fraction_radiant", :default=>0.5
+!x!parameter "equipment_fraction_lost", :default=>0
+!x!parameter "equip_sch",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
+!x!parameter "equip_subcat", :default=>"GeneralEquipment"
+!x!
+!x!# equip_*_2 is eliminated everywhere
+!x!# convert to equip_alt_*
+!x!# this can replace the gas equipment
+!x!# equip_alt_fuel_ becomes specified
+!x!
+!x!parameter "equip_2_area", :default=>0['W/ft2']
+!x!parameter "equip_2_zone", :default=>0['W/ft2']
+!x!parameter "equipment_fraction_latent_2", :default=>0
+!x!parameter "equip_2_frac_rad", :default=>0.5
+!x!parameter "equip_2_frac_lost", :default=>0
+!x!parameter "equip_2_sch",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
+!x!parameter "equip_2_subcat", :default=>"GeneralEquipment"
+!x!
+!x!parameter "gas_zone", :default=>0['W']
+!x!parameter "gas_area", :default=>0['W/ft2']
+!x!parameter "gas_fraction_latent", :default=>0.1
+!x!parameter "gas_fraction_radiant", :default=>0.2
+!x!parameter "gas_fraction_lost", :default=>0.7
+!x!parameter "gas_subcat", :default=>"GeneralEquipment"
+!x!parameter "gas_sch",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
+!x!
+!x!parameter "dhw_flow", :default=>0['GPM']
+!x!parameter "dhw_flow_area", :default=>0['GPM/ft2']
+!x!parameter "dhw_temp", :default=>105['F']  # DHW mixed hot water temperature
+!x!parameter "dhw_target", :default=>131['F'] # DHW target temperature
+!x!parameter "dhw_recovery", :default=>false
+!x!parameter "dhw_plantloop", :default=>true
+!x!parameter "dhw_sch", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1", :domain => String
+!x!parameter "int_mass_ratio", :name => "Internal Mass Area Ratio", :description => "Internal mass to floor area ratio",
+!x!  :default => 2.0, :domain => Numeric
+!x!
+!x!parameter "graywater_storage_tank", :default=> "" # variable creates tank to store graywater from sinks, showers, laundry, dishwashing
+!x!parameter "graywater_supply_tank", :default=> "" # variable creates tank to supply graywater for toilet flushing
+!x!parameter "dhw_loop_configuration", :default=>"RECIRCULATION-LOOP" # (DEFAULT-LOOP | RECIRCULATION-LOOP)
+!x!%>
+!x!
+!x!<%
+!x!# Calculate infiltration rate from leakage rate by adjusting to normal building pressurization at 5 Pa.
+!x!infil_area_adj = infil_area * (5.0 / 75.0)**0.65
+!x!%>
+!x!<%
+!x!# Calculate dhw_flow from dhw_flow_area
+!x!if dhw_flow_area > 0 && dhw_flow == 0
+!x!  dhw_flow = dhw_flow_area * zone_area
+!x!elsif dhw_flow_area > 0 && dhw_flow != dhw_flow_area * zone_area
+!x!  raise("Error: dhw_flow is not equal to dhw_flow_area * zone_area")
+!x!end
+!x!# puts "Zone #{zone_name}: #{dhw_flow_area}"
+!x!# puts "Zone #{zone_name}: #{dhw_sch}"
+!x!
+!x!%>
+!x!<% if (infil_ach > 0.0 && infiltration_method == 'AirChanges/Hour') %>
+
+  ZoneInfiltration:DesignFlowRate,
+    <%= zone_name %> Infiltration,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Infiltration Schedule,  !- Schedule Name
+    <%= infiltration_method %>,  !- Design Flow Rate Calculation Method
+    ,                        !- Design Flow Rate {m3/s}
+    ,                        !- Flow Rate per Floor Area {m3/s-m2}
+    ,                        !- Flow Rate per Exterior Surface Area {m3/s-m2}
+    <%= infil_ach %>,        !- Air Changes per Hour {1/hr}
+    ,                        !- Constant Term Coefficient
+    ,                        !- Temperature Term Coefficient
+    ,                        !- Velocity Term Coefficient
+    ;                        !- Velocity Squared Term Coefficient
+
+!x!<% elsif (infil_area_adj > 0.0 && infiltration_method == 'Flow/ExteriorArea') %>
+
+  ZoneInfiltration:DesignFlowRate,
+    <%= zone_name %> Infiltration,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Infiltration Schedule,  !- Schedule Name
+    <%= infiltration_method %>,  !- Design Flow Rate Calculation Method
+    ,                        !- Design Flow Rate {m3/s}
+    ,                        !- Flow Rate per Floor Area {m3/s-m2}
+    <%= infil_area_adj %>,   !- Flow Rate per Exterior Surface Area {m3/s-m2}
+    ,                        !- Air Changes per Hour {1/hr}
+    <%= infil_constant_coef %>,  !- Constant Term Coefficient
+    ,                        !- Temperature Term Coefficient
+    <%= infil_velocity_coef %>,  !- Velocity Term Coefficient
+    ;                        !- Velocity Squared Term Coefficient
+
+!x!<% elsif (infil_area_adj > 0.0 && infiltration_method == 'Flow/ExteriorWallArea') %>
+
+  ZoneInfiltration:DesignFlowRate,
+    <%= zone_name %> Infiltration,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Infiltration Schedule,  !- Schedule Name
+    <%= infiltration_method %>,  !- Design Flow Rate Calculation Method
+    ,                        !- Design Flow Rate {m3/s}
+    ,                        !- Flow Rate per Floor Area {m3/s-m2}
+    <%= infil_area_adj %>,   !- Flow Rate per Exterior Surface Area {m3/s-m2}
+    ,                        !- Air Changes per Hour {1/hr}
+    <%= infil_constant_coef %>,  !- Constant Term Coefficient
+    ,                        !- Temperature Term Coefficient
+    <%= infil_velocity_coef %>,  !- Velocity Term Coefficient
+    ;                        !- Velocity Squared Term Coefficient
+
+!x!<% else %>
+!x!    <% infil_ach = 0 %>
+!x!<% end %>
+!x!<% if (infil_ach > 0.0 or infil_area_adj > 0.0) && (infiltration_method != "NONE") %>
+
+  Schedule:Compact,
+    <%= zone_name %> Infiltration Schedule,  !- Name
+    Any Number,              !- Schedule Type Limits Name
+    <%= infil_sch %>,        !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!<% if (light_area > 0.0) %>
+
+  Lights,
+    <%= zone_name %> Lighting,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Lighting Schedule,  !- Schedule Name
+    Watts/Area,              !- Design Level Calculation Method
+    ,                        !- Lighting Level {W}
+    <%= light_area %>,       !- Watts per Floor Area {W/m2}
+    ,                        !- Watts per Person {W/person}
+    <%= lights_fraction_return %>,  !- Return Air Fraction
+    <%= lights_fraction_radiant %>,  !- Fraction Radiant
+    0.2,                     !- Fraction Visible
+    1,                       !- Fraction Replaceable
+    GeneralLights;           !- End-Use Subcategory
+
+  Schedule:Compact,
+    <%= zone_name %> Lighting Schedule,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= light_sch %>,        !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!<% if (equip_area > 0.0) %>
+
+  ElectricEquipment,
+    <%= zone_name %> Elec Equip,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Elec Equip Sch,  !- Schedule Name
+    Watts/Area,              !- Design Level Calculation Method
+    ,                        !- Design Level {W}
+    <%= equip_area %>,       !- Watts per Floor Area {W/m2}
+    ,                        !- Watts per Person {W/person}
+    <%= equipment_fraction_latent %>,  !- Fraction Latent
+    <%= equipment_fraction_radiant %>,  !- Fraction Radiant
+    <%= equipment_fraction_lost %>,  !- Fraction Lost
+    <%= equip_subcat %>;     !- End-Use Subcategory
+
+  Schedule:Compact,
+    <%= zone_name %> Elec Equip Sch,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= equip_sch %>,        !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!<% if (equip_zone > 0.0) %>
+
+  ElectricEquipment,
+    <%= zone_name %> Elec Equip,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Elec Equip Sch,  !- Schedule Name
+    EquipmentLevel,          !- Design Level Calculation Method
+    <%= equip_zone %>,       !- Design Level {W}
+    ,                        !- Watts per Floor Area {W/m2}
+    ,                        !- Watts per Person {W/person}
+    <%= equipment_fraction_latent %>,  !- Fraction Latent
+    <%= equipment_fraction_radiant %>,  !- Fraction Radiant
+    <%= equipment_fraction_lost %>,  !- Fraction Lost
+    <%= equip_subcat %>;     !- End-Use Subcategory
+
+!x!<% end %>
+!x!<% if (equip_2_area > 0.0) %>
+
+  ElectricEquipment,       !- Field 2
+    <%= zone_name %> Elec Equip 2, !- Field 3
+    <%= zone_name %>,        !- Field 4
+    <%= zone_name %> Elec Equip Sch 2, !- Field 5
+    Watts/Area,              !- Field 6
+    ,                        !- Field 7
+    <%= equip_2_area %>,     !- Field 8
+    ,                        !- Field 9
+    <%= equipment_fraction_latent_2 %>, !- Field 10
+    <%= equip_2_frac_rad %>, !- Field 11
+    <%= equip_2_frac_lost %>,!- Field 12
+    <%= equip_2_subcat %>;   !- Field 13
+
+  Schedule:Compact,
+    <%= zone_name %> Elec Equip Sch 2,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= equip_2_sch %>,      !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!<% if (equip_2_zone > 0.0) %>
+
+  ElectricEquipment,
+    <%= zone_name %> Elec Equip 2,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Elec Equip Sch 2,  !- Schedule Name
+    EquipmentLevel,          !- Design Level Calculation Method
+    <%= equip_2_zone %>,     !- Design Level {W}
+    ,                        !- Watts per Floor Area {W/m2}
+    ,                        !- Watts per Person {W/person}
+    <%= equipment_fraction_latent_2 %>,  !- Fraction Latent
+    <%= equip_2_frac_rad %>, !- Fraction Radiant
+    <%= equip_2_frac_lost %>,!- Fraction Lost
+    <%= equip_2_subcat %>;   !- End-Use Subcategory
+
+  Schedule:Compact,
+    <%= zone_name %> Elec Equip Sch 2,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= equip_2_sch %>,      !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!<% if (gas_zone > 0) || (gas_area > 0)%>
+!x!
+!x!  <% if (gas_zone > 0)
+!x!    des_level_calc_method = "EquipmentLevel"
+!x!    des_level_watts = gas_zone
+!x!    watts_per_area = ""
+!x!  else
+!x!    des_level_calc_method = "Watts/Area"
+!x!    des_level_watts = ""
+!x!    watts_per_area = gas_area
+!x!  end %>
+
+  GasEquipment,
+    <%= zone_name %> Gas Equip,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Gas Equip Sch,  !- Schedule Name
+    <%= des_level_calc_method %>,  !- Design Level Calculation Method
+    <%= des_level_watts %>,  !- Design Level {W}
+    <%= watts_per_area %>,   !- Power per Floor Area {W/m2}
+    ,                        !- Power per Person {W/person}
+    <%= gas_fraction_latent %>,  !- Fraction Latent
+    <%= gas_fraction_radiant %>,  !- Fraction Radiant
+    <%= gas_fraction_lost %>,!- Fraction Lost
+    ,                        !- Carbon Dioxide Generation Rate {m3/s-W}
+    <%= gas_subcat %>;       !- End-Use Subcategory
+
+  Schedule:Compact,
+    <%= zone_name %> Gas Equip Sch,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= gas_sch %>,          !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+!x!<% end %>
+!x!
+!x!<% if (occ_area > 0.0) || (occ_zone > 0.0) %>
+!x!
+!x!<% if occ_zone > 0
+!x!    iv_num_people_method = "People"
+!x!  else
+!x!    iv_num_people_method = "People/Area"
+!x!  end %>
+!x!
+!x!<% if (thermal_comfort)
+!x!  iv_mean_rad_temp_calc = "ZoneAveraged"
+!x!  iv_work_eff_sch = zone_name + " Work Eff Sch"
+!x!  iv_clothing_ins_sch = zone_name + " Clothing Sch"
+!x!  iv_air_velocity_sch = zone_name + " Air Velocity Sch"
+!x!  iv_thermal_comfort_model = "Fanger"
+!x!else
+!x!  iv_mean_rad_temp_calc = ""
+!x!  iv_work_eff_sch = ""
+!x!  iv_clothing_ins_sch = ""
+!x!  iv_air_velocity_sch = ""
+!x!  iv_thermal_comfort_model = ""
+!x!end %>
+
+  People,
+    <%= zone_name %> People, !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Occupant Sch,  !- Number of People Schedule Name
+    <%= iv_num_people_method %>,  !- Number of People Calculation Method
+    <%= occ_zone %>,         !- Number of People
+    <%= occ_area %>,         !- People per Floor Area {person/m2}
+    ,                        !- Floor Area per Person {m2/person}
+    0.3,                     !- Fraction Radiant
+    ,                        !- Sensible Heat Fraction
+    <%= zone_name %> Activity Sch,  !- Activity Level Schedule Name
+    ,                        !- Carbon Dioxide Generation Rate {m3/s-W}
+    ,                        !- Enable ASHRAE 55 Comfort Warnings
+    <%= iv_mean_rad_temp_calc %>,  !- Mean Radiant Temperature Calculation Type
+    ,                        !- Surface Name/Angle Factor List Name
+    <%= iv_work_eff_sch %>,  !- Work Efficiency Schedule Name
+    ,                        !- Clothing Insulation Calculation Method
+    ,                        !- Clothing Insulation Calculation Method Schedule Name
+    <%= iv_clothing_ins_sch %>,  !- Clothing Insulation Schedule Name
+    <%= iv_air_velocity_sch %>,  !- Air Velocity Schedule Name
+    <%= iv_thermal_comfort_model %>;  !- Thermal Comfort Model 1 Type
+
+  Schedule:Compact,
+    <%= zone_name %> Occupant Sch,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= occ_sch %>,          !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
+  Schedule:Constant,<%= zone_name %> Activity Sch,Nonnegative Number,120;
+
+!x!<% if (thermal_comfort) %>
+
+  Schedule:Constant,<%= zone_name %> Work Eff Sch,Unit Interval,0;
+
+  Schedule:Compact,
+    <%= zone_name %> Clothing Sch,  !- Name
+    Nonnegative Number,      !- Schedule Type Limits Name
+    Through: 04/30,          !- Field 1
+    For: AllDays,            !- Field 2
+    Until: 24:00,1.0,        !- Field 3
+    Through: 09/30,          !- Field 5
+    For: AllDays,            !- Field 6
+    Until: 24:00,0.5,        !- Field 7
+    Through: 12/31,          !- Field 9
+    For: AllDays,            !- Field 10
+    Until: 24:00,1.0;        !- Field 11
+
+  Schedule:Constant,<%= zone_name %> Air Velocity Sch,Nonnegative Number,0.2;
+
+!x!<% end %>
+!x!<% end %>
+
+ 
+!x!<% if dhw_flow > 0 %>
+ Schedule:Compact,
+    <%= zone_name %> DHW Sch,!- Name
+    Fraction,                !- Schedule Type Limits Name
+    <%= dhw_sch %>;          !- Field 1
+!x!  <% if dhw_plantloop %>
+!x!
+!x!  <% if (dhw_recovery)
+!x!    iv_dw_hx_type = "Ideal"
+!x!    iv_dw_hx_destination = "Plant"
+!x!  else
+!x!    iv_dw_hx_type = ""
+!x!    iv_dw_hx_destination = ""
+!x!    end %>
+
+  WaterUse:Connections,    !- Field 2
+    <%= zone_name %> DHW Connections, !- Field 3
+    <%= zone_name %> DHW Inlet Node, !- Field 4
+    <%= zone_name %> DHW Outlet Node, !- Field 5
+    ,                        !- Field 6
+    <%= graywater_storage_tank %>, !- Field 7
+    ,                        !- Field 8
+    ,                        !- Field 9
+    <%= iv_dw_hx_type %>,    !- Field 10
+    <%= iv_dw_hx_destination %>, !- Field 11
+    ,                        !- Field 12
+    <%= zone_name %> DHW Equipment; !- Field 13
+
+!x!    <% if dhw_temp == dhw_target
+!x!      hw_supp_temp_sch = ""
+!x!    else
+!x!      hw_supp_temp_sch = zone_name + " DHW Hot Water Temp Sch"
+!x!    end %>
+
+  WaterUse:Equipment,
+    <%= zone_name %> DHW Equipment,  !- Name
+    DHW,                     !- End-Use Subcategory
+    <%= dhw_flow %>,         !- Peak Flow Rate {m3/s}
+    <%= zone_name %> DHW Sch,!- Flow Rate Fraction Schedule Name
+    <%= zone_name %> DHW Target Temp Sch,  !- Target Temperature Schedule Name
+    <%= hw_supp_temp_sch %>, !- Hot Water Supply Temperature Schedule Name
+    ,                        !- Cold Water Supply Temperature Schedule Name
+    <%= zone_name %>,        !- Zone Name
+    <%= zone_name %> DHW Sensible Fract Sch,  !- Sensible Fraction Schedule Name
+    <%= zone_name %> DHW Latent Fract Sch;  !- Latent Fraction Schedule Name
+
+!x!  <% if dhw_temp != dhw_target %>
+
+  Schedule:Constant,<%= zone_name %> DHW Hot Water Temp Sch,Temperature,<%= dhw_temp %>;
+
+!x!  <% end %>
+!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+! Comment: adding pressure units after water fixture in demand branches (Note: outlet of water fixture node should be the inlet of pump)
+!x!  <% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
+
+  Branch,
+    <%= zone_name %> DHW Demand Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    WaterUse:Connections,    !- Component 1 Object Type
+    <%= zone_name %> DHW Connections,  !- Component 1 Name
+    <%= zone_name %> DHW Inlet Node,  !- Component 1 Inlet Node Name
+    <%= zone_name %> DHW Outlet Node;  !- Component 1 Outlet Node Name
+
+!x!  <% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
+
+  Branch,
+    <%= zone_name %> DHW Demand Branch,  !- Name
+    ,                        !- Pressure Drop Curve Name
+    WaterUse:Connections,    !- Component 1 Object Type
+    <%= zone_name %> DHW Connections,  !- Component 1 Name
+    <%= zone_name %> DHW Inlet Node,  !- Component 1 Inlet Node Name
+    <%= zone_name %> DHW Outlet Node,  !- Component 1 Outlet Node Name
+    Pump:VariableSpeed,      !- Component 2 Object Type
+    <%= zone_name %> DHW Pump,  !- Component 2 Name
+    <%= zone_name %> DHW Outlet Node,  !- Component 2 Inlet Node Name
+    <%= zone_name %> Pump Oulet Node;  !- Component 2 Outlet Node Name
+
+!x!  <% end %>
+!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  Schedule:Constant,<%= zone_name %> DHW Target Temp Sch,Temperature,<%= dhw_target %>;
+
+  Schedule:Constant,<%= zone_name %> DHW Sensible Fract Sch,Unit Interval,0.2;
+
+  Schedule:Constant,<%= zone_name %> DHW Latent Fract Sch,Unit Interval,0.05;
+
+!x!  <% end # if dhw_plantloop%>
+!x!<% end # if dhw_flow > 0%>
+!x!<% if (int_mass_ratio > 0) %>
+
+  InternalMass,
+    <%= zone_name %> Internal Mass,  !- Name
+    Interior Furnishings,    !- Construction Name
+    <%= zone_name %>,        !- Zone or ZoneList Name
+    ,                        !- Space or SpaceList Name
+    <%= zone_area * int_mass_ratio %>;  !- Surface Area {m2}
+
+!x!<%# include Construction object here also? with option: LIGHT, MEDIUM, HEAVY density  ?%>
+!x!<% end %>

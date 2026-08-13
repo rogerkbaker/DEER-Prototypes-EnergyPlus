@@ -1,0 +1,32 @@
+Version, 22.2;
+!x!<%#INITIALIZE
+!x!parameter "ext_equip_name"
+!x!parameter "power"
+!x!
+!x!parameter "fuel_type", :default=>'Electricity' # (Electricity | NaturalGas | PropaneGas | FuelOilNo1 | FuelOilNo2 | Diesel | Gasoline | Coal | Steam | DistrictHeating | DistrictCooling | OtherFuel1 | OtherFuel2)
+!x!parameter "enduse_subcategory", :default=>"Exterior Equipment"
+!x!parameter "schedule", :default=>"Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1.0;"
+!x!
+!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Exterior:FuelEquipment				|        |
+!  | Schedule:Compact					|   X    |
+!-----------------------------------------------------------------
+!
+
+Exterior:FuelEquipment,
+  <%= ext_equip_name %>,  !- Name
+  <%= fuel_type %>,  !- Fuel Use Type
+  <%= ext_equip_name %> Schedule,  !- Schedule Name
+  <%= power %>,  !- Design Level {W}
+  <%= enduse_subcategory %>;  !- End-Use Subcategory
+
+!x!Schedule:Compact,
+!x!  <%= ext_equip_name %> Schedule,  !- Name
+!x!  Unit Interval,           !- Schedule Type Limits Name
+!x!  <%= schedule %>;

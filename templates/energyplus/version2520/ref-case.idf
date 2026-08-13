@@ -1,0 +1,311 @@
+  Version,25.2;
+
+!x!<%#INITIALIZE
+!x!parameter "case_name"
+!x!parameter "zone_name"
+!x!parameter "capacity", :default=>1444['W/m']
+!x!parameter "latent_heat_ratio", :default=>0.3
+!x!parameter "runtime_fraction", :default=>0.85
+!x!parameter "length", :default=>10['ft']
+!x!parameter "case_temp", :default=>36['F']
+!x!parameter "credit_type", :default=>"MULTISHELF-VERTICAL" # (SINGLESHELF-HORIZONTAL | MULTISHELF-VERTICAL)
+!x!parameter "fan_power", :default=>41.0['W/m']
+!x!parameter "light_power", :default=>60.0['W/m']
+!x!parameter "light_power_installed", :default=>""
+!x!parameter "ash_power", :default=>0['W/m']
+!x!parameter "ash_control", :default=>"LINEAR" # (NONE | LINEAR | HEAT-BALANCE-METHOD | CONSTANT)
+!x!parameter "ash_frac_to_case", :default=>0.2
+!x!parameter "humidity_at_zero_ash", :default=>35.0
+!x!parameter "height", :default=>0.0['ft']
+!x!parameter "defrost_power", :default=>0['W/m']
+!x!parameter "defrost_type", :default=>"OFF-CYCLE" # (NONE | OFF-CYCLE | ELECTRIC | HOTGAS)
+!x!parameter "case_type", :default=>"OPEN" # (GLASS-DOOR | OPEN | WALK-IN | SELF-CONTAINED)
+!x!parameter "case_credit", :default=>true # (true | false)
+!x!parameter "under_case_hvac_ret_frac", :default=>0
+!x!
+!x!# Behzad Rizi - Defined "credit_sch" to allow changing the refrigeration load
+!x!parameter "credit_sch", :default=> "
+!x!  Through: 12/31,
+!x!  For:AllDays,
+!x!  Interpolate:No,
+!x!  Until: 7:00, 0.2,
+!x!  Until: 21:00, 0.6,
+!x!  Until: 24:00, 0.2
+!x!"
+!x!
+!x!rule "credit_type_walkin", :parameters => {:case_type => "WALK-IN"} do
+!x!  default :credit_sch => "
+!x!  Through: 12/31,
+!x!  For:AllDays,
+!x!  Interpolate:No,
+!x!  Until: 7:00, 0.2,
+!x!  Until: 21:00, 0.4,
+!x!  Until: 24:00, 0.2
+!x!"
+!x!end
+!x!rule "credit_type_selfcontained", :parameters => {:case_type => "SELF-CONTAINED"} do
+!x!  default :credit_sch => "
+!x!  Through: 12/31,
+!x!  For:AllDays,
+!x!  Interpolate:No,
+!x!  Until: 7:00, 0.2,
+!x!  Until: 21:00, 0.6,
+!x!  Until: 24:00, 0.2
+!x!"
+!x!end
+!x!# Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
+!x!parameter "available", :default=> true # (true | false)
+!x!parameter "lighting_schedule", :default=>
+!x!"
+!x!  Through: 12/31,
+!x!  For: WinterDesignDays,
+!x!  Until: 24:00, 0.00,
+!x!  For: SummerDesignDays,
+!x!  Until: 24:00, 1.00,
+!x!  For: AllOtherDays,
+!x!  Until: 02:00, 0.10,
+!x!  Until: 04:00, 0.50,
+!x!  Until: 19:00, 1.00,
+!x!  Until: 20:00, 0.50,
+!x!  Until: 24:00, 0.10
+!x!"
+!x!%>
+!x!
+!x!<%
+!x!if (ash_control == "NONE")
+!x!  ash_control_input = "None"
+!x!elsif (ash_control == "LINEAR")
+!x!  ash_control_input = "Linear"
+!x!elsif (ash_control == "HEAT-BALANCE-METHOD")
+!x!  ash_control_input = "HeatBalanceMethod"
+!x!elsif (ash_control == "CONSTANT")
+!x!  ash_control_input = "Constant"
+!x!else
+!x!  puts "[WARNING] Anti-Sweat Heater control type input doesn't match allowable options!"
+!x!end
+!x!
+!x!if (defrost_type == "NONE")
+!x!  defrost_type_input = "None"
+!x!elsif (defrost_type == "OFF-CYCLE")
+!x!  defrost_type_input = "OffCycle"
+!x!elsif (defrost_type == "ELECTRIC")
+!x!  defrost_type_input = "Electric"
+!x!elsif (defrost_type == "HOTGAS")
+!x!  defrost_type_input = "HotGas"
+!x!else
+!x!  puts "[WARNING] Defrost type input doesn't match allowable options!"
+!x!end
+!x!%>
+!x!
+!x!<% if defrost_type_input == "None"
+!x!  iv_case_defr_sch = ""
+!x!  iv_case_defr_drip_sch = ""
+!x!else
+!x!  iv_case_defr_sch = case_name + " Defrost Sch"
+!x!  iv_case_defr_drip_sch = case_name + " Defrost Drip Down Sch"
+!x!end %>
+!x!
+!x!<% if case_credit
+!x!  iv_case_cred_frac_sch = case_name + " Credit Sch"
+!x!else
+!x!  iv_case_cred_frac_sch = ""
+!x!end %>
+
+  Refrigeration:Case,
+    <%= case_name %>,        !- Name
+    <%= case_name %> Case Availability Sch,  !- Availability Schedule Name
+    <%= zone_name %>,        !- Zone Name
+    <%= 75['F'] %>,          !- Rated Ambient Temperature {C}
+    55.0,                    !- Rated Ambient Relative Humidity {percent}
+    <%= capacity %>,         !- Rated Total Cooling Capacity per Unit Length {W/m}
+    <%= latent_heat_ratio %>,!- Rated Latent Heat Ratio
+    <%= runtime_fraction %>, !- Rated Runtime Fraction
+    <%= length %>,           !- Case Length {m}
+    <%= case_temp %>,        !- Case Operating Temperature {C}
+    CaseTemperatureMethod,   !- Latent Case Credit Curve Type
+    <%= case_name %> Latent Case Credit Curve,  !- Latent Case Credit Curve Name
+    <%= fan_power %>,        !- Standard Case Fan Power per Unit Length {W/m}
+    <%= fan_power %>,        !- Operating Case Fan Power per Unit Length {W/m}
+    <%= light_power %>,      !- Standard Case Lighting Power per Unit Length {W/m}
+    <%= light_power_installed %>,  !- Installed Case Lighting Power per Unit Length {W/m}
+    <%= case_name %> Case Light Sch,  !- Case Lighting Schedule Name
+    1.0,                     !- Fraction of Lighting Energy to Case
+    <%= ash_power %>,        !- Case Anti-Sweat Heater Power per Unit Length {W/m}
+    0.0,                     !- Minimum Anti-Sweat Heater Power per Unit Length {W/m}
+    <%= ash_control_input %>,!- Anti-Sweat Heater Control Type
+    <%= humidity_at_zero_ash %>,  !- Humidity at Zero Anti-Sweat Heater Energy {percent}
+    <%= height %>,           !- Case Height {m}
+    <%= ash_frac_to_case %>, !- Fraction of Anti-Sweat Heater Energy to Case
+    <%= defrost_power %>,    !- Case Defrost Power per Unit Length {W/m}
+    <%= defrost_type_input %>,  !- Case Defrost Type
+    <%= iv_case_defr_sch %>, !- Case Defrost Schedule Name
+    <%= iv_case_defr_drip_sch %>,  !- Case Defrost Drip-Down Schedule Name
+    None,                    !- Defrost Energy Correction Curve Type
+    ,                        !- Defrost Energy Correction Curve Name
+    <%= under_case_hvac_ret_frac %>,  !- Under Case HVAC Return Air Fraction
+    <%= case_name %> Restock Sch,  !- Refrigerated Case Restocking Schedule Name
+    <%= iv_case_cred_frac_sch %>;  !- Case Credit Fraction Schedule Name
+
+!x!<% if available
+!x!  avail_sch = 1
+!x!else
+!x!  avail_sch = 0
+!x!end %>
+
+  Schedule:Constant,<%= case_name %> Case Availability Sch,Binary Control,<%= avail_sch %>;
+Schedule:Compact,
+  <%= case_name %> Case Light Sch,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= lighting_schedule %>;
+
+!x!<% if (credit_type == "SINGLESHELF-HORIZONTAL") %>
+
+  Curve:Cubic,             !- Field 2
+    <%= case_name %> Latent Case Credit Curve, !- Field 3
+    0.0236,                  !- Field 4
+    0.0006,                  !- Field 5
+    0,                       !- Field 6
+    0,                       !- Field 7
+    -35,                     !- Field 8
+    20;                      !- Field 9
+
+!x!<% elsif (credit_type == "MULTISHELF-VERTICAL") %>
+
+  Curve:Cubic,
+    <%= case_name %> Latent Case Credit Curve,  !- Name
+    0.026526281,             !- Coefficient1 Constant
+    0.001078032,             !- Coefficient2 x
+    -0.0000602558,           !- Coefficient3 x**2
+    0.00000123732,           !- Coefficient4 x**3
+    -35.0,                   !- Minimum Value of x
+    20.0;                    !- Maximum Value of x
+
+!x!<% elsif (credit_type == "SINGLESHELF-HORIZONTAL-DOE") %>
+! This curve was taken from DOE's retail-supermarket 2004 model
+
+  Curve:Cubic,
+    <%= case_name %> Latent Case Credit Curve,  !- Name
+    0.020376,                !- Coefficient1 Constant
+    0.00024378,              !- Coefficient2 x
+    1.14e-05,                !- Coefficient3 x**2
+    1.811e-07,               !- Coefficient4 x**3
+    -35,                     !- Minimum Value of x
+    20;                      !- Maximum Value of x
+
+!x!<% end %>
+!x!<% if (case_type == "GLASS-DOOR") %>
+
+  Schedule:Compact,
+    <%= case_name %> Defrost Sch,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 8:00,0,           !- Field 4
+    Until: 8:17,1,           !- Field 6
+    Until: 18:00,0,          !- Field 8
+    Until: 18:17,1,          !- Field 10
+    Until: 24:00,0;          !- Field 12
+
+  Schedule:Compact,
+    <%= case_name %> Defrost Drip Down Sch,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 8:00,0,           !- Field 4
+    Until: 8:22,1,           !- Field 6
+    Until: 18:00,0,          !- Field 8
+    Until: 18:22,1,          !- Field 10
+    Until: 24:00,0;          !- Field 12
+
+!x!<% else %>
+
+  Schedule:Compact,
+    <%= case_name %> Defrost Sch,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 11:00,0,          !- Field 4
+    Until: 11:20,1,          !- Field 6
+    Until: 23:00,0,          !- Field 8
+    Until: 23:20,1,          !- Field 10
+    Until: 24:00,0;          !- Field 12
+
+  Schedule:Compact,
+    <%= case_name %> Defrost Drip Down Sch,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 11:00,0,          !- Field 4
+    Until: 11:30,1,          !- Field 6
+    Until: 23:00,0,          !- Field 8
+    Until: 23:30,1,          !- Field 10
+    Until: 24:00,0;          !- Field 12
+!x!<% end %>
+!x!<% if (case_type == "WALK-IN") %>
+
+  Schedule:Compact,
+    <%= case_name %> Restock Sch,  !- Name
+    Nonnegative Number,      !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For: Tuesday Friday,     !- Field 2
+    Until: 4:00,0.0,         !- Field 3
+    Until: 5:00,725.0,       !- Field 5
+    Until: 6:00,417.0,       !- Field 7
+    Until: 7:00,290.0,       !- Field 9
+    Until: 24:00,0.0,        !- Field 11
+    For: AllOtherDays,       !- Field 13
+    Until: 4:00,0.0,         !- Field 14
+    Until: 5:00,125.0,       !- Field 16
+    Until: 6:00,117.0,       !- Field 18
+    Until: 7:00,90.0,        !- Field 20
+    Until: 19:00,0.0,        !- Field 22
+    Until: 20:00,125.0,      !- Field 24
+    Until: 21:00,117.0,      !- Field 26
+    Until: 22:00,90.0,       !- Field 28
+    Until: 24:00,0.0;        !- Field 30
+
+!x!<% elsif (case_type == "SELF-CONTAINED") %>
+
+  Schedule:Compact,
+    <%= case_name %> Restock Sch,  !- Name
+    Nonnegative Number,      !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Until: 6:00,0.0,         !- Field 3
+    Until: 7:00,50.0,        !- Field 5
+    Until: 9:00,70.0,        !- Field 7
+    Until: 10:00,80.0,       !- Field 9
+    Until: 11:00,70.0,       !- Field 11
+    Until: 13:00,50.0,       !- Field 13
+    Until: 14:00,80.0,       !- Field 15
+    Until: 15:00,90.0,       !- Field 17
+    Until: 16:00,80.0,       !- Field 19
+    Until: 24:00,0.0;        !- Field 21
+
+!x!<% else %>
+
+  Schedule:Compact,
+    <%= case_name %> Restock Sch,  !- Name
+    Nonnegative Number,      !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Until: 13:00,0.0,        !- Field 3
+    Until: 14:00,50.0,       !- Field 5
+    Until: 15:00,35.0,       !- Field 7
+    Until: 24:00,0.0;        !- Field 9
+
+!x!<% end %>
+!x!<% if case_credit %>
+!x!<% end %>
+!x!<% if case_credit %>
+  Schedule:Compact,
+    <%= case_name %> Credit Sch,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= credit_sch %>,       !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+!x!<% end %>

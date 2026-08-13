@@ -1,0 +1,40 @@
+Version, 22.2;
+!x!<%#INITIALIZE
+!x!parameter "name", :name => "Exterior Lighting Name", :description => "Exterior lighting name", :domain => String
+!x!
+!x!parameter "power", :name => "Exterior Lighting Design Power", :description => "Exterior lighting design power level",
+!x!  :domain => Quantity
+!x!
+!x!parameter "sch", :name => "Exterior Lighting Schedule", :description => "Exterior lighting schedule",
+!x!  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1.0;", :domain => String
+!x!
+!x!parameter "control", :name => "Exterior Lighting Control", :description => "Exterior lighting control option",
+!x!  :default => "SCHEDULE", :domain => String  # ["SCHEDULE", "ASTRONOMIC"]
+!x!# NOTE: The schedule applies in combination with ASTRONOMIC. Only the schedule determines
+!x!#       when the lights are available to turn on.
+!x!
+!x!parameter "subcat", :name => "Exterior Lighting Subcategory", :description => "Exterior lighting subcategory for end uses",
+!x!  :default => "General", :domain => String
+!x!
+!x!%>
+!x!<%
+!x!case (control)
+!x!when ("SCHEDULE")
+!x!  iv_control_option = "ScheduleNameOnly"
+!x!when ("ASTRONOMIC")
+!x!  iv_control_option = "AstronomicalClock"
+!x!else
+!x!  raise("Bad control = #{control}!")
+!x!end
+!x!%>
+Exterior:Lights,
+  <%= name %>,             !- Name
+  <%= name %> Schedule,    !- Schedule Name
+  <%= power %>,            !- Design Level {W}
+  <%= iv_control_option %>,   !- Control Option
+  <%= subcat %>;           !- End-Use Subcategory
+
+Schedule:Compact,
+  <%= name %> Schedule,    !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= sch %>

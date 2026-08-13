@@ -1,0 +1,145 @@
+Version, 22.2;
+!x!<%#INITIALIZE
+!x!parameter "walkin_name"
+!x!parameter "zone_name"
+!x!parameter "capacity", :default=>4690['W']
+!x!parameter "op_temp", :default=>28['F']
+!x!parameter "cool_source_temp", :default => -6.67 ['C']
+!x!parameter "anti_sweat_power", :default=>0['W']
+!x!parameter "fan_power", :default=>735.0['W']
+!x!parameter "light_power", :default=>120.0['W']
+!x!parameter "defrost_power", :default=>5512['W']
+!x!parameter "floor_area", :default=> 1559.8['ft2']
+!x!parameter "floor_U_value", :default=>0.207 # in ['W/m2-K']
+!x!parameter "total_insulated_area", :default=> 3119.6['ft2']
+!x!parameter "surface_U_value", :default=>0.235 # in ['W/m2-K']
+!x!parameter "lighting_Schedule", :default=>
+!x!"Through: 12/31,
+!x!  For: WinterDesignDays,
+!x!  Until: 24:00, 0.00,
+!x!  For: SummerDesignDays,
+!x!  Until: 24:00, 1.00,
+!x!  For: AllOtherDays,
+!x!  Until: 02:00, 0.10,
+!x!  Until: 04:00, 0.50,
+!x!  Until: 19:00, 1.00,
+!x!  Until: 20:00, 0.50,
+!x!  Until: 24:00, 0.10
+!x!"
+!x!parameter "door_opening_sch", :default=>
+!x!"
+!x!  Through: 12/31,          !- Field 1
+!x!  For: AllDays,            !- Field 2
+!x!  Interpolate:No,          !- Field 3
+!x!  Until: 7:00,0.02,        !- Field 4
+!x!  Until: 21:00,0.2,        !- Field 6
+!x!  Until: 24:00,0.02       !- Field 8
+!x!"
+!x!# Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
+!x!parameter "available", :default=> true # (true | false)
+!x!%>
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:WalkIn				|        |
+!  | Schedule:Constant					|        |
+!  | Schedule:Compact					|  X(2)  |
+!-----------------------------------------------------------------
+!
+
+Refrigeration:WalkIn,
+    <%= walkin_name %>,           !- Name
+    <%= walkin_name %> Walkin Availability Sch,      !- Availability Schedule Name
+    <%= capacity %>,                   !- Rated Coil Cooling Capacity {W}
+    <%= op_temp %>,                   !- Operating Temperature {C}
+    <%= cool_source_temp %>,                   !- Rated Cooling Source Temperature {C}
+    <%= anti_sweat_power %>,                     !- Rated Total Heating Power {W}
+    <%= walkin_name %> Walkin Heater Sch,      !- Heating Power Schedule Name
+    <%= fan_power %>,                    !- Rated Cooling Coil Fan Power {W}
+    0.0,                     !- Rated Circulation Fan Power {W}
+    <%= light_power %>,                    !- Rated Total Lighting Power {W}
+    <%= walkin_name %> WalkIn Light Sch,      !- Lighting Schedule Name
+    Electric,                !- Defrost Type
+    TimeSchedule,            !- Defrost Control Type
+    <%= walkin_name %> Defrost Sch,       !- Defrost Schedule Name
+    ,                        !- Defrost Drip-Down Schedule Name
+    <%= defrost_power %>,                   !- Defrost Power {W}
+    ,                        !- Temperature Termination Defrost Fraction to Ice {dimensionless}
+    <%= walkin_name %> Restock Sch,     !- Restocking Schedule Name
+    ,                        !- Average Refrigerant Charge Inventory {kg}
+    <%= floor_area %>,                    !- Insulated Floor Surface Area {m2}
+    <%= floor_U_value %>,                   !- Insulated Floor U-Value {W/m2-K}
+    <%= zone_name %>,                !- Zone 1 Name
+    <%= total_insulated_area %>,                    !- Total Insulated Surface Area Facing Zone 1 {m2}
+    <%= surface_U_value %>,                    !- Insulated Surface U-Value Facing Zone 1 {W/m2-K}
+    ,                        !- Area of Glass Reach In Doors Facing Zone 1 {m2}
+    ,                        !- Height of Glass Reach In Doors Facing Zone 1 {m}
+    ,                        !- Glass Reach In Door U Value Facing Zone 1 {W/m2-K}
+    ,                        !- Glass Reach In Door Opening Schedule Name Facing Zone 1
+    2.0,                     !- Area of Stocking Doors Facing Zone 1 {m2}
+    2.0,                     !- Height of Stocking Doors Facing Zone 1 {m}
+    ,                        !- Stocking Door U Value Facing Zone 1 {W/m2-K}
+    <%= walkin_name %> Stocking Door Opening Sch,      !- Stocking Door Opening Schedule Name Facing Zone 1
+    StripCurtain;            !- Stocking Door Opening Protection Type Facing Zone 1
+
+!x!<% if available
+!x!  hourly_value = 1
+!x!else
+!x!  hourly_value = 0
+!x!end %>
+
+Schedule:Constant,
+  <%= walkin_name %> Walkin Availability Sch,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= hourly_value %>;                       !- Hourly Value
+
+Schedule:Compact,
+    <%= walkin_name %> Walkin Heater Sch,      !- Name
+    ON/OFF,                  !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For: AllDays,            !- Field 2
+    Until: 24:00,1.0;        !- Field 3
+
+!x!Schedule:Compact,
+!x!  <%= walkin_name %> Walkin Light Sch,  !- Name
+!x!  Unit Interval,           !- Schedule Type Limits Name
+!x!  <%= lighting_Schedule %>;
+
+!x!Schedule:Compact,
+!x!    <%= walkin_name %> Stocking Door Opening Sch,      !- Name
+!x!    Fraction,                !- Schedule Type Limits Name
+!x!    <%= door_opening_sch %>;
+
+Schedule:Compact,
+  <%= walkin_name %> Defrost Sch,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For:AllDays,             !- Field 2
+  Interpolate:Average,         !- Field 3
+  Until: 11:00, 0,         !- Field 5
+  Until: 11:20, 1,         !- Field 7
+  Until: 23:00, 0,         !- Field 9
+  Until: 23:20, 1,         !- Field 11
+  Until: 24:00, 0;         !- Field 13
+
+Schedule:Compact,
+  <%= walkin_name %> Restock Sch,  !- Name
+  Nonnegative Number,      !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: Tuesday Friday,     !- Field 2
+  Until: 4:00, 0.0,        !- Field 4
+  Until: 5:00, 725.0,      !- Field 6
+  Until: 6:00, 417.0,      !- Field 8
+  Until: 7:00, 290.0,      !- Field 10
+  Until: 24:00, 0.0,       !- Field 12
+  For: AllOtherDays,       !- Field 13
+  Until: 4:00, 0.0,        !- Field 15
+  Until: 5:00, 125.0,      !- Field 17
+  Until: 6:00, 117.0,      !- Field 19
+  Until: 7:00, 90.0,       !- Field 21
+  Until: 19:00, 0.0,       !- Field 23
+  Until: 20:00, 125.0,     !- Field 25
+  Until: 21:00, 117.0,     !- Field 27
+  Until: 22:00, 90.0,      !- Field 29
+  Until: 24:00, 0.0;       !- Field 31
