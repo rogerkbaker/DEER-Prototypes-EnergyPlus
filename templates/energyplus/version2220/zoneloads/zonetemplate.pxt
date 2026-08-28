@@ -1,3 +1,24 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate			|        |
+!  | Schedule:Compact					|   X    |
+!  | Lights						|        |
+!  | ElectricEquipment					|        |
+!  | GasEquipment					|        |
+!  | People						|        |
+!  | Schedule:Constant					|        |
+!  | WaterUse:Connections				|        |
+!  | WaterUse:Equipment					|        |
+!  | Branch						|        |
+!  | InternalMass					|        |
+!-----------------------------------------------------------------
+!
+
 <%#INITIALIZE
 
 parameter "zone_name"
@@ -99,6 +120,7 @@ end
 # puts "Zone #{zone_name}: #{dhw_sch}"
 
 %>
+
 <% if (infil_ach > 0.0 && infiltration_method == 'AirChanges/Hour') %>
 ZoneInfiltration:DesignFlowRate,
   <%= zone_name %> Infiltration,  !- Name
@@ -315,6 +337,7 @@ else
   iv_air_velocity_sch = ""
   iv_thermal_comfort_model = ""
 end %>
+
 
 People,
   <%= zone_name %> People,  !- Name

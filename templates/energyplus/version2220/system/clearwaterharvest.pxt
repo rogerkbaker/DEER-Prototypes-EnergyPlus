@@ -1,3 +1,16 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Shading:Site:Detailed					|        |
+!  | WaterUse:RainCollector					|        |
+!  | WaterUse:Storage						|        |
+!  | Schedule:Compact						|   X    |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "total_roof_area"
 

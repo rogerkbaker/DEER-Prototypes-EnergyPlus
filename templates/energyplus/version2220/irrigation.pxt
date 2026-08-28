@@ -1,3 +1,4 @@
+!Version, 22.2;
 <%#INITIALIZE
 parameter "landscaping_area", :name => "Landscaping Irrigation Area", :description => "Area of landscaping requiring irrigation",
   :domain => Quantity  # Area Quantity
@@ -20,6 +21,18 @@ annual_irrigation_factor = annual_irrigation_factor * 0.003785412 # Converting g
 annual_landscape_water_use = annual_irrigation_factor * landscaping_area / irrigation_system_efficiency
 landscaping_peak_flow = annual_landscape_water_use / 8760 / 3600 # Converting m3/year to m3/s, maximum flow of water used for landscaping
 %>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Schedule:Compact					|        |
+!  | WaterUse:Connections				|        |
+!  | WaterUse:Equipment					|        |
+!-----------------------------------------------------------------
+!
+
 Schedule:Compact,
   Landscaping Temperature Schedule,   !- Name
   Temperature,             !- Schedule Type Limits Name

@@ -1,3 +1,19 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Material							|        |
+!  | Construction						|   X    |
+!  | ConstructionProperty:InternalHeatSource			|        |
+!  | WindowMaterial:SimpleGlazingSystem				|        |
+!  | WindowMaterial:Glazing					|        |
+!  | WindowMaterial:Shade					|        |
+!-------------------------------------------------------------------------
+!
+
 <%#INITIALIZE
 require "modelkit/energyplus"
 

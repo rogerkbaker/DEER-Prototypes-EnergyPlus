@@ -1,15 +1,6 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!parameter "ahu_name"
-!x!
-!x!parameter "run_around_coil_eff", :default=>0.6
-!x!parameter "run_around_coil_oa_min", :default=>10['F'] # NOT OPERATIONAL
-!x!parameter "run_around_coil_oa_max", :default=>95['F'] # NOT OPERATIONAL
-!x!parameter "run_around_coil_deadband", :default=>5['F']
-!x!parameter "run_around_coil_pump_eff", :default=>0.9
-!x!parameter "run_around_coil_pump_head", :default=>15['ft H2O']
-!x!
-!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
 !-------------------------------------------------------------------------
 !  | EnergyPlus 						| Manual |
 !  | Object Name						| Update |
@@ -39,6 +30,17 @@ Version, 22.2;
 !  | Pipe:Adiabatic						|        |
 !-------------------------------------------------------------------------
 !
+!x!<%#INITIALIZE
+!x!parameter "ahu_name"
+!x!
+!x!parameter "run_around_coil_eff", :default=>0.6
+!x!parameter "run_around_coil_oa_min", :default=>10['F'] # NOT OPERATIONAL
+!x!parameter "run_around_coil_oa_max", :default=>95['F'] # NOT OPERATIONAL
+!x!parameter "run_around_coil_deadband", :default=>5['F']
+!x!parameter "run_around_coil_pump_eff", :default=>0.9
+!x!parameter "run_around_coil_pump_head", :default=>15['ft H2O']
+!x!
+!x!%>
 
 FluidProperties:GlycolConcentration,
    <%= ahu_name %> Run Around Loop Fluid,         !- Fluid 1 Name

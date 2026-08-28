@@ -1,28 +1,6 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!require "modelkit/energyplus"
-!x!
-!x!parameter "name"
-!x!parameter "branch_names"
-!x!
-!x!parameter "design_temp", :default=>30['C']  # Condenser water system supply temperature
-!x!parameter "design_delta", :default=>11['deltaC']  # Condenser water system design temperature difference
-!x!
-!x!parameter "spray_rate", :default=>0.002208['m3/s']
-!x!parameter "boiler_cap", :default=>Autosize
-!x!parameter "boiler_eff", :default=>0.75
-!x!parameter "boiler_type", :default=>"NONCONDENSING" # (NONCONDENSING | CONDENSING | ELECTRIC)
-!x!parameter "high_temp_setpoint", :default=>30['C']
-!x!parameter "low_temp_setpoint", :default=>20['C']
-!x!parameter "max_loop_temp", :default=>35['C']
-!x!parameter "min_loop_temp", :default=>10['C']
-!x!
-!x!parameter "pump_eff", :default=>0.9
-!x!parameter "pump_head", :default=>75['ft H2O']
-!x!
-!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
-!x!
-!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
 !-------------------------------------------------------------------------
 !  | EnergyPlus 						| Manual |
 !  | Object Name						| Update |
@@ -47,6 +25,30 @@ Version, 22.2;
 !  | Curve:Bicubic						|        |
 !-------------------------------------------------------------------------
 !
+!x!<%#INITIALIZE
+!x!require "modelkit/energyplus"
+!x!
+!x!parameter "name"
+!x!parameter "branch_names"
+!x!
+!x!parameter "design_temp", :default=>30['C']  # Condenser water system supply temperature
+!x!parameter "design_delta", :default=>11['deltaC']  # Condenser water system design temperature difference
+!x!
+!x!parameter "spray_rate", :default=>0.002208['m3/s']
+!x!parameter "boiler_cap", :default=>Autosize
+!x!parameter "boiler_eff", :default=>0.75
+!x!parameter "boiler_type", :default=>"NONCONDENSING" # (NONCONDENSING | CONDENSING | ELECTRIC)
+!x!parameter "high_temp_setpoint", :default=>30['C']
+!x!parameter "low_temp_setpoint", :default=>20['C']
+!x!parameter "max_loop_temp", :default=>35['C']
+!x!parameter "min_loop_temp", :default=>10['C']
+!x!
+!x!parameter "pump_eff", :default=>0.9
+!x!parameter "pump_head", :default=>75['ft H2O']
+!x!
+!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+!x!
+!x!%>
 
 Sizing:Plant,
   <%= name %>,  !- Plant or Condenser Loop Name

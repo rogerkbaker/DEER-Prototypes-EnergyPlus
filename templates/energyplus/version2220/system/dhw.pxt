@@ -1,3 +1,37 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone						|        |
+!  | Schedule:Compact						|   X    |
+!  | PlantLoop							|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Schedule:Constant						|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:Uncontrolled			|        |
+!  | PlantEquipmentList						|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:VariableSpeed						|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Pipe:Adiabatic						|        |
+!  | WaterHeater:Sizing						|        |
+!  | WaterHeater:Mixed						|        |
+!  | TemperingValve						|        |
+!  | Pipe:Indoor						|        |
+!  | LoadProfile:Plant						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|        |
+!  | Connector:Mixer						|        |
+!  | OutdoorAir:Node						|        |
+!  | Schedule:File						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -85,6 +119,7 @@ end
 nominal_tank_volume = 0.15 # Nominal Tank Volume for Autosizing Plant Connections {m3}, equivalent to 40 gal
 
 %>
+
 
 <% if plantloop %>
 Sizing:Plant,
@@ -554,7 +589,6 @@ Pump:VariableSpeed,
   ,                        !- Design Minimum Flow Rate Fraction
   General;                 !- End-Use Subcategory  
 <% end %>
-
 <% end %> 
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

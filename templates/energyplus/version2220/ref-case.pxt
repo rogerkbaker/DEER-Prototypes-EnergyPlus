@@ -1,3 +1,17 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:Case					|        |
+!  | Schedule:Constant					|        |
+!  | Curve:Cubic					|        |
+!  | Schedule:Compact					|  X(1)  |
+!-----------------------------------------------------------------
+!
+
 <%#INITIALIZE
 parameter "case_name"
 parameter "zone_name"
@@ -28,7 +42,7 @@ parameter "credit_sch", :default=> "
   Interpolate:No,
   Until: 7:00, 0.2,
   Until: 21:00, 0.6,
-  Until: 24:00, 0.2;
+  Until: 24:00, 0.2
 "
 
 rule "credit_type_walkin", :parameters => {:case_type => "WALK-IN"} do
@@ -38,7 +52,7 @@ rule "credit_type_walkin", :parameters => {:case_type => "WALK-IN"} do
   Interpolate:No,
   Until: 7:00, 0.2,
   Until: 21:00, 0.4,
-  Until: 24:00, 0.2;
+  Until: 24:00, 0.2
 "
 end
 rule "credit_type_selfcontained", :parameters => {:case_type => "SELF-CONTAINED"} do
@@ -48,7 +62,7 @@ rule "credit_type_selfcontained", :parameters => {:case_type => "SELF-CONTAINED"
   Interpolate:No,
   Until: 7:00, 0.2,
   Until: 21:00, 0.6,
-  Until: 24:00, 0.2;
+  Until: 24:00, 0.2
 "
 end
 # Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
@@ -65,7 +79,7 @@ parameter "lighting_schedule", :default=>
   Until: 04:00, 0.50,
   Until: 19:00, 1.00,
   Until: 20:00, 0.50,
-  Until: 24:00, 0.10;
+  Until: 24:00, 0.10
 "
 %>
 
@@ -181,6 +195,7 @@ Curve:Cubic,
   20.0;                    !- Maximum Value of x
 <% elsif (credit_type == "SINGLESHELF-HORIZONTAL-DOE") %>
 ! This curve was taken from DOE's retail-supermarket 2004 model
+
 Curve:Cubic,
   <%= case_name %> Latent Case Credit Curve,  !- Name
   0.020376,                !- Coefficient1 Constant
@@ -189,6 +204,7 @@ Curve:Cubic,
   1.811e-07,               !- Coefficient4 x**3
   -35,                     !- Minimum Value of x
   20;                      !- Maximum Value of x
+
 <% end %>
 
 <% if (case_type == "GLASS-DOOR") %>
@@ -240,6 +256,7 @@ Schedule:Compact,
   Until: 23:00, 0,         !- Field 9
   Until: 23:30, 1,         !- Field 11
   Until: 24:00, 0;         !- Field 13
+
 <% end %>
 
 <% if (case_type == "WALK-IN") %>

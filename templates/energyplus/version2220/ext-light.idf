@@ -1,4 +1,15 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Exterior:Lights					|        |
+!  | Schedule:Compact					|   X    |
+!-----------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!parameter "name", :name => "Exterior Lighting Name", :description => "Exterior lighting name", :domain => String
 !x!
@@ -27,16 +38,6 @@ Version, 22.2;
 !x!  raise("Bad control = #{control}!")
 !x!end
 !x!%>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Exterior:Lights					|        |
-!  | Schedule:Compact					|   X    |
-!-----------------------------------------------------------------
-!
 
 Exterior:Lights,
   <%= name %>,             !- Name

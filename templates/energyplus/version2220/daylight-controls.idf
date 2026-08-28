@@ -1,4 +1,15 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Daylighting:Controls				|        |
+!  | Daylighting:ReferencePoint				|        |
+!-----------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!parameter "zone_name"
 !x!
@@ -32,16 +43,6 @@ Version, 22.2;
 !x!  iv_frac_zone_cont_by_ref_pt2 = ""
 !x!  iv_illum_setpt_ref2 = ""
 !x!<% end %>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Daylighting:Controls				|        |
-!  | Daylighting:ReferencePoint				|        |
-!-----------------------------------------------------------------
-!
 
 Daylighting:Controls,
   <%= zone_name %> Daylighting,  !- Name

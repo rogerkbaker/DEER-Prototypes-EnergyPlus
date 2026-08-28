@@ -1,4 +1,15 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate			|        |
+!  | Schedule:Compact					|        |
+!-----------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!parameter "zone_name"  # name of building's zone where entrance doors are located (usually corridor or lobby)
 !x!parameter "building_height" # total floor to ceiling height, leave out sloped roofs
@@ -124,16 +135,6 @@ Version, 22.2;
 !x!aggregate_infiltration_schedule_array_weekday = door_infiltration_weekday.collect { |x| x / max_door_infiltration }
 !x!aggregate_infiltration_schedule_array_weekend = door_infiltration_weekend.collect { |x| x / max_door_infiltration }
 !x!%>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneInfiltration:DesignFlowRate			|        |
-!  | Schedule:Compact					|        |
-!-----------------------------------------------------------------
-!
 
 ZoneInfiltration:DesignFlowRate,
   <%= zone_name %> Entry Infiltration,  !- Name

@@ -1,3 +1,27 @@
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Version						|        |
+!  | Building						|        |
+!  | SimulationControl					|        |
+!  | RunPeriod						|        |
+!  | Timestep						|        |
+!  | Sizing:Parameters					|        |
+!  | ConvergenceLimits					|        |
+!  | HeatBalanceAlgorithm				|        |
+!  | ZoneAirHeatBalanceAlgorithm			|        |
+!  | SurfaceConvectionAlgorithm:Inside			|        |
+!  | SurfaceConvectionAlgorithm:Outside			|        |
+!  | SurfaceProperty:OtherSideConditionsModel		|        |
+!  | ShadowCalculation					|        |
+!  | ScheduleTypeLimits					|        |
+!  | Schedule:Compact					|        |
+!-----------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!parameter "run_name", :name=>"Run Name", :description=>"Descriptive name of this simulation run",
 !x!  :default=>"EnergyPlus Simulation", :domain=>String
@@ -56,29 +80,6 @@
 !x!
 !x!Docs says don't need Location object if it's an annual run!
 !x!%>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Version						|        |
-!  | Building						|        |
-!  | SimulationControl					|        |
-!  | RunPeriod						|        |
-!  | Timestep						|        |
-!  | Sizing:Parameters					|        |
-!  | ConvergenceLimits					|        |
-!  | HeatBalanceAlgorithm				|        |
-!  | ZoneAirHeatBalanceAlgorithm			|        |
-!  | SurfaceConvectionAlgorithm:Inside			|        |
-!  | SurfaceConvectionAlgorithm:Outside			|        |
-!  | SurfaceProperty:OtherSideConditionsModel		|        |
-!  | ShadowCalculation					|        |
-!  | ScheduleTypeLimits					|        |
-!  | Schedule:Compact					|        |
-!-----------------------------------------------------------------
-!
 
 Version,
   22.2;                    !- Version Identifier

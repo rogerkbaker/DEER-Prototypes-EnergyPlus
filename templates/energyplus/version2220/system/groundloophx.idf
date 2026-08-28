@@ -1,17 +1,6 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!parameter "system_name"
-!x!
-!x!# should be a different identifier?  branches?  central cooling coil is not a zone
-!x!parameter "zone_names"
-!x!
-!x!parameter "gshp_flow_rate", :default=>60['GPM']
-!x!parameter "gshp_pump_head", :default=>35['ft']
-!x!parameter "gshp_pump_eff", :default=>0.7
-!x!
-!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
-!x!
-!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
 !-------------------------------------------------------------------------
 !  | EnergyPlus 						| Manual |
 !  | Object Name						| Update |
@@ -43,6 +32,19 @@ Version, 22.2;
 !  | Fan:ZoneExhaust						|        |
 !-------------------------------------------------------------------------
 !
+!x!<%#INITIALIZE
+!x!parameter "system_name"
+!x!
+!x!# should be a different identifier?  branches?  central cooling coil is not a zone
+!x!parameter "zone_names"
+!x!
+!x!parameter "gshp_flow_rate", :default=>60['GPM']
+!x!parameter "gshp_pump_head", :default=>35['ft']
+!x!parameter "gshp_pump_eff", :default=>0.7
+!x!
+!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+!x!
+!x!%>
 
 FluidProperties:GlycolConcentration,
    GLHXFluid,         !- Fluid 1 Name

@@ -1,3 +1,23 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | ElectricLoadCenter:Transformer			|        |
+!  | Meter:CustomDecrement				|        |
+!  | InteriorEquipment:Electricity			|        |
+!  | Wired_INT_EQUIP					|        |
+!  | EnergyManagementSystem:GlobalVariable		|        |
+!  | EnergyManagementSystem:OutputVariable		|        |
+!  | EnergyManagementSystem:Sensor			|        |
+!  | EnergyManagementSystem:ProgramCallingManager	|        |
+!  | EnergyManagementSystem:Program			|        |
+!  | Meter:Custom					|        |
+!  | Schedule:Compact					|        |
+!-----------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "name", :default=>"Transformer 1"
 parameter "capacity", :default=>50000['W']
@@ -38,6 +58,7 @@ ElectricLoadCenter:Transformer,
   Yes,                     !- Consider Transformer Loss for Utility Cost
   Wired_LTG_Electricity,   !- Meter 1 Name
   <%= meter_2_name %>;         !- Meter 2 Name
+  
   InteriorEquipment:Electricity;         !- Meter 2 Name
   Wired_INT_EQUIP;         !- Meter 2 Name
 

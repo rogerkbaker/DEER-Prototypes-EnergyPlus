@@ -1,3 +1,15 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:WalkIn				|        |
+!  | Schedule:Constant					|        |
+!  | Schedule:Compact					|  X(2)  |
+!-----------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "walkin_name"
 parameter "zone_name"
@@ -13,8 +25,7 @@ parameter "floor_U_value", :default=>0.207 # in ['W/m2-K']
 parameter "total_insulated_area", :default=> 3119.6['ft2']
 parameter "surface_U_value", :default=>0.235 # in ['W/m2-K']
 parameter "lighting_Schedule", :default=>
-"
-  Through: 12/31,
+"Through: 12/31,
   For: WinterDesignDays,
   Until: 24:00, 0.00,
   For: SummerDesignDays,
@@ -24,7 +35,7 @@ parameter "lighting_Schedule", :default=>
   Until: 04:00, 0.50,
   Until: 19:00, 1.00,
   Until: 20:00, 0.50,
-  Until: 24:00, 0.10;
+  Until: 24:00, 0.10
 "
 parameter "door_opening_sch", :default=>
 "
@@ -33,7 +44,7 @@ parameter "door_opening_sch", :default=>
   Interpolate:No,          !- Field 3
   Until: 7:00,0.02,        !- Field 4
   Until: 21:00,0.2,        !- Field 6
-  Until: 24:00,0.02;       !- Field 8
+  Until: 24:00,0.02       !- Field 8
 "
 # Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
 parameter "available", :default=> true # (true | false)

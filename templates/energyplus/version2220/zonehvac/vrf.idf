@@ -1,4 +1,19 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow		|        |
+!  | Schedule:Compact						|   X    |
+!  | Fan:OnOff							|        |
+!  | Coil:Cooling:DX:VariableRefrigerantFlow			|        |
+!  | Coil:Heating:DX:VariableRefrigerantFlow			|        |
+!  | Curve:Cubic						|        |
+!  | Curve:Quadratic						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -28,19 +43,6 @@ Version, 22.2;
 !x!else
 !x!  supply_air_fan_place = "DrawThrough"
 !x!end %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow		|        |
-!  | Schedule:Compact						|   X    |
-!  | Fan:OnOff							|        |
-!  | Coil:Cooling:DX:VariableRefrigerantFlow			|        |
-!  | Coil:Heating:DX:VariableRefrigerantFlow			|        |
-!  | Curve:Cubic						|        |
-!  | Curve:Quadratic						|        |
-!-------------------------------------------------------------------------
-!
 
 ZoneHVAC:TerminalUnit:VariableRefrigerantFlow,
   <%= name %> Terminal Unit,  !- Zone Terminal Unit Name

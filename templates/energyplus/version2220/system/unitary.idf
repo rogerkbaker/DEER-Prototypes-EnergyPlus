@@ -1,4 +1,44 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | AirLoopHVAC:UnitarySystem					|        |
+!  | Schedule:Compact						|   X    |
+!  | Fan:OnOff							|        |
+!  | Fan:SystemModel						|        |
+!  | Curve:Quartic						|        |
+!  | Fan:VariableVolume						|        |
+!  | Coil:Cooling:DX:SingleSpeed				|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Cubic						|        |
+!  | Coil:Cooling:DX:MultiSpeed					|        |
+!  | Coil:Cooling:WaterToAirHeatPump:EquationFit		|        |
+!  | Curve:QuadLinear						|        |
+!  | Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
+!  | Coil:Cooling:Water						|        |
+!  | Branch							|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Gas:MultiStage				|        |
+!  | Coil:Heating:Electric					|        |
+!  | Coil:Heating:DX:SingleSpeed				|        |
+!  | Coil:Heating:DX:MultiSpeed					|        |
+!  | Coil:Heating:WaterToAirHeatPump:EquationFit		|        |
+!  | Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
+!  | Coil:Heating:Water						|        |
+!  | Coil:Heating:Steam						|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Electric					|        |
+!  | UnitarySystemPerformance:Multispeed			|        |
+!  | EnergyManagementSystem:Actuator				|        |
+!  | EnergyManagementSystem:ProgramCallingManager		|        |
+!  | EnergyManagementSystem:Program				|        |
+!  | EnergyManagementSystem:InternalVariableXZ			|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -428,44 +468,6 @@ Version, 22.2;
 !x!  iv_des_spec_ms_hp_obj = ""
 !x!  iv_des_spec_ms_hp_nm = ""
 !x!end %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | AirLoopHVAC:UnitarySystem					|        |
-!  | Schedule:Compact						|   X    |
-!  | Fan:OnOff							|        |
-!  | Fan:SystemModel						|        |
-!  | Curve:Quartic						|        |
-!  | Fan:VariableVolume						|        |
-!  | Coil:Cooling:DX:SingleSpeed				|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Coil:Cooling:DX:MultiSpeed					|        |
-!  | Coil:Cooling:WaterToAirHeatPump:EquationFit		|        |
-!  | Curve:QuadLinear						|        |
-!  | Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
-!  | Coil:Cooling:Water						|        |
-!  | Branch							|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Gas:MultiStage				|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:DX:SingleSpeed				|        |
-!  | Coil:Heating:DX:MultiSpeed					|        |
-!  | Coil:Heating:WaterToAirHeatPump:EquationFit		|        |
-!  | Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
-!  | Coil:Heating:Water						|        |
-!  | Coil:Heating:Steam						|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Electric					|        |
-!  | UnitarySystemPerformance:Multispeed			|        |
-!  | EnergyManagementSystem:Actuator				|        |
-!  | EnergyManagementSystem:ProgramCallingManager		|        |
-!  | EnergyManagementSystem:Program				|        |
-!  | EnergyManagementSystem:InternalVariableXZ			|        |
-!-------------------------------------------------------------------------
-!
 
 AirLoopHVAC:UnitarySystem,
   <%= unitary_name %> Unitary,     !- Name

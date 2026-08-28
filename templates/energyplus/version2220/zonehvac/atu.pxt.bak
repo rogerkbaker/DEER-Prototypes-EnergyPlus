@@ -196,9 +196,9 @@ end
 <% if (atu_type == "CAV" or atu_type == "VAV")
 
   if (atu_reheat_coil_type == "NONE")
-    iv_air_term_obj_type = "AirTerminal:SingleDuct:VAV:NoReheat"
+    air_term_obj_type = "AirTerminal:SingleDuct:VAV:NoReheat"
   else
-    iv_air_term_obj_type = "AirTerminal:SingleDuct:VAV:Reheat"
+    air_term_obj_type = "AirTerminal:SingleDuct:VAV:Reheat"
   end
 elsif (atu_type == "CAV-CHB")
   iv_air_term_obj_type = "AirTerminal:SingleDuct:ConstantVolume:CooledBeam"

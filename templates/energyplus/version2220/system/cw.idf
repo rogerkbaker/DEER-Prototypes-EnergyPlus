@@ -1,31 +1,6 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!parameter "name"
-!x!parameter "branch_names"
-!x!
-!x!parameter "tower_type", :default=>"VARIABLESPEED"  # (VARIABLESPEED | SINGLESPEED)
-!x!parameter "num_towers", :default=>1
-!x!parameter "design_temp", :default=>85['F']  # Condenser water system supply temperature
-!x!parameter "design_delta", :default=>10['deltaF']  # Condenser water system design temperature difference
-!x!parameter "design_approach", :default=>7['deltaF']  # Condenser water system design approach temperature
-!x!parameter "ct_sizing", :default=>1  # Cooling tower sizing factor
-!x!
-!x!parameter "heat_addition", :default=>false # Used for water source heat pumps (including VRFs)
-!x!
-!x!parameter "heating_supply_temp_setpoint", :default=>85['F']
-!x!parameter "cooling_min_return_temp", :default=>79['F']
-!x!parameter "heating_max_return_temp", :default=>70['F']
-!x!
-!x!parameter "pump_eff", :default=>0.9
-!x!parameter "pump_head", :default=>60['ft H2O']
-!x!
-!x!parameter "model_type", :default=>"CoolToolsUserDefined" # (CoolToolsUserDefined | CoolToolsCrossFlow)
-!x!parameter "wetbulb_design", :default=>25.6['C']
-!x!
-!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
-!x!
-!x!parameter "clear_water_supply_tank", :default=>""
-!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
 !-------------------------------------------------------------------------
 !  | EnergyPlus 						| Manual |
 !  | Object Name						| Update |
@@ -57,6 +32,33 @@ Version, 22.2;
 !  | Connector:Mixer						|   X    |
 !-------------------------------------------------------------------------
 !
+!x!<%#INITIALIZE
+!x!parameter "name"
+!x!parameter "branch_names"
+!x!
+!x!parameter "tower_type", :default=>"VARIABLESPEED"  # (VARIABLESPEED | SINGLESPEED)
+!x!parameter "num_towers", :default=>1
+!x!parameter "design_temp", :default=>85['F']  # Condenser water system supply temperature
+!x!parameter "design_delta", :default=>10['deltaF']  # Condenser water system design temperature difference
+!x!parameter "design_approach", :default=>7['deltaF']  # Condenser water system design approach temperature
+!x!parameter "ct_sizing", :default=>1  # Cooling tower sizing factor
+!x!
+!x!parameter "heat_addition", :default=>false # Used for water source heat pumps (including VRFs)
+!x!
+!x!parameter "heating_supply_temp_setpoint", :default=>85['F']
+!x!parameter "cooling_min_return_temp", :default=>79['F']
+!x!parameter "heating_max_return_temp", :default=>70['F']
+!x!
+!x!parameter "pump_eff", :default=>0.9
+!x!parameter "pump_head", :default=>60['ft H2O']
+!x!
+!x!parameter "model_type", :default=>"CoolToolsUserDefined" # (CoolToolsUserDefined | CoolToolsCrossFlow)
+!x!parameter "wetbulb_design", :default=>25.6['C']
+!x!
+!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+!x!
+!x!parameter "clear_water_supply_tank", :default=>""
+!x!%>
 
 Sizing:Plant,
   <%= name %>,  !- Plant or Condenser Loop Name

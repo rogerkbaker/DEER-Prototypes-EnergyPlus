@@ -1,4 +1,14 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | WaterUse:Storage						|        |
+!  | Schedule:Constant						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "initial_volume", :default=>5['m3'] # initial volume of rainwater storage tank for each timestep
 !x!parameter "storage_water_temperature", :default=>68['F'] # temperature of water in storage tank, assumed to be annual constant
@@ -11,14 +21,6 @@ Version, 22.2;
 !x!# Need to create one tank to collect all DHW uses in building EXCEPT toilet flushing (sinks, laundry, dishwashing, showers)
 !x!# Every WaterUse:Connections created in zonetemplate.imf will reference this tank as the Reclamation Water Storage Tank Name
 !x!%>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | WaterUse:Storage						|        |
-!  | Schedule:Constant						|        |
-!-------------------------------------------------------------------------
-!
 
 WaterUse:Storage,
   <%= graywater_storage_tank %>, !- Name

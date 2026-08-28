@@ -1,4 +1,37 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone						|        |
+!  | Schedule:Compact						|   X    |
+!  | PlantLoop							|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Schedule:Constant						|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:Uncontrolled			|        |
+!  | PlantEquipmentList						|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:VariableSpeed						|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Pipe:Adiabatic						|        |
+!  | WaterHeater:Sizing						|        |
+!  | WaterHeater:Mixed						|        |
+!  | TemperingValve						|        |
+!  | Pipe:Indoor						|        |
+!  | LoadProfile:Plant						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|        |
+!  | Connector:Mixer						|        |
+!  | OutdoorAir:Node						|        |
+!  | Schedule:File						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -87,37 +120,6 @@ Version, 22.2;
 !x!
 !x!%>
 
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Sizing:Zone						|        |
-!  | Schedule:Compact						|   X    |
-!  | PlantLoop							|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Schedule:Constant						|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | PlantEquipmentOperation:Uncontrolled			|        |
-!  | PlantEquipmentList						|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:VariableSpeed						|        |
-!  | Pump:ConstantSpeed						|        |
-!  | Pipe:Adiabatic						|        |
-!  | WaterHeater:Sizing						|        |
-!  | WaterHeater:Mixed						|        |
-!  | TemperingValve						|        |
-!  | Pipe:Indoor						|        |
-!  | LoadProfile:Plant						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|        |
-!  | Connector:Mixer						|        |
-!  | OutdoorAir:Node						|        |
-!  | Schedule:File						|        |
-!-------------------------------------------------------------------------
-!
 !x!
 !x!<% if plantloop %>
 Sizing:Plant,

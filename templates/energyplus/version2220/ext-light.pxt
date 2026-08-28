@@ -1,3 +1,15 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Exterior:Lights					|        |
+!  | Schedule:Compact					|   X    |
+!-----------------------------------------------------------------
+!
+
 <%#INITIALIZE
 parameter "name", :name => "Exterior Lighting Name", :description => "Exterior lighting name", :domain => String
 
@@ -26,6 +38,7 @@ else
   raise("Bad control = #{control}!")
 end
 %>
+
 Exterior:Lights,
   <%= name %>,             !- Name
   <%= name %> Schedule,    !- Schedule Name

@@ -1,4 +1,23 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:System				|        |
+!  | Refrigeration:CaseAndWalkInList			|   X    |
+!  | Refrigeration:CompressorList			|   X    |
+!  | Refrigeration:Condenser:AirCooled			|        |
+!  | Refrigeration:Condenser:EvaporativeCooled		|        |
+!  | Curve:Linear					|        |
+!  | EnergyManagementSystem:Sensor			|        |
+!  | EnergyManagementSystem:Actuator			|        |
+!  | EnergyManagementSystem:OutputVariable		|        |
+!  | EnergyManagementSystem:ProgramCallingManager	|        |
+!  | EnergyManagementSystem:Program			|        |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -49,23 +68,6 @@ Version, 22.2;
 !x!    sum_ua_suct_piping = ""
 !x!    suction_pipe_zone_name = ""
 !x! end %>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:System				|        |
-!  | Refrigeration:CaseAndWalkInList			|   X    |
-!  | Refrigeration:CompressorList			|   X    |
-!  | Refrigeration:Condenser:AirCooled			|        |
-!  | Refrigeration:Condenser:EvaporativeCooled		|        |
-!  | Curve:Linear					|        |
-!  | EnergyManagementSystem:Sensor			|        |
-!  | EnergyManagementSystem:Actuator			|        |
-!  | EnergyManagementSystem:OutputVariable		|        |
-!  | EnergyManagementSystem:ProgramCallingManager	|        |
-!  | EnergyManagementSystem:Program			|        |
-!-----------------------------------------------------------------
-!
 
 
 Refrigeration:System,

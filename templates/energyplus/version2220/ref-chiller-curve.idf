@@ -1,9 +1,6 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!
-!x!parameter "chiller_make" 
-!x!
-!x!%>
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
 !-----------------------------------------------------------------
 !  | EnergyPlus 					| Manual |
 !  | Object Name					| Update |
@@ -12,6 +9,11 @@ Version, 22.2;
 !  | Table:Lookup					|        |
 !-----------------------------------------------------------------
 !
+!x!<%#INITIALIZE
+!x!
+!x!parameter "chiller_make" 
+!x!
+!x!%>
 
 !x!
 !x!<%if (chiller_make = "ColmacCoilInc") %>

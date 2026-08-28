@@ -1,4 +1,26 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | ZoneHVAC:AirDistributionUnit				|        |
+!  | AirTerminal:SingleDuct:VAV:NoReheat			|        |
+!  | AirTerminal:SingleDuct:VAV:Reheat				|        |
+!  | AirTerminal:SingleDuct:ConstantVolume:CooledBeam		|        |
+!  | Branch							|        |
+!  | AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction	|        |
+!  | AirLoopHVAC:ZoneMixer					|        |
+!  | Coil:Cooling:Water						|        |
+!  | AirTerminal:SingleDuct:ParallelPIU:Reheat			|        |
+!  | AirTerminal:SingleDuct:SeriesPIU:Reheat			|        |
+!  | AirTerminal:DualDuct:VAV					|        |
+!  | Coil:Heating:Electric					|        |
+!  | Coil:Heating:Water						|        |
+!  | Coil:Heating:Steam						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -174,9 +196,9 @@ Version, 22.2;
 !x!<% if (atu_type == "CAV" or atu_type == "VAV")
 !x!
 !x!  if (atu_reheat_coil_type == "NONE")
-!x!    air_term_obj_type = "AirTerminal:SingleDuct:VAV:NoReheat"
+!x!    iv_air_term_obj_type = "AirTerminal:SingleDuct:VAV:NoReheat"
 !x!  else
-!x!    air_term_obj_type = "AirTerminal:SingleDuct:VAV:Reheat"
+!x!    iv_air_term_obj_type = "AirTerminal:SingleDuct:VAV:Reheat"
 !x!  end
 !x!elsif (atu_type == "CAV-CHB")
 !x!  iv_air_term_obj_type = "AirTerminal:SingleDuct:ConstantVolume:CooledBeam"
@@ -200,26 +222,6 @@ Version, 22.2;
 !x!  iv_downstream_leak_frac = atu_leak_return_frac
 !x!end %>
 !x!
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | ZoneHVAC:AirDistributionUnit				|        |
-!  | AirTerminal:SingleDuct:VAV:NoReheat			|        |
-!  | AirTerminal:SingleDuct:VAV:Reheat				|        |
-!  | AirTerminal:SingleDuct:ConstantVolume:CooledBeam		|        |
-!  | Branch							|        |
-!  | AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction	|        |
-!  | AirLoopHVAC:ZoneMixer					|        |
-!  | Coil:Cooling:Water						|        |
-!  | AirTerminal:SingleDuct:ParallelPIU:Reheat			|        |
-!  | AirTerminal:SingleDuct:SeriesPIU:Reheat			|        |
-!  | AirTerminal:DualDuct:VAV					|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Coil:Heating:Steam						|        |
-!-------------------------------------------------------------------------
-!
 
 ZoneHVAC:AirDistributionUnit,
   <%= atu_name %> Air Distribution Unit,  !- Name

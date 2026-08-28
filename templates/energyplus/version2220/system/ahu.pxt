@@ -1,3 +1,52 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:System						|        |
+!  | AirLoopHVAC						|        |
+!  | NodeList							|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:NightCycle				|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | Schedule:Constant						|        |
+!  | Schedule:Compact						|   X    |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Fan:ConstantVolume						|        |
+!  | Fan:VariableVolume						|        |
+!  | AirLoopHVAC:OutdoorAirSystem				|        |
+!  | AirLoopHVAC:ControllerList					|        |
+!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList			|        |
+!  | OutdoorAir:Node						|        |
+!  | SolarCollector:UnglazedTranspired				|        |
+!  | HeatExchanger:AirToAir:SensibleAndLatent			|        |
+!  | EvaporativeCooler:Indirect:ResearchSpecial			|        |
+!  | Coil:Heating:Water						|        |
+!  | Controller:WaterCoil					|        |
+!  | Coil:Cooling:Water						|        |
+!  | SetpointManager:OutdoorAirPretreat				|        |
+!  | Controller:OutdoorAir					|        |
+!  | Humidifier:Steam:Electric					|        |
+!  | Humidifier:Steam:Gas					|        |
+!  | SetpointManager:MixedAir					|        |
+!  | SetpointManager:Scheduled					|        |
+!  | SetpointManager:OutdoorAirReset				|        |
+!  | SetpointManager:MultiZone:Cooling:Average			|        |
+!  | SetpointManager:SingleZone:Heating				|        |
+!  | SetpointManager:SingleZone:Cooling				|        |
+!  | AirLoopHVAC:SupplyPath					|        |
+!  | AirLoopHVAC:ZoneSplitter					|   X    |
+!  | AirLoopHVAC:ReturnPath					|        |
+!  | AirLoopHVAC:ReturnPlenum					|   X    |
+!  | Construction						|        |
+!  | Material							|        |
+!  | Zone							|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -409,12 +458,14 @@ else
   end
 end %>
 
+<%# leave preheat fields blank if no preheat/precool %>
+<%# better to leave Cooling Supply Air Flow Rate blank unless Method is Flow/System %>
+
 Sizing:System,
   <%= ahu_name %>,         !- AirLoop Name
   <%= sizing_type %>,                   !- Type of Load to Size On
   <%= oa_min_flow %>,      !- Design Outdoor Air Flow Rate {m3/s}
   <%= heat_flow_frac %>,   !- Central Heating Maximum System Air Flow Ratio
-<%# leave blank if no preheat/precool %>
   7.0,                     !- Preheat Design Temperature {C}
   0.008,                   !- Preheat Design Humidity Ratio {kg-H2O/kg-Air}
   <%= sat_temp_min %>,                    !- Precool Design Temperature {C}
@@ -427,7 +478,6 @@ Sizing:System,
   0.0085,                   !- Central Cooling Design Supply Air Humidity Ratio {kg-H2O/kg-Air}
   0.008,                   !- Central Heating Design Supply Air Humidity Ratio {kg-H2O/kg-Air}
   <%= cool_flow_method %>,               !- Cooling Supply Air Flow Rate Method
-<%# better to leave Cooling Supply Air Flow Rate blank unless Method is Flow/System %>
   <%= cool_flow %>,                        !- Cooling Supply Air Flow Rate {m3/s}
   ,                        !- Cooling Supply Air Flow Rate Per Floor Area {m3/s-m2}
   ,                        !- Cooling Fraction of Autosized Cooling Supply Air Flow Rate
@@ -485,7 +535,7 @@ AirLoopHVAC,
 <% if (duct_type == "DUAL")
   node1_nm = ahu_name + " Hot Deck Air Inlet Node"
   node2_nm = ahu_name + " Cold Deck Air Inlet Node"
-  iv_node_names = node1_nm + ", " + node2_nm
+  iv_node_names = node1_nm + "," + node2_nm
 else
   node1_nm = ahu_name + " Zone Equipment Inlet Node"
   node2_nm = ""
@@ -499,7 +549,7 @@ NodeList,
 <% if (duct_type == "DUAL")
   node1_nm = ahu_name + " Hot Deck Outlet Node"
   node2_nm = ahu_name + " Cold Deck Outlet Node"
-  iv_node_names = node1_nm + ", " + node2_nm
+  iv_node_names = node1_nm + "," + node2_nm
 else
   node1_nm = ahu_name + " Unitary Outlet Node"
   node2_nm = ""
@@ -843,6 +893,7 @@ in order to activate the economizer controls that allow heat recovery to be lock
 the outdoor temperature is warm enough that heat recovery would result in unnecessary cooling,
 it should be locked out.  Economizer Lockout must be set to "Yes" for the HeatExchanger.
 %>
+
 <% if (oa_solar_preheat)
   iv_supply_air_inlet_node = ahu_name + " Transpired Collector Outlet Node"
 else
@@ -880,6 +931,7 @@ WARNING: For EvaporativeCooler:Indirect:ResearchSpecial, a Secondary Fan Flow Ra
 for variable flow air systems (probably doing a divide by zero).  Use a very small flow rate to simulate no
 extra fan energy from the secondary fan, e.g., when secondary air is return air.
 %>
+
 <% if (oa_indirect_evap) %>
 
 <% if (oa_energy_recovery)
@@ -1287,39 +1339,39 @@ SetpointManager:MixedAir,
   <%= ahu_name %> Mixed Air Setpoint Nodes;  !- Setpoint Node or NodeList Name
 
 <% if (rac)
-  rac_node1 = ahu_name + " Run Around Heat Outlet Node, "
-  rac_node2 = ahu_name + " Run Around Coil Outlet Node, "
+  rac_node1 = ahu_name + " Run Around Heat Outlet Node,"
+  rac_node2 = ahu_name + " Run Around Coil Outlet Node,"
   rac_node = rac_node1 + rac_node2
 else
   rac_node = ""
 end
 if (oa_solar_preheat)
-  coll_node = ahu_name + " Transpired Collector Outlet Node, "
+  coll_node = ahu_name + " Transpired Collector Outlet Node,"
 else
   coil_node = ""
 end
 if (oa_energy_recovery)
-  er_sup_node = ahu_name + " ER Supply Outlet Node, "
+  er_sup_node = ahu_name + " ER Supply Outlet Node,"
 else
   er_sup_node = ""
 end
 if (oa_indirect_evap)
-  oa_out_node = ahu_name + " IEC Outlet Node, "
+  oa_out_node = ahu_name + " IEC Outlet Node,"
 else
   oa_out_node = ""
 end
 if (cool_coil_type != "NONE")
-  cool_coil_out_node = ahu_name + " Cooling Coil Outlet Node, "
+  cool_coil_out_node = ahu_name + " Cooling Coil Outlet Node,"
 else
   cool_coil_out_node = ""
 end
 if (chiller_cond_hr)
-  cond_coil_out_node = ahu_name + " Cond Coil Outlet Node, "
+  cond_coil_out_node = ahu_name + " Cond Coil Outlet Node,"
 else
   cond_coil_out_node = ""
 end
 if (heat_coil_type != "NONE" and fan_config == "DRAW-THROUGH")
-  heat_coil_out_node = ahu_name + " Heating Coil Outlet Node, "
+  heat_coil_out_node = ahu_name + " Heating Coil Outlet Node,"
 else
   heat_coil_out_node = ""
 end 
@@ -1524,7 +1576,7 @@ AirLoopHVAC:ZoneSplitter,
 <% end %>
 <% end %>
 !========
-!--------
+
 <% if (return_plenum)
   iv_comp_obj_type = "AirLoopHVAC:ReturnPlenum"
   iv_comp_name = ahu_name + " Return Plenum"
@@ -1559,6 +1611,7 @@ AirLoopHVAC:ZoneMixer,
 <% end %>
 <% end %>
 !===========
+
 <% if (return_plenum_zone_name == "#{ahu_name} Return Plenum") %>
 ! Dummy return plenum zone
 Construction,

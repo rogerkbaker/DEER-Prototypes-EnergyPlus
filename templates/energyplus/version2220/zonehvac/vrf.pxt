@@ -1,3 +1,19 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow		|        |
+!  | Schedule:Compact						|   X    |
+!  | Fan:OnOff							|        |
+!  | Coil:Cooling:DX:VariableRefrigerantFlow			|        |
+!  | Coil:Heating:DX:VariableRefrigerantFlow			|        |
+!  | Curve:Cubic						|        |
+!  | Curve:Quadratic						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 

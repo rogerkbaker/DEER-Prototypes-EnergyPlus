@@ -1,8 +1,20 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Table:IndependentVariable				|        |
+!  | Table:Lookup					|        |
+!-----------------------------------------------------------------
+!
 <%#INITIALIZE
 
 parameter "chiller_make" 
 
 %>
+
 
 <%if (chiller_make = "ColmacCoilInc") %>
 ! - Chiller curve from RefrigeratedWarehouse.idf from the E+ example files

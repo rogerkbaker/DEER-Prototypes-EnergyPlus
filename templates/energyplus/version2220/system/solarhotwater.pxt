@@ -1,3 +1,39 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | SolarCollectorPerformance:FlatPlate			|        |
+!  | Schedule:Compact						|   X    |
+!  | Sizing:Plant						|        |
+!  | PlantLoop							|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:Uncontrolled			|        |
+!  | PlantEquipmentList						|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Schedule:Constant						|        |
+!  | NodeList							|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:VariableSpeed						|        |
+!  | WaterHeater:Mixed						|        |
+!  | Pipe:Adiabatic						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|        |
+!  | Connector:Mixer						|        |
+!  | SolarCollector:FlatPlate:Water				|        |
+!  | Shading:Site:Detailed					|        |
+!  | EnergyManagementSystem:Sensor				|        |
+!  | EnergyManagementSystem:InternalVariable			|        |
+!  | EnergyManagementSystem:Actuator				|        |
+!  | EnergyManagementSystem:ProgramCallingManager		|        |
+!  | EnergyManagementSystem:Program				|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -55,6 +91,7 @@ if (storage_tank_volume.nil?)
   storage_tank_volume = storage_tank_volume_per_collector_area * collector_total_area.to_f
 end
 %>
+
 
 <% if (collector_type == "GLAZED-FLAT-PLATE") %>
 <% if (collector_performance == "HIGH") %>
@@ -371,7 +408,7 @@ Connector:Mixer,
   <%= system_name %> Supply Mixer,  !- Name
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch;  !- Inlet Branch 1 Name
-
+!====manual======
 BranchList,
   <%= system_name %> Demand Branches,  !- Name
   <%= system_name %> Demand Inlet Branch,  !- Branch Name
@@ -379,7 +416,7 @@ BranchList,
   <%= system_name %> Collector <%= i %> Branch,  !- Branch Name
 <% end %>
   <%= system_name %> Demand Outlet Branch;  !- Branch Name
-
+!=======
 Branch,
   <%= system_name %> Demand Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -474,7 +511,7 @@ ConnectorList,
   <%= system_name %> Demand Splitter,  !- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= system_name %> Demand Mixer;  !- Connector 2 Name
-
+!=====manual=====
 Connector:Splitter,
   <%= system_name %> Demand Splitter,  !- Name
   <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
@@ -488,7 +525,7 @@ Connector:Mixer,
 <% EnergyPlus.each((1..number_collectors).to_a) do |i| %>
   <%= system_name %> Collector <%= i %> Branch,  !- Inlet Branch Name
 <% end %>
-
+!==========
 <% sys_prefix = system_name.delete(' ') %>
 
 EnergyManagementSystem:Sensor,

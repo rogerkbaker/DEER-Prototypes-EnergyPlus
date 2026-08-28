@@ -1,4 +1,48 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant						|        |
+!  | Schedule:Compact						|   X    |
+!  | PlantLoop							|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Schedule:Constant						|        |
+!  | SetpointManager:OutdoorAirReset				|        |
+!  | NodeList							|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:HeatingLoad			|        |
+!  | PlantEquipmentList						|   X    |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Pump:VariableSpeed						|        |
+!  | Pump:VariableSpeed:Condensate				|        |
+!  | Boiler:HotWater						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Bicubic						|        |
+!  | Boiler:Steam						|        |
+!  | DistrictHeating						|        |
+!  | HeatPump:WaterToWater:EquationFit:Heating			|        |
+!  | Generator:MicroCHP						|        |
+!  | Generator:MicroCHP:NonNormalizedParameters			|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Triquadratic						|        |
+!  | Generator:FuelSupply					|        |
+!  | ElectricLoadCenter:Distribution				|        |
+!  | ElectricLoadCenter:Generators				|        |
+!  | Generator:MicroTurbine					|        |
+!  | Pipe:Adiabatic:Steam					|        |
+!  | Pipe:Adiabatic						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|   X    |
+!  | Connector:Mixer						|   X    |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -62,48 +106,6 @@ Version, 22.2;
 !x!%>
 !x!
 !x!<% chp_type = "Turbine" %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Sizing:Plant						|        |
-!  | Schedule:Compact						|   X    |
-!  | PlantLoop							|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Schedule:Constant						|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | NodeList							|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | PlantEquipmentOperation:HeatingLoad			|        |
-!  | PlantEquipmentList						|   X    |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:ConstantSpeed						|        |
-!  | Pump:VariableSpeed						|        |
-!  | Pump:VariableSpeed:Condensate				|        |
-!  | Boiler:HotWater						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Bicubic						|        |
-!  | Boiler:Steam						|        |
-!  | DistrictHeating						|        |
-!  | HeatPump:WaterToWater:EquationFit:Heating			|        |
-!  | Generator:MicroCHP						|        |
-!  | Generator:MicroCHP:NonNormalizedParameters			|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Triquadratic						|        |
-!  | Generator:FuelSupply					|        |
-!  | ElectricLoadCenter:Distribution				|        |
-!  | ElectricLoadCenter:Generators				|        |
-!  | Generator:MicroTurbine					|        |
-!  | Pipe:Adiabatic:Steam					|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|   X    |
-!  | Connector:Mixer						|   X    |
-!-------------------------------------------------------------------------
-!
 
 Sizing:Plant,
   <%= name %>,  !- Plant or Condenser Loop Name

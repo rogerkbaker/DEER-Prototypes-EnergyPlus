@@ -1,4 +1,15 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Foundation:Kiva:Settings				|        |
+!  | Foundation:Kiva					|        |
+!  | Material						|        |
+!-----------------------------------------------------------------
+!
 
 !x!<%#INITIALIZE
 !x!parameter "foundation_type", :name => "Foundation Type", :description => "Foundation type",
@@ -17,17 +28,6 @@ Version, 22.2;
 !x!  :domain => Quantity,
 !x!  :default => 8['ft']
 !x!%>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Foundation:Kiva:Settings				|        |
-!  | Foundation:Kiva					|        |
-!  | Material						|        |
-!-----------------------------------------------------------------
-!
 
 Foundation:Kiva:Settings,
   1.73,           !- Soil Conductivity

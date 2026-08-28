@@ -1,4 +1,19 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Material							|        |
+!  | Construction						|   X    |
+!  | ConstructionProperty:InternalHeatSource			|        |
+!  | WindowMaterial:SimpleGlazingSystem				|        |
+!  | WindowMaterial:Glazing					|        |
+!  | WindowMaterial:Shade					|        |
+!-------------------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -131,20 +146,6 @@ Version, 22.2;
 !x!  roof_cav_thick = 0.0001
 !x!end
 !x!%>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Material							|        |
-!  | Construction						|   X    |
-!  | ConstructionProperty:InternalHeatSource			|        |
-!  | WindowMaterial:SimpleGlazingSystem				|        |
-!  | WindowMaterial:Glazing					|        |
-!  | WindowMaterial:Shade					|        |
-!-------------------------------------------------------------------------
-!
 
 Material,
   Roof Continuous Insulation,  !- Name

@@ -1,4 +1,14 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:AirChiller				|        |
+!  | Schedule:Compact					|  X(2)  |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "chiller_name"
 !x!parameter "cap_type", :default => "UnitLoadFactorSensibleOnly"
@@ -45,14 +55,6 @@ Version, 22.2;
 !x!    Until: 24:00,0;          !- Field 20
 !x!"
 !x!%>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:AirChiller				|        |
-!  | Schedule:Compact					|  X(2)  |
-!-----------------------------------------------------------------
-!
 
   Refrigeration:AirChiller,
     <%= chiller_name %>,    !- Name

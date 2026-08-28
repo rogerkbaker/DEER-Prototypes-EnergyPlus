@@ -1,4 +1,22 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | ZoneControl:Thermostat				|        |
+!  | Schedule:Compact					|  X(2)  |
+!  | ScheduleTypeLimits					|        |
+!  | ThermostatSetpoint:DualSetpoint			|        |
+!  | ZoneHVAC:EquipmentConnections			|        |
+!  | ZoneHVAC:EquipmentList				|        |
+!  | ZoneHVAC:UnitHeater				|        |
+!  | Coil:Heating:Electric				|        |
+!  | Fan:ConstantVolume 				|        |
+!  | ZoneHVAC:RefrigerationChillerSet			|        |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -18,22 +36,6 @@ Version, 22.2;
 !x!  For: AllDays,
 !x!  Until: 24:00,4.0"
 !x!%>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneControl:Thermostat				|        |
-!  | Schedule:Compact					|  X(2)  |
-!  | ScheduleTypeLimits					|        |
-!  | ThermostatSetpoint:DualSetpoint			|        |
-!  | ZoneHVAC:EquipmentConnections			|        |
-!  | ZoneHVAC:EquipmentList				|        |
-!  | ZoneHVAC:UnitHeater				|        |
-!  | Coil:Heating:Electric				|        |
-!  | Fan:ConstantVolume 				|        |
-!  | ZoneHVAC:RefrigerationChillerSet			|        |
-!-----------------------------------------------------------------
-!
 
   ZoneControl:Thermostat,
     <%= zone_name %> Thermostat,     !- Name

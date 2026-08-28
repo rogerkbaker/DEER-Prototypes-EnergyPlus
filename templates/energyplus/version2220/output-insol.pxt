@@ -1,3 +1,16 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Shading:Site:Detailed				|        |
+!  | Generator:Photovoltaic				|        |
+!  | PhotovoltaicPerformance:Simple			|        |
+!  | ElectricLoadCenter:Distribution			|        |
+!-----------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "latitude", :name=>"Latitude", :description=>"Latitude for solar insolation calculations only",
   :default=>0, :domain=>Numeric  # :range=>[-90, 90]

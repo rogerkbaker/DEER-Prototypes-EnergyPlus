@@ -1,4 +1,16 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Shading:Site:Detailed				|        |
+!  | Generator:Photovoltaic				|        |
+!  | PhotovoltaicPerformance:Simple			|        |
+!  | ElectricLoadCenter:Distribution			|        |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "latitude", :name=>"Latitude", :description=>"Latitude for solar insolation calculations only",
 !x!  :default=>0, :domain=>Numeric  # :range=>[-90, 90]
@@ -22,16 +34,6 @@ Version, 22.2;
 !x!y_offset = -100.0
 !x!inclination = latitude * Math::PI / 180.0
 !x!%>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Shading:Site:Detailed				|        |
-!  | Generator:Photovoltaic				|        |
-!  | PhotovoltaicPerformance:Simple			|        |
-!  | ElectricLoadCenter:Distribution			|        |
-!-----------------------------------------------------------------
-!
 
 Shading:Site:Detailed,
   Insolation,              !- Name

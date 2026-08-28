@@ -1,3 +1,48 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant						|        |
+!  | Schedule:Compact						|   X    |
+!  | PlantLoop							|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Schedule:Constant						|        |
+!  | SetpointManager:OutdoorAirReset				|        |
+!  | NodeList							|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:HeatingLoad			|        |
+!  | PlantEquipmentList						|   X    |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Pump:VariableSpeed						|        |
+!  | Pump:VariableSpeed:Condensate				|        |
+!  | Boiler:HotWater						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Bicubic						|        |
+!  | Boiler:Steam						|        |
+!  | DistrictHeating						|        |
+!  | HeatPump:WaterToWater:EquationFit:Heating			|        |
+!  | Generator:MicroCHP						|        |
+!  | Generator:MicroCHP:NonNormalizedParameters			|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Triquadratic						|        |
+!  | Generator:FuelSupply					|        |
+!  | ElectricLoadCenter:Distribution				|        |
+!  | ElectricLoadCenter:Generators				|        |
+!  | Generator:MicroTurbine					|        |
+!  | Pipe:Adiabatic:Steam					|        |
+!  | Pipe:Adiabatic						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|   X    |
+!  | Connector:Mixer						|   X    |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -10,7 +55,7 @@ parameter "design_flow", :default=>Autosize
 parameter "design_temp", :default=>180['F']
 parameter "design_delta", :default=>50['deltaF']
 
-#Solaris-Behzad S. Rizi-2026-04-15-Modified the default values for parameters setpoint at outdoor low(supply_temp_at_lo)and high temperatures(supply_temp_at_hi)according to 2025 Title 24-Section 120.2.
+#Solaris-Behzad S. Rizi-2026-04-15-Modified the default values for parameters setpoint at outdoor low(supply_temp_at_lo)and high!temperatures(supply_temp_at_hi)according to 2025 Title 24-Section 120.2.
 parameter "supply_temp_at_lo", :default=>130['F']
 parameter "lo_outdoor_temp", :default=>20['F']
 parameter "supply_temp_at_hi", :default=>105['F']
@@ -122,6 +167,7 @@ SetpointManager:OutdoorAirReset,
   <%= name %> Setpoint Nodes;  !- Setpoint Node or NodeList Name
 
 <% end %>
+
 <% if (boiler_duplicate)
   sup_equip_out_node1 = name + " Supply Equipment Outlet Node 1"
   sup_equip_out_node2 = name + " Supply Equipment Outlet Node 2"
@@ -163,7 +209,7 @@ elsif (heating_source == "CHP")
     iv_equip1_obj_name = "Generator:MicroTurbine"
   end
 end %>
-
+!===manual=====
 PlantEquipmentList,
   <%= name %> Equipment List, !- Name
   <%= iv_equip1_obj_name %>,         !- Equipment 1 Object Type
@@ -174,7 +220,7 @@ PlantEquipmentList,
 <% elsif (boiler_duplicate and heating_source == "STEAMBOILER") %>
   <%= name %> Heating Source 1,  !- Equipment 1 Name
   Boiler:Steam,                      !- Equipment 2 Object Type
-  <%= name %> Heating Source 2;  !- Equipment 2 Name
+ <%= name %> Heating Source 2;  !- Equipment 2 Name
 <% elsif (boiler_duplicate) %>
   <%= name %> Heating Source 1,  !- Equipment 1 Name
   Boiler:HotWater,                      !- Equipment 2 Object Type
@@ -182,7 +228,7 @@ PlantEquipmentList,
 <% else %>
   <%= name %> Heating Source;  !- Equipment 1 Name
 <% end %>
-
+!=========
 AvailabilityManagerAssignmentList,
   <%= name %> Availability Managers,  !- Name
   AvailabilityManager:Scheduled,  !- Availability Manager 1 Object Type
@@ -245,6 +291,7 @@ end %>
     <%= name %> Pump,        !- Component 1 Name
     <%= name %> Supply Inlet Node,  !- Component 1 Inlet Node Name
     <%= iv_comp_add_fields %>;  !- Component 1 Outlet Node Name
+
 
 !------------boiler object list internal params------------
 
@@ -331,6 +378,13 @@ elsif (pump_control == "INTERMITTENT")
   iv_pumpcontrol_type = "Intermittent"
 end %>
 
+! Original performance curve as found January 2024, source: ASHRAE 90.1 Hospital EnergyPlus example model 
+!  0,                       !- Coefficient 1 of the Part Load Performance Curve
+!  3.2485,                       !- Coefficient 2 of the Part Load Performance Curve
+!  -4.7443,                       !- Coefficient 3 of the Part Load Performance Curve
+!  2.5295,                       !- Coefficient 4 of the Part Load Performance Curve
+! Updated performance curve used below, source: CBECC Office Large Template
+
 Pump:VariableSpeed,
   <%= name %> Pump,  !- Name
   <%= name %> Supply Inlet Node,  !- Inlet Node Name
@@ -339,12 +393,6 @@ Pump:VariableSpeed,
   <%= pump_head %>,  !- Rated Pump Head {Pa}
   <%= pump_power %>,  !- Rated Power Consumption {W}
   <%= pump_eff %>,  !- Motor Efficiency
-! Original performance curve as found January 2024, source: ASHRAE 90.1 Hospital EnergyPlus example model 
-!  0,                       !- Coefficient 1 of the Part Load Performance Curve
-!  3.2485,                       !- Coefficient 2 of the Part Load Performance Curve
-!  -4.7443,                       !- Coefficient 3 of the Part Load Performance Curve
-!  2.5295,                       !- Coefficient 4 of the Part Load Performance Curve
-! Updated performance curve, source: CBECC Office Large Template
   0.0,                     !- Fraction of Motor Inefficiencies to Fluid Stream
   0.0273,                       !- Coefficient 1 of the Part Load Performance Curve
   -0.1317,                       !- Coefficient 2 of the Part Load Performance Curve
@@ -947,7 +995,6 @@ Branch,
   <%= name %> Supply Equip Bypass Outlet Node;  !- Outlet Node Name
 <% end %>
 
-
 Branch,
   <%= name %> Supply Outlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -1026,7 +1073,7 @@ Branch,
   <%= name %> Demand Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Demand Inlet Pipe Outlet Node;  !- Component 1 Outlet Node Name
 
- <% if (fluid_type == "WATER") %>
+<% if (fluid_type == "WATER") %>
 
   Pipe:Adiabatic,
   <%= name %> Demand Inlet Pipe,  !- Name
@@ -1049,7 +1096,7 @@ Branch,
   <%= name %> Demand Bypass Pipe Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Demand Bypass Pipe Outlet Node;  !- Component 1 Outlet Node Name
 
- <% if (fluid_type == "WATER") %>
+<% if (fluid_type == "WATER") %>
 
   Pipe:Adiabatic,
   <%= name %> Demand Bypass Pipe,  !- Name
@@ -1071,7 +1118,7 @@ Branch,
   <%= name %> Demand Outlet Pipe Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Demand Outlet Node;  !- Component 1 Outlet Node Name
 
- <% if (fluid_type == "WATER") %>
+<% if (fluid_type == "WATER") %>
 
   Pipe:Adiabatic,
   <%= name %> Demand Outlet Pipe,  !- Name

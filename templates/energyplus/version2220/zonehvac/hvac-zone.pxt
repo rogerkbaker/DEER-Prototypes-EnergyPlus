@@ -1,3 +1,37 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone						|        |
+!  | DesignSpecification:ZoneAirDistribution			|        |
+!  | DesignSpecification:OutdoorAir				|        |
+!  | Schedule:Compact						|   X    |
+!  | ZoneControl:Thermostat					|        |
+!  | Schedule:Constant						|        |
+!  | ThermostatSetpoint:SingleHeating				|        |
+!  | ThermostatSetpoint:SingleCooling				|        |
+!  | ThermostatSetpoint:DualSetpoint				|        |
+!  | SetpointManager:SingleZone:Humidity:Minimum		|        |
+!  | SetpointManager:SingleZone:Humidity:Maximum		|        |
+!  | ZoneControl:Humidistat					|        |
+!  | ZoneHVAC:EquipmentConnections				|        |
+!  | ZoneHVAC:EquipmentList					|   X    |
+!  | NodeList							|   X    |
+!  | ZoneHVAC:IdealLoadsAirSystem				|        |
+!  | OutdoorAir:Node						|        |
+!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
+!  | ZoneHVAC:Baseboard:Convective:Water			|        |
+!  | ZoneHVAC:UnitHeater					|        |
+!  | Fan:ConstantVolume						|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Electric					|        |
+!  | Coil:Heating:Water						|        |
+!  | Fan:ZoneExhaust						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -431,6 +465,7 @@ end
 op_sch = oa_sch.gsub(/(?<=,)\s*(1\.0*|1)\s*(?=[," "])/, " %1")  # Match values equal to 1.0
 op_sch.gsub!(/(?<=,)\s*(0\.0*|\.0+|0)\s*(?=[," "])/, " %2")  # Match values equal to 0.0
 
+
 if (tstat_heat_sch.empty?)
   tstat_heat_sch = op_sch
 end
@@ -476,6 +511,7 @@ end %>
 else
   iv_des_spec_zone_air_dist = ""
 end %>
+
 
 Sizing:Zone,
   <%= zone_name %>,        !- Zone or ZoneList Name
@@ -779,7 +815,7 @@ ZoneHVAC:EquipmentConnections,
   <%= zone_name %> Air Node,  !- Zone Air Node Name
   <%= iv_zn_ret_air_node %>;  !- Zone Return Air Node Name or NodeList Name
 
-
+!====Manual====
 ZoneHVAC:EquipmentList,
   <%= zone_name %> Equipment,  !- Name
   SequentialLoad,          !- Load Distribution Scheme
@@ -813,7 +849,7 @@ NodeList,
   <%= branch %> Return Node,  !- Node Name
 <% end %>
 <% end %>
-
+!======
 <%
 if (oa_type == "DOAS")
   insert "zonehvac/atu.pxt",
@@ -1040,6 +1076,7 @@ Branch,
 
 <% end %>
 <% if (sub_heat_type != "NONE") %>
+
 Schedule:Compact,
   <%= sub_heat_name %> Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
@@ -1167,15 +1204,18 @@ Schedule:Compact,
 
   
   <% if exh_fan_frac_sch != "" %>
+
   Schedule:Compact,
     <%= exh_fan_name %> Balanced Exhaust Fraction Schedule,  !- Name
     Fraction,          !- Schedule Type Limits Name
     <%= exh_fan_frac_sch %>;
+
   <% end %>
 
 
 
 <% exh_fan_sch = hvac_sch if exh_fan_sch == "" %>
+
 Schedule:Compact,
   <%= exh_fan_name %> Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name

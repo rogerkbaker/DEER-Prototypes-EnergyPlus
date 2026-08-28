@@ -1,9 +1,4 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!
-!x!parameter "working_fluid" # R507
-!x!
-!x!>
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-----------------------------------------------------------------
@@ -15,6 +10,12 @@ Version, 22.2;
 !  | FluidProperties:Superheated			|        |
 !-----------------------------------------------------------------
 !
+
+!x!<%#INITIALIZE
+!x!
+!x!parameter "working_fluid" # R507
+!x!
+!x!%>
 
 
 

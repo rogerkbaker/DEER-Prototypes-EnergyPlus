@@ -1,4 +1,45 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant						|        |
+!  | PlantLoop							|        |
+!  | PlantEquipmentList						|        |
+!  | PlantEquipmentOperation:CoolingLoad			|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | SetpointManager:Scheduled					|        |
+!  | Branch							|        |
+!  | HeatExchanger:FluidToFluid					|        |
+!  | Schedule:Compact						|   X    |
+!  | Schedule:Constant						|        |
+!  | SetpointManager:OutdoorAirReset				|        |
+!  | NodeList							|   X    |
+!  | PlantEquipmentList						|   X    |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:LowTemperatureTurnOff			|        |
+!  | OutdoorAir:Node						|        |
+!  | BranchList							|   X    |
+!  | Pump:ConstantSpeed						|        |
+!  | Pump:VariableSpeed						|        |
+!  | Chiller:Electric:ReformulatedEIR				|        |
+!  | Chiller:Electric:EIR					|        |
+!  | ChillerHeater:Absorption:DirectFired			|        |
+!  | Chiller:Absorption:Indirect				|        |
+!  | HeatPump:WaterToWater:EquationFit:Cooling			|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Cubic						|        |
+!  | Pipe:Adiabatic						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|   X    |
+!  | Connector:Mixer						|        |
+!  | Curve:Bicubic						|        |
+!-------------------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -68,44 +109,6 @@ Version, 22.2;
 !x!%>
 !x!
 !x!<% if loop_config == "PRIMARY-SECONDARY" %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Sizing:Plant						|        |
-!  | PlantLoop							|        |
-!  | PlantEquipmentList						|        |
-!  | PlantEquipmentOperation:CoolingLoad			|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Branch							|        |
-!  | HeatExchanger:FluidToFluid					|        |
-!  | Schedule:Compact						|   X    |
-!  | Schedule:Constant						|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | NodeList							|   X    |
-!  | PlantEquipmentList						|   X    |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:LowTemperatureTurnOff			|        |
-!  | OutdoorAir:Node						|        |
-!  | BranchList							|   X    |
-!  | Pump:ConstantSpeed						|        |
-!  | Pump:VariableSpeed						|        |
-!  | Chiller:Electric:ReformulatedEIR				|        |
-!  | Chiller:Electric:EIR					|        |
-!  | ChillerHeater:Absorption:DirectFired			|        |
-!  | Chiller:Absorption:Indirect				|        |
-!  | HeatPump:WaterToWater:EquationFit:Cooling			|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|   X    |
-!  | Connector:Mixer						|        |
-!  | Curve:Bicubic						|        |
-!-------------------------------------------------------------------------
-!
 
 Sizing:Plant,
   <%= name %> Secondary,  !- Plant or Condenser Loop Name

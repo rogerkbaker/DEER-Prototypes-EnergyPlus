@@ -1,3 +1,30 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant						|        |
+!  | PlantLoop							|        |
+!  | ConnectorList						|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | Schedule:Compact						|   X    |
+!  | PlantEquipmentOperation:CoolingLoad			|        |
+!  | PlantEquipmentOperation:HeatingLoad			|        |
+!  | PlantEquipmentList						|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Connector:Splitter						|   X    |
+!  | EvaporativeFluidCooler:SingleSpeed				|        |
+!  | Boiler:HotWater						|        |
+!  | Pipe:Adiabatic						|        |
+!  | Connector:Mixer						|   X    |
+!  | Curve:Quadratic						|        |
+!  | Curve:Bicubic						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -74,7 +101,7 @@ PlantEquipmentOperationSchemes,
 Schedule:Compact,
   <%= name %> Operation Schedule,  !- Name
   On/Off,                  !- Schedule Type Limits Name
-<%= operation_schedule %>;
+  <%= operation_schedule %>;
 
 PlantEquipmentOperation:CoolingLoad,
   <%= name %> Cool Operation Scheme,  !- Name
@@ -245,7 +272,7 @@ Schedule:Compact,
   Through: 12/31,
   For: Alldays,
   Until: 24:00,<%= low_temp_setpoint %>;
-
+!====manual===
 BranchList,
   <%= name %> Demand Branches,
   <%= name %> Demand Inlet Branch,  !- Branch 1 Name
@@ -270,7 +297,7 @@ Connector:Mixer,
   <%= branch_names[i] %>, !- Outlet Branch Name
   <% end %>
   <%= name %> Demand Bypass Branch;
-
+!===========
 ConnectorList,
   <%= name %> Demand Connectors,  !- Name
   Connector:Splitter,      !- Connector 1 Object Type

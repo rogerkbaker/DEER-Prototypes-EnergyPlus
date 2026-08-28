@@ -1,3 +1,23 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:System				|        |
+!  | Refrigeration:CaseAndWalkInList			|   X    |
+!  | Refrigeration:CompressorList			|   X    |
+!  | Refrigeration:Condenser:AirCooled			|        |
+!  | Refrigeration:Condenser:EvaporativeCooled		|        |
+!  | Curve:Linear					|        |
+!  | EnergyManagementSystem:Sensor			|        |
+!  | EnergyManagementSystem:Actuator			|        |
+!  | EnergyManagementSystem:OutputVariable		|        |
+!  | EnergyManagementSystem:ProgramCallingManager	|        |
+!  | EnergyManagementSystem:Program			|        |
+!-----------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -48,6 +68,7 @@ ref_sys_comp_list = "#{ref_system_name} Compressors List"
     sum_ua_suct_piping = ""
     suction_pipe_zone_name = ""
  end %>
+
 
 Refrigeration:System,
     <%= ref_system_name %>,           !- Name
@@ -141,6 +162,7 @@ Refrigeration:Condenser:AirCooled,
 
 !Afshin Faramarzi and Behzad Rizi, 11/11/2024 - added EnergyManagementSystem to the model to control saturated condensing temperature 	
 <% if (cond_floating) %>
+
 <% if (condenser_type == "EvaporativelyCooled")
 iv_output_var = "Site Outdoor Air Wetbulb Temperature"
 else

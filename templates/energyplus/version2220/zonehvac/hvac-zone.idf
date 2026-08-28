@@ -1,4 +1,37 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone						|        |
+!  | DesignSpecification:ZoneAirDistribution			|        |
+!  | DesignSpecification:OutdoorAir				|        |
+!  | Schedule:Compact						|   X    |
+!  | ZoneControl:Thermostat					|        |
+!  | Schedule:Constant						|        |
+!  | ThermostatSetpoint:SingleHeating				|        |
+!  | ThermostatSetpoint:SingleCooling				|        |
+!  | ThermostatSetpoint:DualSetpoint				|        |
+!  | SetpointManager:SingleZone:Humidity:Minimum		|        |
+!  | SetpointManager:SingleZone:Humidity:Maximum		|        |
+!  | ZoneControl:Humidistat					|        |
+!  | ZoneHVAC:EquipmentConnections				|        |
+!  | ZoneHVAC:EquipmentList					|   X    |
+!  | NodeList							|   X    |
+!  | ZoneHVAC:IdealLoadsAirSystem				|        |
+!  | OutdoorAir:Node						|        |
+!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
+!  | ZoneHVAC:Baseboard:Convective:Water			|        |
+!  | ZoneHVAC:UnitHeater					|        |
+!  | Fan:ConstantVolume						|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Electric					|        |
+!  | Coil:Heating:Water						|        |
+!  | Fan:ZoneExhaust						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -478,37 +511,6 @@ Version, 22.2;
 !x!else
 !x!  iv_des_spec_zone_air_dist = ""
 !x!end %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Sizing:Zone						|        |
-!  | DesignSpecification:ZoneAirDistribution			|        |
-!  | DesignSpecification:OutdoorAir				|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneControl:Thermostat					|        |
-!  | Schedule:Constant						|        |
-!  | ThermostatSetpoint:SingleHeating				|        |
-!  | ThermostatSetpoint:SingleCooling				|        |
-!  | ThermostatSetpoint:DualSetpoint				|        |
-!  | SetpointManager:SingleZone:Humidity:Minimum		|        |
-!  | SetpointManager:SingleZone:Humidity:Maximum		|        |
-!  | ZoneControl:Humidistat					|        |
-!  | ZoneHVAC:EquipmentConnections				|        |
-!  | ZoneHVAC:EquipmentList					|   X    |
-!  | NodeList							|   X    |
-!  | ZoneHVAC:IdealLoadsAirSystem				|        |
-!  | OutdoorAir:Node						|        |
-!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
-!  | ZoneHVAC:Baseboard:Convective:Water			|        |
-!  | ZoneHVAC:UnitHeater					|        |
-!  | Fan:ConstantVolume						|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Fan:ZoneExhaust						|        |
-!-------------------------------------------------------------------------
-!
 
 !x!
 Sizing:Zone,

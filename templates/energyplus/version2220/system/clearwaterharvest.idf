@@ -1,4 +1,16 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Shading:Site:Detailed					|        |
+!  | WaterUse:RainCollector					|        |
+!  | WaterUse:Storage						|        |
+!  | Schedule:Compact						|   X    |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "total_roof_area"
 !x!
@@ -26,16 +38,6 @@ Version, 22.2;
 !x!z_origin = 0.0 # Lowest z-coordinate value of rainwater collector
 !x!collector_length = Math.sqrt(total_roof_area) # assumes roof is square
 !x!%>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Shading:Site:Detailed					|        |
-!  | WaterUse:RainCollector					|        |
-!  | WaterUse:Storage						|        |
-!  | Schedule:Compact						|   X    |
-!-------------------------------------------------------------------------
-!
 
 !x!<% if (rainwater_harvest) %>
 Shading:Site:Detailed,

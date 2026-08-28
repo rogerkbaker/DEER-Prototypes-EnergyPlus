@@ -1,3 +1,16 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Foundation:Kiva:Settings				|        |
+!  | Foundation:Kiva					|        |
+!  | Material						|        |
+!-----------------------------------------------------------------
+!
+
 <%#INITIALIZE
 parameter "foundation_type", :name => "Foundation Type", :description => "Foundation type",
   :domain => String,  # ["None", "Full Slab", "Interior Horizontal", "Interior Vertical", "Exterior Horizontal", "Exterior Vertical"]
@@ -31,53 +44,53 @@ Foundation:Kiva:Settings,
   Timestep;       !- Simulation Timestep
 
 <% if (foundation_type == "Interior Horizontal")
-    iv_int_horiz_ins_mat_name = Slab_Insulation
-    iv_int_horiz_ins_depth = slab_insulation_extent
+    int_horiz_ins_mat_name = Slab_Insulation
+    int_horiz_ins_depth = slab_insulation_extent
  else
-    iv_int_horiz_ins_mat_name = ""
-    iv_int_horiz_ins_depth = ""
+    int_horiz_ins_mat_name = ""
+    int_horiz_ins_depth = ""
 end %>
 
 <% if (foundation_type == "Interior Vertical")
-    iv_int_vert_ins_mat_name = "Slab_Insulation"
-    iv_int_vert_ins_depth = slab_insulation_extent
+    int_vert_ins_mat_name = "Slab_Insulation"
+    int_vert_ins_depth = slab_insulation_extent
   else
-    iv_int_vert_ins_mat_name = ""
-    iv_int_vert_ins_depth = ""
+    int_vert_ins_mat_name = ""
+    int_vert_ins_depth = ""
 end %>
 
 <% if (foundation_type == "Exterior Horizontal")
-    iv_ext_hor_ins_mat_name = "Slab_Insulation"
-    iv_ext_horiz_ins_width = slab_insulation_extent
+    ext_hor_ins_mat_name = "Slab_Insulation"
+    ext_horiz_ins_width = slab_insulation_extent
   else
-    iv_ext_hor_ins_mat_name = ""
-    iv_ext_horiz_ins_width = ""
+    ext_hor_ins_mat_name = ""
+    ext_horiz_ins_width = ""
   end %>
 
 <% if (below_grade_wall_insul > 0)
-    iv_ext_vert_ins_mat_name = "Below_Grade_Wall_Insulation"
-    iv_ext_vert_ins_depth = below_grade_wall_insul_depth
+    ext_vert_ins_mat_name = "Below_Grade_Wall_Insulation"
+    ext_vert_ins_depth = below_grade_wall_insul_depth
   elsif (foundation_type == "Exterior Vertical")
-    iv_ext_vert_ins_mat_name = "Slab_Insulation"
-    iv_ext_vert_ins_depth = slab_insulation_extent
+    ext_vert_ins_mat_name = "Slab_Insulation"
+    ext_vert_ins_depth = slab_insulation_extent
   else
-    iv_ext_vert_ins_mat_name = ""
-    iv_ext_vert_ins_depth = ""
+    ext_vert_ins_mat_name = ""
+    ext_vert_ins_depth = ""
   end %>
 
 Foundation:Kiva,
   Slab Foundation,                         !- Name
   ,                                        !- Initial Indoor Air Temperature {C}
-  <%= iv_int_horiz_ins_mat_name %>,           !- Interior Horizontal Insulation Material Name
+  <%= int_horiz_ins_mat_name %>,           !- Interior Horizontal Insulation Material Name
   ,                                        !- Interior Horizontal Insulation Depth {m}
-  <%= iv_int_horiz_ins_depth %>,              !- Interior Horizontal Insulation Width {m}
-  <%= iv_int_vert_ins_mat_name %>,            !- Interior Vertical Insulation Material Name
-  <%= iv_int_vert_ins_depth %>,               !- Interior Vertical Insulation Depth
-  <%= iv_ext_hor_ins_mat_name %>,            !- Exterior Horizontal Insulation Material Name
+  <%= int_horiz_ins_depth %>,              !- Interior Horizontal Insulation Width {m}
+  <%= int_vert_ins_mat_name %>,            !- Interior Vertical Insulation Material Name
+  <%= int_vert_ins_depth %>,               !- Interior Vertical Insulation Depth
+  <%= ext_hor_ins_mat_name %>,            !- Exterior Horizontal Insulation Material Name
   ,                                        !- Exterior Horizontal Insulation Depth {m}
-  <%= iv_ext_horiz_ins_width %>,              !- Exterior Horizontal Insulation Width {m}
-  <%= iv_ext_vert_ins_mat_name %>,            !- Exterior Vertical Insulation Material Name
-  <%= iv_ext_vert_ins_depth %>,               !- Exterior Vertical Insulation Depth
+  <%= ext_horiz_ins_width %>,              !- Exterior Horizontal Insulation Width {m}
+  <%= ext_vert_ins_mat_name %>,            !- Exterior Vertical Insulation Material Name
+  <%= ext_vert_ins_depth %>,               !- Exterior Vertical Insulation Depth
   0.0,                                     !- Wall Height Above Grade
   0.0,                                     !- Wall Depth Below Slab
   Slab Footing;                            !- Footer Wall Construction

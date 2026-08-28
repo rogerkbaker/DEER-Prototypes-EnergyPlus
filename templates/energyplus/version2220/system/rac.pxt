@@ -1,3 +1,35 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | FluidProperties:GlycolConcentration			|        |
+!  | PlantLoop							|        |
+!  | Sizing:Plant						|        |
+!  | EnergyManagementSystem:Sensor				|        |
+!  | EnergyManagementSystem:Actuator				|        |
+!  | EnergyManagementSystem:GlobalVariable			|        |
+!  | EnergyManagementSystem:OutputVariable			|        |
+!  | EnergyManagementSystem:Program				|        |
+!  | EnergyManagementSystem:ProgramCallingManager		|        |
+!  | PlantEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:HeatingLoad			|        |
+!  | PlantEquipmentOperation:CoolingLoad			|        |
+!  | PlantEquipmentList						|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | BranchList							|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|        |
+!  | Connector:Mixer						|        |
+!  | Branch							|        |
+!  | DistrictHeating						|        |
+!  | DistrictCooling						|        |
+!  | Pipe:Adiabatic						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "ahu_name"
 

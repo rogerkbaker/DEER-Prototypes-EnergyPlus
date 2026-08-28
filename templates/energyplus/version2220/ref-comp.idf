@@ -1,4 +1,16 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:CompressorRack			|        |
+!  | Curve:Quadratic					|        |
+!  | OutdoorAir:Node					|        |
+!  | Refrigeration:CaseAndWalkInList			|   X    |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -20,16 +32,6 @@ Version, 22.2;
 !x!else
 !x!  iv_cond_fan_power_func_temp = rack_name + " FanFuncTempCurve"
 !x!end %>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:CompressorRack			|        |
-!  | Curve:Quadratic					|        |
-!  | OutdoorAir:Node					|        |
-!  | Refrigeration:CaseAndWalkInList			|   X    |
-!-----------------------------------------------------------------
-!
 
 Refrigeration:CompressorRack,
   <%= rack_name %>,        !- Name

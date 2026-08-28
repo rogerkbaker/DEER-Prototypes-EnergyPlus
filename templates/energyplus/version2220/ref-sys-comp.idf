@@ -1,4 +1,14 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:Compressor				|        |
+!  | Curve:Bicubic					|        |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "comp_name"
 !x!parameter "comp_curves_source", :default=>"Carlyle_R-22_Med_06DM808" # (Carlyle_R-22_Low_06CC665 | Carlyle_R-22_Low_06DR718 | Carlyle_R-22_Med_06DM808 | Carlyle_R-22_Med_06DR820 | Copeland_R507_Med_3DS3150ETFE |Copeland_R507_Med_2da3075e | 
@@ -31,14 +41,6 @@ Version, 22.2;
 !x!end
 !x!
 !x!%>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:Compressor				|        |
-!  | Curve:Bicubic					|        |
-!-----------------------------------------------------------------
-!
 
 Refrigeration:Compressor,
     <%= comp_name %>,  !- Name

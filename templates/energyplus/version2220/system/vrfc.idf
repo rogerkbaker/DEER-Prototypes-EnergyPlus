@@ -1,4 +1,21 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | AirConditioner:VariableRefrigerantFlow			|        |
+!  | Schedule:Compact						|   X    |
+!  | ZoneTerminalUnitList					|   X    |
+!  | Branch							|        |
+!  | OutdoorAir:Node						|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Cubic						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Linear						|        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -59,21 +76,6 @@ Version, 22.2;
 !x!  init_hr_heat_energy_frac = 1.0
 !x!  hr_heat_energy_time_const = 0.0
 !x!end %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | AirConditioner:VariableRefrigerantFlow			|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneTerminalUnitList					|   X    |
-!  | Branch							|        |
-!  | OutdoorAir:Node						|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Linear						|        |
-!-------------------------------------------------------------------------
-!
 
 AirConditioner:VariableRefrigerantFlow,
   <%= name %> VRF Heat Pump,           !- Heat Pump Name

@@ -1,13 +1,4 @@
 Version, 22.2;
-!x!<%#INITIALIZE
-!x!parameter "ext_equip_name"
-!x!parameter "power"
-!x!
-!x!parameter "fuel_type", :default=>'Electricity' # (Electricity | NaturalGas | PropaneGas | FuelOilNo1 | FuelOilNo2 | Diesel | Gasoline | Coal | Steam | DistrictHeating | DistrictCooling | OtherFuel1 | OtherFuel2)
-!x!parameter "enduse_subcategory", :default=>"Exterior Equipment"
-!x!parameter "schedule", :default=>"Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1.0;"
-!x!
-!x!%>
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-----------------------------------------------------------------
@@ -18,6 +9,16 @@ Version, 22.2;
 !  | Schedule:Compact					|   X    |
 !-----------------------------------------------------------------
 !
+
+!x!<%#INITIALIZE
+!x!parameter "ext_equip_name"
+!x!parameter "power"
+!x!
+!x!parameter "fuel_type", :default=>'Electricity' # (Electricity | NaturalGas | PropaneGas | FuelOilNo1 | FuelOilNo2 | Diesel | Gasoline | Coal | Steam | DistrictHeating | DistrictCooling | OtherFuel1 | OtherFuel2)
+!x!parameter "enduse_subcategory", :default=>"Exterior Equipment"
+!x!parameter "schedule", :default=>"Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1.0;"
+!x!
+!x!%>
 
 Exterior:FuelEquipment,
   <%= ext_equip_name %>,  !- Name

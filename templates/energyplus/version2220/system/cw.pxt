@@ -1,3 +1,37 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant						|        |
+!  | Schedule:Compact						|   X    |
+!  | CondenserLoop						|        |
+!  | EnergyManagementSystem:Sensor				|        |
+!  | EnergyManagementSystem:Actuator				|        |
+!  | EnergyManagementSystem:Program				|        |
+!  | EnergyManagementSystem:ProgramCallingManager		|        |
+!  | SetpointManager:FollowOutdoorAirTemperature		|        |
+!  | CondenserEquipmentOperationSchemes				|        |
+!  | PlantEquipmentOperation:Uncontrolled			|        |
+!  | PlantEquipmentOperation:CoolingLoad			|        |
+!  | CondenserEquipmentList					|   X    |
+!  | BranchList							|   X    |
+!  | HeaderedPumps:VariableSpeed				|        |
+!  | Pump:ConstantSpeed						|        |
+!  | Branch							|        |
+!  | CoolingTower:SingleSpeed					|        |
+!  | CoolingTower:VariableSpeed					|        |
+!  | CoolingTowerPerformance:CoolTools				|        |
+!  | Curve:Cubic						|        |
+!  | HeatExchanger:FluidToFluid					|        |
+!  | Pipe:Adiabatic						|        |
+!  | ConnectorList						|        |
+!  | Connector:Splitter						|   X    |
+!  | Connector:Mixer						|   X    |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "name"
 parameter "branch_names"
@@ -168,7 +202,6 @@ CondenserEquipmentList,
   <%= name %> Cooling Tower;  !- Equipment 1 Name
 <% end %>
 
-
 BranchList,
   <%= name %> Supply Branches,  !- Name
   <%= name %> Supply Inlet Branch,  !- Branch 1 Name
@@ -184,16 +217,18 @@ BranchList,
   <% end %>
   <%= name %> Supply Equipment Bypass Branch,  !- Branch Name
   <%= name %> Supply Outlet Branch;  !- Branch Name
+!=============
 
+<% if num_towers > 1
+  iv_comp_1_obj_type = "HeaderedPumps:VariableSpeed"
+else
+  iv_comp_1_obj_type = "Pump:ConstantSpeed"
+end %>
 
 Branch,
   <%= name %> Supply Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
-<% if num_towers > 1 %>
-  HeaderedPumps:VariableSpeed,  !- Component 1 Object Type
-<% else %>
-  Pump:ConstantSpeed,      !- Component 1 Object Type
-<% end %>
+  <%= iv_comp_1_obj_type %>,  !- Component 1 Object Type
   <%= name %> Pump,      !- Component 1 Name
   <%= name %> Supply Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Pump Outlet Node;  !- Component 1 Outlet Node Name
@@ -236,19 +271,21 @@ Pump:ConstantSpeed,
 
 <% if num_towers > 1 %>
   <% for i in (1..num_towers) %>
-!=====manual=====
+
+<% if (tower_type == "VARIABLESPEED")
+  iv_comp1_obj_type = "CoolingTower:VariableSpeed"
+elsif (tower_type == "SINGLESPEED")
+  iv_comp1_obj_type = "CoolingTower:SingleSpeed"
+end %>
+
   Branch,
     <%= name %> Cooling Tower <%= i %> Branch,  !- Name
     ,                        !- Pressure Drop Curve Name
-    <% if (tower_type == "VARIABLESPEED") %>
-      CoolingTower:VariableSpeed,  !- Component 1 Object Type
-    <% elsif (tower_type == "SINGLESPEED") %>
-      CoolingTower:SingleSpeed,  !- Component 1 Object Type
-    <% end %>
+    <%= iv_comp1_obj_type %>,
     <%= name %> Cooling Tower <%= i %>, !- Component 1 Name
     <%= name %> Cooling Tower <%= i %> Inlet Node,  !- Component 1 Inlet Node Name
     <%= name %> Cooling Tower <%= i %> Outlet Node;  !- Component 1 Outlet Node Name
-!==========
+
   <% end %>
 <% else %>
 

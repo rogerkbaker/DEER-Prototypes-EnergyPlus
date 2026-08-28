@@ -1,3 +1,44 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | AirLoopHVAC:UnitarySystem					|        |
+!  | Schedule:Compact						|   X    |
+!  | Fan:OnOff							|        |
+!  | Fan:SystemModel						|        |
+!  | Curve:Quartic						|        |
+!  | Fan:VariableVolume						|        |
+!  | Coil:Cooling:DX:SingleSpeed				|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Cubic						|        |
+!  | Coil:Cooling:DX:MultiSpeed					|        |
+!  | Coil:Cooling:WaterToAirHeatPump:EquationFit		|        |
+!  | Curve:QuadLinear						|        |
+!  | Coil:Cooling:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
+!  | Coil:Cooling:Water						|        |
+!  | Branch							|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Gas:MultiStage				|        |
+!  | Coil:Heating:Electric					|        |
+!  | Coil:Heating:DX:SingleSpeed				|        |
+!  | Coil:Heating:DX:MultiSpeed					|        |
+!  | Coil:Heating:WaterToAirHeatPump:EquationFit		|        |
+!  | Coil:Heating:WaterToAirHeatPump:VariableSpeedEquationFit	|        |
+!  | Coil:Heating:Water						|        |
+!  | Coil:Heating:Steam						|        |
+!  | Coil:Heating:Fuel						|        |
+!  | Coil:Heating:Electric					|        |
+!  | UnitarySystemPerformance:Multispeed			|        |
+!  | EnergyManagementSystem:Actuator				|        |
+!  | EnergyManagementSystem:ProgramCallingManager		|        |
+!  | EnergyManagementSystem:Program				|        |
+!  | EnergyManagementSystem:InternalVariableXZ			|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -115,8 +156,7 @@ parameter "dx_crankcase_max_temp", :default => 4.4['C']
 parameter "dx_crankcase_cap", :default => 50['W']
 
 #   coil_dx_type
-#   coil_dx_comp_speed
-#   coil_hp_min_temp   etc.
+#   coil_dx_comp_speed!#   coil_hp_min_temp   etc.
 
 parameter "aux_heat_coil_type", :default => "NONE"  # (COMBUSTION | RESISTANCE | NONE)
 parameter "aux_heat_coil_cap", :default => Autosize
@@ -488,7 +528,6 @@ Schedule:Compact,
   <%= unitary_name %> Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
   <%= op_sch %>;
-
 
 Schedule:Compact,
   <%= unitary_name %> Fan Mode Schedule,  !- Name
@@ -2193,7 +2232,7 @@ Coil:Heating:DX:SingleSpeed,
   OnDemand,                   !- Defrost Control
   ,                     !- Defrost Time Period Fraction
   Autosize;                !- Resistive Defrost Heater Capacity
-!++++++++++
+
 
 <% if dx_type == "PNNL"%>
 ! Following performance curves taken from single-speed DX PNNL model 90.1-2004 (Small Office )
@@ -2356,7 +2395,7 @@ else
   iv_plf_curve4_nm = unitary_name + " HP_Heat-PLF-fPLR4"
   iv_waste_ht_frac_power4 = 0.2
   iv_waste_heat_func_temp_curve4_nm = unitary_name + " HP_Heat-Waste"
- 
+
  end
 end %>
 
@@ -2427,7 +2466,7 @@ Coil:Heating:DX:MultiSpeed,
   <%= iv_plf_curve4_nm %>,  !- Part Load Fraction Correlation Curve Name
   <%= iv_waste_ht_frac_power4 %>,                     !- Rated Waste Heat Fraction of Power Input
   <%= iv_waste_heat_func_temp_curve4_nm %>;  !- Waste Heat Function of Temperature Curve Name
-!++++++++++
+
 
 <% if (dx_comp_speed_num == 2) %>
 ! Following performance curves taken from two-speed ASHP system in BeOpt
@@ -3083,10 +3122,9 @@ Branch,
   <%= unitary_name %> HeatCDemand Inlet Node,  !- Component 1 Inlet Node Name
   <%= unitary_name %> HeatCDemand Outlet Node;  !- Component 1 Outlet Node Name
 
-!+++++++++++
+
 <% elsif (heat_coil_type == "STEAM") %>
 <% # Added for steam boiler variant. Behzad Rizi 2024-01-08 %>
-!---------
 
 <% if (fan_config == "DRAW-THROUGH" and cool_coil_type == "NONE")
   iv_air_inlet_node_nm = unitary_name + " Unitary Inlet Node"

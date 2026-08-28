@@ -1,4 +1,17 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:Case					|        |
+!  | Schedule:Constant					|        |
+!  | Curve:Cubic					|        |
+!  | Schedule:Compact					|  X(1)  |
+!-----------------------------------------------------------------
+!
+
 !x!<%#INITIALIZE
 !x!parameter "case_name"
 !x!parameter "zone_name"
@@ -109,16 +122,6 @@ Version, 22.2;
 !x!else
 !x!  iv_case_cred_frac_sch = ""
 !x!end %>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:Case					|        |
-!  | Schedule:Constant					|        |
-!  | Curve:Cubic					|        |
-!  | Schedule:Compact					|  X(1)  |
-!-----------------------------------------------------------------
-!
 
 Refrigeration:Case,
   <%= case_name %>,        !- Name

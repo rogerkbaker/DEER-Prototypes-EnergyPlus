@@ -1,3 +1,15 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate			|        |
+!  | Schedule:Compact					|        |
+!-----------------------------------------------------------------
+!
+
 <%#INITIALIZE
 parameter "zone_name"  # name of building's zone where entrance doors are located (usually corridor or lobby)
 parameter "building_height" # total floor to ceiling height, leave out sloped roofs

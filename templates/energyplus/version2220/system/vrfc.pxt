@@ -1,3 +1,21 @@
+!Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
+!-------------------------------------------------------------------------
+!  | AirConditioner:VariableRefrigerantFlow			|        |
+!  | Schedule:Compact						|   X    |
+!  | ZoneTerminalUnitList					|   X    |
+!  | Branch							|        |
+!  | OutdoorAir:Node						|        |
+!  | Curve:Biquadratic						|        |
+!  | Curve:Cubic						|        |
+!  | Curve:Quadratic						|        |
+!  | Curve:Linear						|        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -147,13 +165,13 @@ Schedule:Compact,
   Binary Control,          !- Schedule Type Limits Name
   <%= op_sch %>;
 
-
+!===manual===
 ZoneTerminalUnitList,
   <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
 <% EnergyPlus.each(branches) do |zone_name| %>
   <%= zone_name %> Terminal Unit,  !- Zone Terminal Unit Name
 <% end %>
-
+!========
 <% if (cond_type == "WATER") %>
 Branch,
   <%= name %> HR Demand Branch,  !- Name

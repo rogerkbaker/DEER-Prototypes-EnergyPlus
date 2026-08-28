@@ -1,4 +1,15 @@
 Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus 					| Manual |
+!  | Object Name					| Update |
+!-----------------------------------------------------------------
+!  | Refrigeration:WalkIn				|        |
+!  | Schedule:Constant					|        |
+!  | Schedule:Compact					|  X(2)  |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "walkin_name"
 !x!parameter "zone_name"
@@ -38,15 +49,6 @@ Version, 22.2;
 !x!# Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
 !x!parameter "available", :default=> true # (true | false)
 !x!%>
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:WalkIn				|        |
-!  | Schedule:Constant					|        |
-!  | Schedule:Compact					|  X(2)  |
-!-----------------------------------------------------------------
-!
 
 Refrigeration:WalkIn,
     <%= walkin_name %>,           !- Name
