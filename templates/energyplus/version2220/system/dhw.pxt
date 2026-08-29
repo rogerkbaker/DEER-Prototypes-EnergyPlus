@@ -39,7 +39,7 @@ parameter "name"
 parameter "branch_names"
 
 parameter "op_sch",
-  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
 
 parameter "design_temp", :name => "Domestic Hot Water System Supply Temperature", :description => "Domestic hot water system supply temperature",
   :default => 140['F']  # Water heater setpoint and system supply temperature

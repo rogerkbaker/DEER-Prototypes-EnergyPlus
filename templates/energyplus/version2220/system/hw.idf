@@ -101,7 +101,7 @@ Version, 22.2;
 !x!# NOTE: If DIRECTFIRED, it should be on supply side as a heating source.
 !x!# If HOTWATER or STEAM, it should be on demand side and go through normal connections: "zones_names"
 !x!
-!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+!x!parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
 !x!
 !x!%>
 !x!
