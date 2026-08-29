@@ -101,7 +101,7 @@ parameter "chiller_generator_type", :default=>"HOTWATER"  # For absorption chill
 # NOTE: If DIRECTFIRED, it should be on supply side as a heating source.
 # If HOTWATER or STEAM, it should be on demand side and go through normal connections: "zones_names"
 
-parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
 
 %>
 

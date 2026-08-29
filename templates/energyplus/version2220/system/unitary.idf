@@ -47,7 +47,7 @@ Version, 22.2;
 !x!parameter "doas", :default => false
 !x!parameter "control_zone_name", :default => ""
 !x!
-!x!parameter "op_sch", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+!x!parameter "op_sch", :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
 !x!
 !x!parameter "fan_type", :default => "SYSTEM-MODEL" # (ON-OFF | VAV | SYSTEM-MODEL )
 !x!parameter "fan_speed", :default => "CONSTANT"  # (CONSTANT | DUAL| VARIABLE)  Fan:SystemModel allows multi-speed => DUAL
