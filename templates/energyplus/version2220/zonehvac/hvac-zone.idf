@@ -145,14 +145,12 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  default :cool_coil_cop => 3.0
 !x!  force :heat_coil_type => "RESISTANCE"
 !x!  force :aux_heat_coil_type => "NONE"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -165,15 +163,12 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "DX-AIR"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  #default :aux_heat_coil_type => "RESISTANCE"  # already set in rule 'heat_coil_type_dx_air'
 !x!    # shows a warning; could skip the warning if the downstream one is setting the _same_ value.
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -186,15 +181,12 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-WATER"
 !x!  force :heat_coil_type => "DX-WATER"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  #default :aux_heat_coil_type => "RESISTANCE"  # already set in rule 'heat_coil_type_dx_air'
 !x!    # shows a warning; could skip the warning if the downstream one is setting the _same_ value.
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -207,14 +199,11 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.65
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "NONE"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "BASEBOARD-RESISTANCE"
 !x!end
 !x!
@@ -227,15 +216,12 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.75
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "NONE"  # what's the difference between setting to NONE and disabling?
 !x!  disable :aux_heat_coil_type
 !x!  force :dx_type => "SPLIT"
 !x!  default :dx_comp_speed => "VARIABLE"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "BASEBOARD-RESISTANCE"
 !x!end
 !x!
@@ -248,15 +234,12 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.75
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "DX-AIR"
 !x!  disable :aux_heat_coil_type
 !x!  force :dx_type => "SPLIT"
 !x!  default :dx_comp_speed => "VARIABLE"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "NONE"
 !x!end
 !x!
@@ -269,13 +252,11 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.825
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "NONE"
 !x!  default :heat_coil_type => "RESISTANCE"
 !x!  disable :aux_heat_coil_type
 !x!  disable :dx_type
 !x!  disable :dx_comp_speed
-!x!
 !x!  default :oa_type => "NONE"
 !x!  default :sub_heat_type => "NONE"
 !x!end
@@ -296,7 +277,6 @@ Version, 22.2;
 !x!
 !x!rule "hvac_type_sz_cav", :parameters => {:hvac_type => "SZ-CAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  default :fan_speed => "CONSTANT"
 !x!  default :fan_mode => "CONTINUOUS"
 !x!  default :fan_config => "DRAW-THROUGH"
@@ -305,7 +285,6 @@ Version, 22.2;
 !x!  default :fan_return => false
 !x!  default :fan_return_rise => 0.75['in H2O']
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 3.67
 !x!    # problematic gets overridden by rule "cool_coil_type_dx_air"
@@ -313,7 +292,6 @@ Version, 22.2;
 !x!    # ideally (?) setting DX-AIR immediately triggers it's rule? would we want that?
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  force :atu_type => "CAV"
 !x!  force :atu_reheat_coil_type => "NONE"
 !x!end
@@ -360,7 +338,6 @@ Version, 22.2;
 !x!
 !x!rule "hvac_type_mz_cav", :parameters => {:hvac_type => "MZ-CAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  force :fan_speed => "CONSTANT"
 !x!  default :fan_mode => "CONTINUOUS"
 !x!  force :fan_config => "DRAW-THROUGH"
@@ -369,7 +346,6 @@ Version, 22.2;
 !x!  default :fan_motor_eff => 0.85
 !x!  default :fan_return => false
 !x!  force :fan_flow_min_frac => 1.0
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 3.67
 !x!    # problematic gets overridden by rule "cool_coil_type_dx_air"
@@ -378,35 +354,29 @@ Version, 22.2;
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  force :dx_type => "PACKAGED"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  force :atu_type => "CAV"
 !x!  default :atu_reheat_coil_type => "RESISTANCE"
 !x!end
 !x!
 !x!rule "hvac_type_mz_vav", :parameters => {:hvac_type => "MZ-VAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  force :fan_speed => "VARIABLE"
 !x!  force :fan_config => "DRAW-THROUGH"
-!x!
 !x!  # VAV might not be able to cycle the fan at night?
 !x!  #default :fan_mode => "SCHEDULE"
 !x!  default :fan_mode => "CONTINUOUS"
-!x!
 !x!  default :fan_rise => 3.0['in H2O']
 !x!  default :fan_eff => 0.75
 !x!  default :fan_motor_eff => 0.85
 !x!  default :fan_return => true
 !x!  default :fan_return_rise => 2.25['in H2O']   # or rule to set same as fan_rise
 !x!  default :fan_flow_min_frac => 0.25
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 4.5  # see above
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  #, :heat_coil_eff => 0.8, :heat_coil_fuel => "NaturalGas"
 !x!  default :dx_type => "PACKAGED"  # do not force temporarily until rule override in import
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :atu_type => "VAV"  # restrict to VAV*
 !x!  default :atu_reheat_coil_type => "RESISTANCE"
 !x!end
@@ -414,17 +384,13 @@ Version, 22.2;
 !x!rule "hvac_type_mz_vrf", :parameters => {:hvac_type => "MZ-VRF"} do
 !x!  default :oa_type => "DOAS"  # later need "DOAS-SERIES"
 !x!  default :fan_config => "BLOW-THROUGH"
-!x!
 !x!  disable :dx_type
 !x!  disable :dx_comp_speed
-!x!
 !x!end
 !x!
 !x!rule "hvac_type_ideal", :parameters => {:hvac_type => "IDEAL"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!# disable sub_heat and exh_fan
-!x!
 !x!end
 !x!
 !x!# Solaris Technical 2024-05-07 for linked sizing
