@@ -2,23 +2,23 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | ZoneHVAC:AirDistributionUnit				|        |
-!  | AirTerminal:SingleDuct:VAV:NoReheat			|        |
-!  | AirTerminal:SingleDuct:VAV:Reheat				|        |
-!  | AirTerminal:SingleDuct:ConstantVolume:CooledBeam		|        |
-!  | Branch							|        |
-!  | AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction	|        |
-!  | AirLoopHVAC:ZoneMixer					|        |
-!  | Coil:Cooling:Water						|        |
-!  | AirTerminal:SingleDuct:ParallelPIU:Reheat			|        |
-!  | AirTerminal:SingleDuct:SeriesPIU:Reheat			|        |
-!  | AirTerminal:DualDuct:VAV					|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Coil:Heating:Steam						|        |
+!  | ZoneHVAC:AirDistributionUnit                               |        |
+!  | AirTerminal:SingleDuct:VAV:NoReheat                        |        |
+!  | AirTerminal:SingleDuct:VAV:Reheat                          |        |
+!  | AirTerminal:SingleDuct:ConstantVolume:CooledBeam           |        |
+!  | Branch                                                     |        |
+!  | AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction    |        |
+!  | AirLoopHVAC:ZoneMixer                                      |        |
+!  | Coil:Cooling:Water                                         |        |
+!  | AirTerminal:SingleDuct:ParallelPIU:Reheat                  |        |
+!  | AirTerminal:SingleDuct:SeriesPIU:Reheat                    |        |
+!  | AirTerminal:DualDuct:VAV                                   |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Coil:Heating:Steam                                         |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -351,8 +351,6 @@ AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction,
   <%= atu_name %> Inlet Node,  !- Supply Air Inlet Node Name
   <%= atu_name %> Secondary Inlet Node,  !- Induced Air Inlet Node Name
   <%= atu_name %> Outlet Node,  !- Air Outlet Node Name
-  <%= atu_name %> Heating Coil Demand Inlet Node,  !- Hot Water Inlet Node Name
-  <%= atu_name %> Cooling Coil Demand Inlet Node,  !- Cold Water Inlet Node Name
   Coil:Heating:Water,      !- Heating Coil Object Type
   <%= atu_name %> Heating Coil,  !- Heating Coil Name
   Autosize,                !- Maximum Hot Water Flow Rate {m3/s}
