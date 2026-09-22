@@ -2,49 +2,49 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:System						|        |
-!  | AirLoopHVAC						|        |
-!  | NodeList							|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:NightCycle				|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | Schedule:Constant						|        |
-!  | Schedule:Compact						|   X    |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Fan:ConstantVolume						|        |
-!  | Fan:VariableVolume						|        |
-!  | AirLoopHVAC:OutdoorAirSystem				|        |
-!  | AirLoopHVAC:ControllerList					|        |
-!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList			|        |
-!  | OutdoorAir:Node						|        |
-!  | SolarCollector:UnglazedTranspired				|        |
-!  | HeatExchanger:AirToAir:SensibleAndLatent			|        |
-!  | EvaporativeCooler:Indirect:ResearchSpecial			|        |
-!  | Coil:Heating:Water						|        |
-!  | Controller:WaterCoil					|        |
-!  | Coil:Cooling:Water						|        |
-!  | SetpointManager:OutdoorAirPretreat				|        |
-!  | Controller:OutdoorAir					|        |
-!  | Humidifier:Steam:Electric					|        |
-!  | Humidifier:Steam:Gas					|        |
-!  | SetpointManager:MixedAir					|        |
-!  | SetpointManager:Scheduled					|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | SetpointManager:MultiZone:Cooling:Average			|        |
-!  | SetpointManager:SingleZone:Heating				|        |
-!  | SetpointManager:SingleZone:Cooling				|        |
-!  | AirLoopHVAC:SupplyPath					|        |
-!  | AirLoopHVAC:ZoneSplitter					|   X    |
-!  | AirLoopHVAC:ReturnPath					|        |
-!  | AirLoopHVAC:ReturnPlenum					|   X    |
-!  | Construction						|        |
-!  | Material							|        |
-!  | Zone							|        |
+!  | Sizing:System                                              |        |
+!  | AirLoopHVAC                                                |        |
+!  | NodeList                                                   |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:NightCycle                             |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | Schedule:Constant                                          |        |
+!  | Schedule:Compact                                           |   X    |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Fan:VariableVolume                                         |        |
+!  | AirLoopHVAC:OutdoorAirSystem                               |        |
+!  | AirLoopHVAC:ControllerList                                 |        |
+!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList                 |        |
+!  | OutdoorAir:Node                                            |        |
+!  | SolarCollector:UnglazedTranspired                          |        |
+!  | HeatExchanger:AirToAir:SensibleAndLatent                   |        |
+!  | EvaporativeCooler:Indirect:ResearchSpecial                 |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Controller:WaterCoil                                       |        |
+!  | Coil:Cooling:Water                                         |        |
+!  | SetpointManager:OutdoorAirPretreat                         |        |
+!  | Controller:OutdoorAir                                      |        |
+!  | Humidifier:Steam:Electric                                  |        |
+!  | Humidifier:Steam:Gas                                       |        |
+!  | SetpointManager:MixedAir                                   |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | SetpointManager:MultiZone:Cooling:Average                  |        |
+!  | SetpointManager:SingleZone:Heating                         |        |
+!  | SetpointManager:SingleZone:Cooling                         |        |
+!  | AirLoopHVAC:SupplyPath                                     |        |
+!  | AirLoopHVAC:ZoneSplitter                                   |   X    |
+!  | AirLoopHVAC:ReturnPath                                     |        |
+!  | AirLoopHVAC:ReturnPlenum                                   |   X    |
+!  | Construction                                               |        |
+!  | Material                                                   |        |
+!  | Zone                                                       |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -1646,6 +1646,7 @@ BuildingSurface:Detailed,
   Floor,                   !- Surface Type
   <%= ahu_name %> Plenum Construction,  !- Construction Name
   <%= return_plenum_zone_name %>,  !- Zone Name
+  <%= return_plenum_zone_name %>,  !- Space Name
   Adiabatic,               !- Outside Boundary Condition
   ,                        !- Outside Boundary Condition Object
   NoSun,                   !- Sun Exposure

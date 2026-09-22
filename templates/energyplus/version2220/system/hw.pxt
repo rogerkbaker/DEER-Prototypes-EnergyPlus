@@ -2,45 +2,45 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Plant						|        |
-!  | Schedule:Compact						|   X    |
-!  | PlantLoop							|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Schedule:Constant						|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | NodeList							|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | PlantEquipmentOperation:HeatingLoad			|        |
-!  | PlantEquipmentList						|   X    |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:ConstantSpeed						|        |
-!  | Pump:VariableSpeed						|        |
-!  | Pump:VariableSpeed:Condensate				|        |
-!  | Boiler:HotWater						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Bicubic						|        |
-!  | Boiler:Steam						|        |
-!  | DistrictHeating						|        |
-!  | HeatPump:WaterToWater:EquationFit:Heating			|        |
-!  | Generator:MicroCHP						|        |
-!  | Generator:MicroCHP:NonNormalizedParameters			|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Triquadratic						|        |
-!  | Generator:FuelSupply					|        |
-!  | ElectricLoadCenter:Distribution				|        |
-!  | ElectricLoadCenter:Generators				|        |
-!  | Generator:MicroTurbine					|        |
-!  | Pipe:Adiabatic:Steam					|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|   X    |
-!  | Connector:Mixer						|   X    |
+!  | Sizing:Plant                                               |        |
+!  | Schedule:Compact                                           |   X    |
+!  | PlantLoop                                                  |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | NodeList                                                   |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:HeatingLoad                        |        |
+!  | PlantEquipmentList                                         |   X    |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Pump:VariableSpeed:Condensate                              |        |
+!  | Boiler:HotWater                                            |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Bicubic                                              |        |
+!  | Boiler:Steam                                               |        |
+!  | DistrictHeating                                            |        |
+!  | HeatPump:WaterToWater:EquationFit:Heating                  |        |
+!  | Generator:MicroCHP                                         |        |
+!  | Generator:MicroCHP:NonNormalizedParameters                 |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Triquadratic                                         |        |
+!  | Generator:FuelSupply                                       |        |
+!  | ElectricLoadCenter:Distribution                            |        |
+!  | ElectricLoadCenter:Generators                              |        |
+!  | Generator:MicroTurbine                                     |        |
+!  | Pipe:Adiabatic:Steam                                       |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |   X    |
+!  | Connector:Mixer                                            |   X    |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE
@@ -668,16 +668,60 @@ HeatPump:WaterToWater:EquationFit:Heating,
   1,                       !- Rated Source Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
   <%= gshp_heating_capacity %>,  !- Rated Heating Capacity {W}
   <%= gshp_heating_power %>,  !- Rated Heating Power Consumption {W}
-  -3.52, !-3.01,           !- Heating Capacity Coefficient 1
-  0, !-0.51,               !- Heating Capacity Coefficient 2 <%# A non-zero coefficient causes negative capacities since the actual performance is not linear %>
-  4.52,                    !- Heating Capacity Coefficient 3
-  0,                       !- Heating Capacity Coefficient 4
-  0,                       !- Heating Capacity Coefficient 5
-  -8.87,                   !- Heating Compressor Power Coefficient 1
-  8.57,                    !- Heating Compressor Power Coefficient 2
-  1.30,                    !- Heating Compressor Power Coefficient 3
-  0,                       !- Heating Compressor Power Coefficient 4
-  0;                       !- Heating Compressor Power Coefficient 5
+  <%= name %> Heating Source CapacityCurve, !Cap Curve
+  <%= name %> Heating Source PowerCurve, !Power Curve
+  ,
+  ,
+  ;
+
+CURVE:QUADLINEAR ,
+<%= name %> Heating Source CapacityCurve , !- Curve Name
+-3.52, !- CoefficientC1
+0, !- CoefficientC2
+4.52, !- CoefficientC3
+0., !- CoefficientC4
+0., !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+CURVE:QUADLINEAR ,
+<%= name %> Heating Source PowerCurve, !- Curve Name
+-8.87, !- CoefficientC1
+8.57, !- CoefficientC2
+1.30, !- CoefficientC3
+0., !- CoefficientC4
+0., !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+
+! Convert to curves for HPW2W
+!  -3.52, !-3.01,           !- Heating Capacity Coefficient 1
+!  0, !-0.51,               !- Heating Capacity Coefficient 2 <%# A non-zero coefficient causes negative capacities since the actual performance is not linear %>
+!  4.52,                    !- Heating Capacity Coefficient 3
+!  0,                       !- Heating Capacity Coefficient 4
+!  0,                       !- Heating Capacity Coefficient 5
+!  -8.87,                   !- Heating Compressor Power Coefficient 1
+!  8.57,                    !- Heating Compressor Power Coefficient 2
+!  1.30,                    !- Heating Compressor Power Coefficient 3
+!  0,                       !- Heating Compressor Power Coefficient 4
+!  0;                       !- Heating Compressor Power Coefficient 5
 
 Branch,
   <%= name %> GHX Branch,  !- Name

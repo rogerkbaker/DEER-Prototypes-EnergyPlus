@@ -2,41 +2,41 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Plant						|        |
-!  | PlantLoop							|        |
-!  | PlantEquipmentList						|        |
-!  | PlantEquipmentOperation:CoolingLoad			|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Branch							|        |
-!  | HeatExchanger:FluidToFluid					|        |
-!  | Schedule:Compact						|   X    |
-!  | Schedule:Constant						|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | NodeList							|   X    |
-!  | PlantEquipmentList						|   X    |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:LowTemperatureTurnOff			|        |
-!  | OutdoorAir:Node						|        |
-!  | BranchList							|   X    |
-!  | Pump:ConstantSpeed						|        |
-!  | Pump:VariableSpeed						|        |
-!  | Chiller:Electric:ReformulatedEIR				|        |
-!  | Chiller:Electric:EIR					|        |
-!  | ChillerHeater:Absorption:DirectFired			|        |
-!  | Chiller:Absorption:Indirect				|        |
-!  | HeatPump:WaterToWater:EquationFit:Cooling			|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|   X    |
-!  | Connector:Mixer						|        |
-!  | Curve:Bicubic						|        |
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | PlantEquipmentList                                         |        |
+!  | PlantEquipmentOperation:CoolingLoad                        |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Branch                                                     |        |
+!  | HeatExchanger:FluidToFluid                                 |        |
+!  | Schedule:Compact                                           |   X    |
+!  | Schedule:Constant                                          |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | NodeList                                                   |   X    |
+!  | PlantEquipmentList                                         |   X    |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:LowTemperatureTurnOff                  |        |
+!  | OutdoorAir:Node                                            |        |
+!  | BranchList                                                 |   X    |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Chiller:Electric:ReformulatedEIR                           |        |
+!  | Chiller:Electric:EIR                                       |        |
+!  | ChillerHeater:Absorption:DirectFired                       |        |
+!  | Chiller:Absorption:Indirect                                |        |
+!  | HeatPump:WaterToWater:EquationFit:Cooling                  |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Cubic                                                |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |   X    |
+!  | Connector:Mixer                                            |        |
+!  | Curve:Bicubic                                              |        |
 !-------------------------------------------------------------------------
 !
 
@@ -685,43 +685,42 @@ OutdoorAir:Node,
 !x!  iv_condenser_type = "EvaporativelyCooled"
 !x!end %>
 !x!
-!x!ChillerHeater:Absorption:DirectFired,
-!x!  <%= name %> Chiller <%= i %>,             !- Name
-!x!  Autosize,                  !- Nominal Cooling Capacity {W}
-!x!  0.8,                     !- Heating to Cooling Capacity Ratio
-!x!  0.97,                    !- Fuel Input to Cooling Output Ratio
-!x!  1.25,                    !- Fuel Input to Heating Output Ratio
-!x!  0.01,                    !- Electric Input to Cooling Output Ratio
-!x!  0.005,                       !- Electric Input to Heating Output Ratio
-!x!  <%= name %> Chiller <%= i %> Inlet Node,  !- Chilled Water Inlet Node Name
-!x!  <%= name %> Supply Equipment Outlet Node <%= i %>, !- Chilled Water Outlet Node Name
-!x!  <%= iv_cond_inlet_node %>,  !- Condenser Inlet Node Name
-!x!  <%= iv_cond_outlet_node %>,  !- Condenser Outlet Node Name
-!x!  <%= name %> Heat <%= i %> Inlet Node,  !- Hot Water Inlet Node Name
-!x!  <%= name %> Heat <%= i %> Outlet Node,  !- Hot Water Outlet Node Name
-!x!  0.000001,                     !- Minimum Part Load Ratio
-!x!  1.0,                     !- Maximum Part Load Ratio
-!x!  0.6,                     !- Optimum Part Load Ratio
-!x!  29,                      !- Design Entering Condenser Water Temperature {C}
-!x!  7,                       !- Design Leaving Chilled Water Temperature {C}
-!x!  <%= design_flow %>,                  !- Design Chilled Water Flow Rate {m3/s}
-!x!  Autosize,                  !- Design Condenser Water Flow Rate {m3/s}
-!x!  Autosize,                  !- Design Hot Water Flow Rate {m3/s}
-!x!  <%= name %> GasAbsFlatBiQuad,        !- Cooling Capacity Function of Temperature Curve Name
-!x!  <%= name %> GasAbsFlatBiQuad,        !- Fuel Input to Cooling Output Ratio Function of Temperature Curve Name
-!x!  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
-!x!  <%= name %> GasAbsFlatBiQuad,        !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
-!x!  <%= name %> GasAbsFlatQuad,          !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
-!x!  <%= name %> GasAbsInvLinearQuad,     !- Heating Capacity Function of Cooling Capacity Curve Name
-!x!  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Heat Output Ratio During Heating Only Operation Curve Name
-!x!  EnteringCondenser,       !- Temperature Curve Input Variable
-!x!  <%= iv_condenser_type %>,               !- Condenser Type
-!x!  2,                       !- Chilled Water Temperature Lower Limit {C}
-!x!  0,                       !- Fuel Higher Heating Value {kJ/kg}
-!x!  VariableFlow,            !- Chiller Flow Mode
-!x!  NaturalGas,              !- Fuel Type
-!x!  <%= chiller_sizing %>;                        !- Sizing Factor
-!x!
+ChillerHeater:Absorption:DirectFired,
+  <%= name %> Chiller <%= i %>,             !- Name
+  Autosize,                  !- Nominal Cooling Capacity {W}
+  0.8,                     !- Heating to Cooling Capacity Ratio
+  0.97,                    !- Fuel Input to Cooling Output Ratio
+  1.25,                    !- Fuel Input to Heating Output Ratio
+  0.01,                    !- Electric Input to Cooling Output Ratio
+  0.005,                       !- Electric Input to Heating Output Ratio
+  <%= name %> Chiller <%= i %> Inlet Node,  !- Chilled Water Inlet Node Name
+  <%= name %> Supply Equipment Outlet Node <%= i %>, !- Chilled Water Outlet Node Name
+  <%= iv_cond_inlet_node %>,  !- Condenser Inlet Node Name
+  <%= iv_cond_outlet_node %>,  !- Condenser Outlet Node Name
+  <%= name %> Heat <%= i %> Inlet Node,  !- Hot Water Inlet Node Name
+  <%= name %> Heat <%= i %> Outlet Node,  !- Hot Water Outlet Node Name
+  0.000001,                     !- Minimum Part Load Ratio
+  1.0,                     !- Maximum Part Load Ratio
+  0.6,                     !- Optimum Part Load Ratio
+  29,                      !- Design Entering Condenser Water Temperature {C}
+  7,                       !- Design Leaving Chilled Water Temperature {C}
+  <%= design_flow %>,                  !- Design Chilled Water Flow Rate {m3/s}
+  Autosize,                  !- Design Condenser Water Flow Rate {m3/s}
+  Autosize,                  !- Design Hot Water Flow Rate {m3/s}
+  <%= name %> GasAbsFlatBiQuad,        !- Cooling Capacity Function of Temperature Curve Name
+  <%= name %> GasAbsFlatBiQuad,        !- Fuel Input to Cooling Output Ratio Function of Temperature Curve Name
+  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
+  <%= name %> GasAbsFlatBiQuad,        !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
+  <%= name %> GasAbsFlatQuad,          !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
+  <%= name %> GasAbsInvLinearQuad,     !- Heating Capacity Function of Cooling Capacity Curve Name
+  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Heat Output Ratio During Heating Only Operation Curve Name
+  EnteringCondenser,       !- Temperature Curve Input Variable
+  <%= iv_condenser_type %>,               !- Condenser Type
+  2,                       !- Chilled Water Temperature Lower Limit {C}
+  0,                       !- Fuel Higher Heating Value {kJ/kg}
+  NaturalGas,              !- Fuel Type
+  <%= chiller_sizing %>;                        !- Sizing Factor
+
 
 !x!<% if (chiller_condenser == "WATERCOOLED") %>
 Branch,
@@ -828,26 +827,69 @@ Sizing:Plant,
 
 !x!<% gshp_cooling_power = gshp_cooling_capacity / gshp_cooling_cop %>
 !x!
-!x!HeatPump:WaterToWater:EquationFit:Cooling,
-!x!  <%= name %> Chiller <%= i %>,  !- Name
-!x!  <%= name %> Chiller Water Inlet Node <%= i %>,  !- Source Side Inlet Node Name
-!x!  <%= name %> Chiller Water Outlet Node <%= i %>,  !- Source Side Outlet Node Name
-!x!  <%= name %> Chiller Inlet Node <%= i %>,  !- Load Side Inlet Node Name
-!x!  <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Load Side Outlet Node Name
-!x!  1,                       !- Rated Load Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
-!x!  1,                       !- Rated Source Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
-!x!  <%= gshp_cooling_capacity %>,  !- Rated Cooling Capacity {W}
-!x!  <%= gshp_cooling_power %>,  !- Rated Cooling Power Consumption {W}
-!x!  -1.15,                   !- Cooling Capacity Coefficient 1
-!x!  3.47,                    !- Cooling Capacity Coefficient 2
-!x!  -1.32,                   !- Cooling Capacity Coefficient 3
-!x!  0,                       !- Cooling Capacity Coefficient 4
-!x!  0,                       !- Cooling Capacity Coefficient 5
-!x!  -8.65,                   !- Cooling Compressor Power Coefficient 1
-!x!  0.96,                    !- Cooling Compressor Power Coefficient 2
-!x!  8.69,                    !- Cooling Compressor Power Coefficient 3
-!x!  0,                       !- Cooling Compressor Power Coefficient 4
-!x!  0;                       !- Cooling Compressor Power Coefficient 5
+HeatPump:WaterToWater:EquationFit:Cooling,
+  <%= name %> Chiller <%= i %>,  !- Name
+  <%= name %> Chiller Water Inlet Node <%= i %>,  !- Source Side Inlet Node Name
+  <%= name %> Chiller Water Outlet Node <%= i %>,  !- Source Side Outlet Node Name
+  <%= name %> Chiller Inlet Node <%= i %>,  !- Load Side Inlet Node Name
+  <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Load Side Outlet Node Name
+  1,                       !- Rated Load Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
+  1,                       !- Rated Source Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
+  <%= gshp_cooling_capacity %>,  !- Rated Cooling Capacity {W}
+  <%= gshp_cooling_power %>,  !- Rated Cooling Power Consumption {W}
+<%= name %> Chiller <%= i %> CapacityCurve, ! Cap Curve Name
+<%= name %> Chiller <%= i %> PowerCurve, ! Power Curve Name
+,
+,
+;
+
+CURVE:QUADLINEAR ,
+<%= name %> Chiller <%= i %> CapacityCurve , !- Curve Name
+-1.15, !- CoefficientC1
+3.47, !- CoefficientC2
+-1.32, !- CoefficientC3
+0., !- CoefficientC4
+0., !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+CURVE:QUADLINEAR ,
+<%= name %> Chiller <%= i %> PowerCurve, !- Curve Name
+-8.65, !- CoefficientC1
+0.96, !- CoefficientC2
+8.69, !- CoefficientC3
+0., !- CoefficientC4
+0., !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+! Coefficients replaced by curves for HPW2W
+!  -1.15,                   !- Cooling Capacity Coefficient 1
+!  3.47,                    !- Cooling Capacity Coefficient 2
+!  -1.32,                   !- Cooling Capacity Coefficient 3
+!  0,                       !- Cooling Capacity Coefficient 4
+!  0,                       !- Cooling Capacity Coefficient 5
+!  -8.65,                   !- Cooling Compressor Power Coefficient 1
+!  0.96,                    !- Cooling Compressor Power Coefficient 2
+!  8.69,                    !- Cooling Compressor Power Coefficient 3
+!  0,                       !- Cooling Compressor Power Coefficient 4
+!  0;                       !- Cooling Compressor Power Coefficient 5
 
 Branch,
   <%= name %> GHX Demand Branch <%= i %>,  !- Name
@@ -1089,6 +1131,61 @@ HeatPump:WaterToWater:EquationFit:Cooling,
     <%= chiller_hr_source_flow %>,                !- Rated Source Side Flow Rate {m3/s}
     <%= chiller_hr_cap %>,                !- Rated Cooling Capacity {W}
     <%= chiller_hr_power %>,                 !- Rated Cooling Power Consumption {W}
+Heat Recovery Chiller CapacityCurve, ! Cap Curve Name
+Heat Recovery Chiller PowerCurve, ! Power Curve Name
+,
+,
+;
+
+CURVE:QUADLINEAR ,
+Heat Recovery Chiller CapacityCurve , !- Curve Name
+1, !- CoefficientC1
+0, !- CoefficientC2
+0, !- CoefficientC3
+0, !- CoefficientC4
+0, !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+CURVE:QUADLINEAR ,
+Heat Recovery Chiller PowerCurve, !- Curve Name
+1, !- CoefficientC1
+0, !- CoefficientC2
+0, !- CoefficientC3
+0, !- CoefficientC4
+0, !- CoefficientC5
+, !- Minimum Value of w
+, !- Maximum Value of w
+, !- Minimum Value of x
+, !- Maximum Value of x
+, !- Minimum Value of y
+, !- Maximum Value of y
+, !- Minimum Value of z
+, !- Maximum Value of z
+, !- Minimum Curve Output
+; !- Maximum Curve Output
+
+! Coefficients replaced by curves for HPW2W
+!    1,!-1.15,                   !- Cooling Capacity Coefficient 1
+!    0,!3.47,                    !- Cooling Capacity Coefficient 2
+!    0,!-1.32,                   !- Cooling Capacity Coefficient 3
+!    0,!0,                       !- Cooling Capacity Coefficient 4
+!    0,!0,                       !- Cooling Capacity Coefficient 5
+!    1,!-8.65,                   !- Cooling Compressor Power Coefficient 1
+!    0,!0.96,                    !- Cooling Compressor Power Coefficient 2
+!    0,!8.69,                    !- Cooling Compressor Power Coefficient 3
+!    0,!0,              !- Cooling Compressor Power Coefficient 4
+!    0;!0;             !- Cooling Compressor Power Coefficient 5
+
+! Prior Coefficients no nonger used
 !    -0.0000165512319654226,             !- Cooling Capacity Coefficient 1
 !    0.0000349043402820826,              !- Cooling Capacity Coefficient 2
 !    -0.0000140930060297251,             !- Cooling Capacity Coefficient 3
@@ -1099,16 +1196,6 @@ HeatPump:WaterToWater:EquationFit:Cooling,
 !    0.206641840515658,              !- Cooling Compressor Power Coefficient 3
 !    -6.69008616963401,              !- Cooling Compressor Power Coefficient 4
 !    7.66500853002071;             !- Cooling Compressor Power Coefficient 5
-    1,!-1.15,                   !- Cooling Capacity Coefficient 1
-    0,!3.47,                    !- Cooling Capacity Coefficient 2
-    0,!-1.32,                   !- Cooling Capacity Coefficient 3
-    0,!0,                       !- Cooling Capacity Coefficient 4
-    0,!0,                       !- Cooling Capacity Coefficient 5
-    1,!-8.65,                   !- Cooling Compressor Power Coefficient 1
-    0,!0.96,                    !- Cooling Compressor Power Coefficient 2
-    0,!8.69,                    !- Cooling Compressor Power Coefficient 3
-    0,!0,              !- Cooling Compressor Power Coefficient 4
-    0;!0;             !- Cooling Compressor Power Coefficient 5
 
 SetpointManager:Scheduled,
   <%= name %> Chiller Heat Recovery Setpoint Manager,  !- Name

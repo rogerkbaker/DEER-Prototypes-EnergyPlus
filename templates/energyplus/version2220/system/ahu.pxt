@@ -1646,6 +1646,7 @@ BuildingSurface:Detailed,
   Floor,                   !- Surface Type
   <%= ahu_name %> Plenum Construction,  !- Construction Name
   <%= return_plenum_zone_name %>,  !- Zone Name
+  <%= return_plenum_zone_name %>,  !- Space Name
   Adiabatic,               !- Outside Boundary Condition
   ,                        !- Outside Boundary Condition Object
   NoSun,                   !- Sun Exposure
