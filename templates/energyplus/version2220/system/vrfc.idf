@@ -2,18 +2,18 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | AirConditioner:VariableRefrigerantFlow			|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneTerminalUnitList					|   X    |
-!  | Branch							|        |
-!  | OutdoorAir:Node						|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Linear						|        |
+!  | AirConditioner:VariableRefrigerantFlow                     |        |
+!  | Schedule:Compact                                           |        |
+!  | ZoneTerminalUnitList                                       |        |
+!  | Branch                                                     |        |
+!  | OutdoorAir:Node                                            |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Cubic                                                |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Linear                                               |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -160,18 +160,18 @@ AirConditioner:VariableRefrigerantFlow,
   <%= init_hr_heat_energy_frac %> ,                     !- Initial Heat Recovery Heating Energy Fraction
   <%= hr_heat_energy_time_const %> ;                     !- Heat Recovery Heating Energy Time Constant {hr}
 
-!x!Schedule:Compact,
-!x!  <%= name %> Operation Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= op_sch %>;
+Schedule:Compact,
+  <%= name %> Operation Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= op_sch %>;
 
-!===manual===
-!x!ZoneTerminalUnitList,
-!x!  <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
-!x!<% EnergyPlus.each(branches) do |zone_name| %>
-!x!  <%= zone_name %> Terminal Unit,  !- Zone Terminal Unit Name
-!x!<% end %>
-!========
+!x!<%iv_branchlist = branch_names.join(" Terminal Unit,\n")%>
+
+ZoneTerminalUnitList,
+  <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
+  <%= iv_branchlist %> Terminal Unit;  !- Zone Terminal Unit Name
+
+
 !x!<% if (cond_type == "WATER") %>
 Branch,
   <%= name %> HR Demand Branch,  !- Name

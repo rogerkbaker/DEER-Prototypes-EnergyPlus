@@ -1,13 +1,13 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:AirChiller				|        |
-!  | Schedule:Compact					|  X(2)  |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:AirChiller                                   |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
 !x!parameter "chiller_name"
@@ -94,14 +94,14 @@ Version, 22.2;
     Interpolate:No,          !- Field 3
     Until: 24:00,1;          !- Field 4
 
-!x!  Schedule:Compact,
-!x!    <%= chiller_name %> htg power sch, !- Name
-!x!    ON/OFF,                  !- Schedule Type Limits Name
-!x!    <%= htg_power_sch %>;
+  Schedule:Compact,
+    <%= chiller_name %> htg power sch, !- Name
+    ON/OFF,                  !- Schedule Type Limits Name
+    <%= htg_power_sch %>;
 
-!x!  Schedule:Compact,
-!x!    <%= chiller_name %> defrost sch,!- Name
-!x!    ON/OFF,                  !- Schedule Type Limits Name
-!x!    <%= defrost_sch %>;
+  Schedule:Compact,
+    <%= chiller_name %> defrost sch,!- Name
+    ON/OFF,                  !- Schedule Type Limits Name
+    <%= defrost_sch %>;
 
   

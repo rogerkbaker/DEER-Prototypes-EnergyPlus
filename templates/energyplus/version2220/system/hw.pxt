@@ -1099,16 +1099,16 @@ Connector:Mixer,
 !  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
   <%= iv_gen_branch %>;  !- Branch Name
 !  <%= name %> Supply Bypass Branch;  !- Inlet Branch 2 Name
-!====manual====
+
+<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
+
 BranchList,
   <%= name %> Demand Branches,!- Name
   <%= name %> Demand Inlet Branch,  !- Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Branch Name
-<% end %>
+  <%= iv_branchlist%> HW Branch,  !- Branch Name
   <%= name %> Demand Bypass Branch,  !- Branch Name
   <%= name %> Demand Outlet Branch;  !- Branch Name
-!=====
+
 Branch,
   <%= name %> Demand Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -1183,20 +1183,18 @@ ConnectorList,
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
 !====manual====
+<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
+
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
   <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Outlet Branch Name
-<% end %>
+<%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
   <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
 
 Connector:Mixer,
   <%= name %> Demand Mixer,   !- Name
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Inlet Branch Name
-<% end %>
+<%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
   <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
 !========
 <% if (chiller_cond_hr) || (chiller_heatpump_hr) %>

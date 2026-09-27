@@ -794,26 +794,34 @@ ZoneHVAC:EquipmentList,
   ,                        !- Zone Equipment Sequential Heating Fraction
 <% end %>
 
+<%iv_branchlist = inlet_branches.join(" Outlet Node,\n")%>
 NodeList,
   <%= zone_name %> Inlet Nodes,  !- Name
-<% EnergyPlus.each(inlet_branches) do |branch| %>
-  <%= branch %> Outlet Node,  !- Node Name
-<% end %>
+  <%= iv_branchlist %> Outlet Node;  !- Node Name
+!<% EnergyPlus.each(inlet_branches) do |branch| %>
+!  <%= branch %> Outlet Node,  !- Node Name
+!<% end %>
+
 
 <% if (not exhaust_branches.empty?) %>
+<%iv_branchlist = exhaust_branches.join(" Outlet Node,\n")%>
+
 NodeList,
   <%= zone_name %> Exhaust Nodes,  !- Name
-<% EnergyPlus.each(exhaust_branches) do |branch| %>
-  <%= branch %> Inlet Node,  !- Node Name
-<% end %>
+  <%= iv_branchlist %> Inlet Node;  !- Node Name
+!<% EnergyPlus.each(exhaust_branches) do |branch| %>
+!  <%= branch %> Inlet Node,  !- Node Name
+!<% end %>
 <% end %>
 
 <% if (not return_branches.empty?) %>
+<%iv_branchlist = return_branches.join(" Return Node,\n")%>
 NodeList,
   <%= zone_name %> Return Nodes,  !- Name
-<% EnergyPlus.each(return_branches) do |branch| %>
-  <%= branch %> Return Node,  !- Node Name
-<% end %>
+  <%= iv_branchlist %> Return Node;  !- Node Name
+!<% EnergyPlus.each(return_branches) do |branch| %>
+!  <%= branch %> Return Node,  !- Node Name
+!<% end %>
 <% end %>
 !======
 <%

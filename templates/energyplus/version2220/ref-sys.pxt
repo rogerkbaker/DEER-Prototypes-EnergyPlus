@@ -85,19 +85,25 @@ Refrigeration:System,
     <%= suction_pipe_zone_name %>,                        !- Suction Piping Zone Name
     <%= enduse_subcategory %>;           !- End-Use Subcategory
 
-!===manual===
+
+<%iv_caselist = case_walkin_names.join(",\n")%>
+
 Refrigeration:CaseAndWalkInList,
   <%= case_walkin_list %>,   !- Name
-<% EnergyPlus.each(case_walkin_names) do |case_walkin_name| %>
-  <%= case_walkin_name %>,  !- Case or WalkIn Name
-<% end %>
+  <%= iv_caselist %>;  !- Case or WalkIn Name
+!<% EnergyPlus.each(case_walkin_names) do |case_walkin_name| %>
+!  <%= case_walkin_name %>,  !- Case or WalkIn Name
+!<% end %>
+
+<%iv_complist = ref_sys_comp_names.join(",\n")%>
 
 Refrigeration:CompressorList,
   <%= ref_sys_comp_list %>,   !- Name
-<% EnergyPlus.each(ref_sys_comp_names) do |ref_sys_comp_name| %>
-  <%= ref_sys_comp_name %>,  !- Refrigeration Compressor Name
-<% end %>
-!======
+  <%= iv_complist %>;  !- Refrigeration Compressor Name
+!<% EnergyPlus.each(ref_sys_comp_names) do |ref_sys_comp_name| %>
+!  <%= ref_sys_comp_name %>,  !- Refrigeration Compressor Name
+!<% end %>
+
 
 <% if (condenser_type == "AirCooled") %>
 Refrigeration:Condenser:AirCooled,

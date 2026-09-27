@@ -12,7 +12,7 @@
 !  | SetpointManager:FollowGroundTemperature			|        |
 !  | CondenserEquipmentOperationSchemes				|        |
 !  | CondenserEquipmentList					|        |
-!  | BranchList							|   X    |
+!  | BranchList							|        |
 !  | Branch							|        |
 !  | Pump:VariableSpeed						|        |
 !  | GroundHeatExchanger:Vertical				|        |
@@ -281,13 +281,13 @@ Connector:Mixer,
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch,  !- Inlet Branch 1 Name
   <%= system_name %> Supply Equipment Bypass Branch;  !- Inlet Branch 2 Name
-!====manual====
+
+<%iv_branchlist = zone_names.join(" GHX Demand Branch,\n")%>
+
 BranchList,
   <%= system_name %> Demand Branches,!- Name
   <%= system_name %> Demand Inlet Branch,  !- Branch Name
-<% for zone_name in zone_names %>
-  <%= zone_name %> GHX Demand Branch,  !- Branch Name
-<% end %>
+  <%= iv_branchlist %> GHX Demand Branch,  !- Branch Name
   <%= system_name %> Demand Bypass Branch,  !- Branch Name
   <%= system_name %> Demand Outlet Branch;  !- Branch Name
 
@@ -336,20 +336,16 @@ ConnectorList,
   <%= system_name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= system_name %> Demand Mixer;   !- Connector 2 Name
-!====manual=====
+
+<%iv_branchlist = zone_names.join(" GHX Demand Branch,\n")%>
 Connector:Splitter,
   <%= system_name %> Demand Splitter,!- Name
   <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for zone_name in zone_names %>
-  <%= zone_name %> GHX Demand Branch,  !- Outlet Branch Name
-<% end %>
+  <%= iv_branchlist %> GHX Demand Branch,  !- Outlet Branch Name
   <%= system_name %> Demand Bypass Branch;  !- Outlet Branch Name
 
 Connector:Mixer,
   <%= system_name %> Demand Mixer,   !- Name
   <%= system_name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for zone_name in zone_names %>
-  <%= zone_name %> GHX Demand Branch,  !- Inlet Branch Name
-<% end %>
+  <%= iv_branchlist %> GHX Demand Branch,  !- Inlet Branch Name
   <%= system_name %> Demand Bypass Branch;  !- Inlet Branch Name
-!===========

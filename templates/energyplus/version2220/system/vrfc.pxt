@@ -165,13 +165,15 @@ Schedule:Compact,
   Binary Control,          !- Schedule Type Limits Name
   <%= op_sch %>;
 
-!===manual===
+
+<%iv_branchlist = branch_names.join(" Terminal Unit,\n")%>
+
 ZoneTerminalUnitList,
   <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
-<% EnergyPlus.each(branches) do |zone_name| %>
-  <%= zone_name %> Terminal Unit,  !- Zone Terminal Unit Name
-<% end %>
-!========
+!<% EnergyPlus.each(branches) do |zone_name| %>
+  <%= iv_branchlist %> Terminal Unit,  !- Zone Terminal Unit Name
+!<% end %>
+
 <% if (cond_type == "WATER") %>
 Branch,
   <%= name %> HR Demand Branch,  !- Name

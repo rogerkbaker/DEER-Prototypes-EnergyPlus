@@ -2,11 +2,11 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
+!  | EnergyPlus                                         | Manual |
+!  | Object Name                                        | Update |
 !-----------------------------------------------------------------
-!  | ZoneMixing						|        |
-!  | Schedule:Compact					|   X    |
+!  | ZoneMixing                                         |        |
+!  | Schedule:Compact                                   |        |
 !-----------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -32,7 +32,7 @@ ZoneMixing,
   <%= source_zone_name %>,                  !- Source Zone Name
   0.0;                     !- Delta Temperature {deltaC}
 
-!x!Schedule:Compact,
-!x!  <%= zone_name + " : " + source_zone_name%> Air Mixing Schedule,       !- Schedule Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= mixing_schedule %>;
+Schedule:Compact,
+  <%= zone_name + " : " + source_zone_name%> Air Mixing Schedule,       !- Schedule Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= mixing_schedule %>;

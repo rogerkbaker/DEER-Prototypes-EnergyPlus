@@ -1,22 +1,22 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneInfiltration:DesignFlowRate			|        |
-!  | Schedule:Compact					|   X    |
-!  | Lights						|        |
-!  | ElectricEquipment					|        |
-!  | GasEquipment					|        |
-!  | People						|        |
-!  | Schedule:Constant					|        |
-!  | WaterUse:Connections				|        |
-!  | WaterUse:Equipment					|        |
-!  | Branch						|        |
-!  | InternalMass					|        |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate                            |        |
+!  | Schedule:Compact                                           |        |
+!  | Lights                                                     |        |
+!  | ElectricEquipment                                          |        |
+!  | GasEquipment                                               |        |
+!  | People                                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | WaterUse:Connections                                       |        |
+!  | WaterUse:Equipment                                         |        |
+!  | Branch                                                     |        |
+!  | InternalMass                                               |        |
+!-------------------------------------------------------------------------
 !
 
 !x!<%#INITIALIZE
@@ -170,10 +170,10 @@ ZoneInfiltration:DesignFlowRate,
 
 !x!<% if (infil_ach > 0.0 or infil_area_adj > 0.0) && (infiltration_method != "NONE") %>
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Infiltration Schedule,  !- Name
-!x!  Any Number,           !- Schedule Type Limits Name
-!x!  <%= infil_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Infiltration Schedule,  !- Name
+  Any Number,           !- Schedule Type Limits Name
+  <%= infil_sch %>;
 
 !x!<% end %>
 
@@ -192,10 +192,10 @@ Lights,
   1,                       !- Fraction Replaceable
   GeneralLights;           !- End-Use Subcategory
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Lighting Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= light_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Lighting Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= light_sch %>;
 
 !x!<% end %>
 
@@ -213,10 +213,10 @@ ElectricEquipment,
   <%= equipment_fraction_lost %>,                       !- Fraction Lost
   <%= equip_subcat %>;        !- End-Use Subcategory
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Elec Equip Sch,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= equip_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Elec Equip Sch,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= equip_sch %>;
 
 !x!<% end %>
 
@@ -234,10 +234,10 @@ ElectricEquipment,
   <%= equipment_fraction_lost %>,                       !- Fraction Lost
   <%= equip_subcat %>;        !- End-Use Subcategory
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Elec Equip Sch,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= equip_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Elec Equip Sch,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= equip_sch %>;
 
 !x!<% end %>
 

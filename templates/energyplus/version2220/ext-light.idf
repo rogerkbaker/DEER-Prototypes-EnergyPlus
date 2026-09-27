@@ -1,13 +1,13 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Exterior:Lights					|        |
-!  | Schedule:Compact					|   X    |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Exterior:Lights                                            |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 
 !x!<%#INITIALIZE
@@ -46,7 +46,7 @@ Exterior:Lights,
   <%= iv_control_option %>,   !- Control Option
   <%= subcat %>;           !- End-Use Subcategory
 
-!x!Schedule:Compact,
-!x!  <%= name %> Schedule,    !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= sch %>;
+Schedule:Compact,
+  <%= name %> Schedule,    !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= sch %>;

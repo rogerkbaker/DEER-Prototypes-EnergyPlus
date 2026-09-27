@@ -1,25 +1,25 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Version						|        |
-!  | Building						|        |
-!  | SimulationControl					|        |
-!  | RunPeriod						|        |
-!  | Timestep						|        |
-!  | Sizing:Parameters					|        |
-!  | ConvergenceLimits					|        |
-!  | HeatBalanceAlgorithm				|        |
-!  | ZoneAirHeatBalanceAlgorithm			|        |
-!  | SurfaceConvectionAlgorithm:Inside			|        |
-!  | SurfaceConvectionAlgorithm:Outside			|        |
-!  | SurfaceProperty:OtherSideConditionsModel		|        |
-!  | ShadowCalculation					|        |
-!  | ScheduleTypeLimits					|        |
-!  | Schedule:Compact					|        |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Version                                                    |        |
+!  | Building                                                   |        |
+!  | SimulationControl                                          |        |
+!  | RunPeriod                                                  |        |
+!  | Timestep                                                   |        |
+!  | Sizing:Parameters                                          |        |
+!  | ConvergenceLimits                                          |        |
+!  | HeatBalanceAlgorithm                                       |        |
+!  | ZoneAirHeatBalanceAlgorithm                                |        |
+!  | SurfaceConvectionAlgorithm:Inside                          |        |
+!  | SurfaceConvectionAlgorithm:Outside                         |        |
+!  | SurfaceProperty:OtherSideConditionsModel                   |        |
+!  | ShadowCalculation                                          |        |
+!  | ScheduleTypeLimits                                         |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 
 !x!<%#INITIALIZE

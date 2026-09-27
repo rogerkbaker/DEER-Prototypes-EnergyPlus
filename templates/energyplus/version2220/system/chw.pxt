@@ -316,20 +316,23 @@ SetpointManager:OutdoorAirReset,
   <%= name %> Setpoint Nodes;  !- Setpoint Node or NodeList Name
 
 <% end %>
-!====manual=====
+ 
+<% nodelst = ""
+if (chiller_cond_hr) || (chiller_heatpump_hr)
+  nodelst << name + " Heat Recovery Chiller Outlet Node,\n"
+end
+if (chiller_economizer)
+  nodelst << name + " Free Cooling HX Outlet Node,\n"
+end
+for i in (1..num_chillers)
+  nodelst << name + " Supply Equipment Outlet Node " + i.to_s + ",\n"
+end
+nodelst << name + " Supply Outlet Node"
+ %>
+
 NodeList,
   <%= name %> Setpoint Nodes,  !- Name
-<% if (chiller_cond_hr) || (chiller_heatpump_hr) %>
-  <%= name %> Heat Recovery Chiller Outlet Node,  !- Node Name
-<% end %>
-<% if (chiller_economizer) %>
-  <%= name %> Free Cooling HX Outlet Node,  !- Node Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Node Name
-<% end %>
-  <%= name %> Supply Outlet Node;  !- Node Name
-!=======
+ <%= nodelst %>;
 
 PlantEquipmentOperationSchemes,
   <%= name %> Operation Schemes,  !- Name
@@ -344,54 +347,53 @@ PlantEquipmentOperation:CoolingLoad,
   <%= name %> Equipment List; !- Priority Control 1 Equipment List Name
 
 
-!===manual update===
+<% iv_equiplist = ""
+   if (chiller_cond_hr)
+     iv_equiplist << "Chiller:Electric:EIR," + "Heat Recovery Chiller,\n"
+   elsif (chiller_heatpump_hr)
+  iv_equiplist << "HeatPump:WaterToWater:EquationFit:Cooling," + "Heat Recovery Chiller,\n"
+  end
+  if (chiller_economizer)
+   iv_equiplist << "HeatExchanger:FluidToFluid," + name + " Free Cooling HX,\n"
+  end
+  if (cooling_source == "CHILLER")
+   if (chiller_type == "ELECTRIC")
+    if (chiller_condenser == "WATERCOOLED")
+      iv_equiplist << "Chiller:Electric:ReformulatedEIR,\n"
+    else
+      iv_equiplist << "Chiller:Electric:EIR,\n"
+    end
+  elsif (chiller_type == "ABSORPTION")
+    if (chiller_generator_type == "DIRECTFIRED")
+     iv_equiplist << "ChillerHeater:Absorption:DirectFired,\n"
+    elsif (chiller_generator_type == "HOTWATER" or chiller_generator_type == "STEAM")
+     iv_equiplist << "Chiller:Absorption:Indirect,\n"
+    end
+  end
+elsif (cooling_source == "GSHP")
+  iv_equiplist << "HeatPump:WaterToWater:EquationFit:Cooling,\n"
+elsif (cooling_source == "DISTRICT")
+  iv_equiplist << "DistrictCooling,\n"
+end
+if (num_chillers > 1)
+  for i in (1..num_chillers-1)
+   iv_equiplist = iv_equiplist + name + " Chiller " + i.to_s + ",\n"
+   if (chiller_condenser == "WATERCOOLED")
+    iv_equiplist << "Chiller:Electric:ReformulatedEIR,\n"
+   else
+    iv_equiplist << "Chiller:Electric:EIR,\n"
+   end
+  end
+  iv_equiplist << name + " Chiller " + num_chillers.to_s
+else
+  iv_equiplist << name + " Chiller " + i
+end %>
+
 PlantEquipmentList,
   <%= name %> Equipment List, !- Name
-<% if (chiller_cond_hr) %>
-  Chiller:Electric:EIR,    !- Equipment 1 Object Type
-  Heat Recovery Chiller,        !- Equipment 1 Name
-<% elsif (chiller_heatpump_hr) %>
-  HeatPump:WaterToWater:EquationFit:Cooling,    !- Equipment 1 Object Type
-  Heat Recovery Chiller,        !- Equipment 1 Name
-<% end %>
-<% if (chiller_economizer) %>
-  HeatExchanger:FluidToFluid,  !- Equipment Object Type
-  <%= name %> Free Cooling HX,  !- Equipment Name
-<% end %>
-<% if (cooling_source == "CHILLER") %>
-  <% if (chiller_type == "ELECTRIC") %>
-    <% if (chiller_condenser == "WATERCOOLED") %>
-  Chiller:Electric:ReformulatedEIR,  !- Equipment 1 Object Type
-    <% else %>
-  Chiller:Electric:EIR,    !- Equipment 1 Object Type
-    <% end %>
-  <% elsif (chiller_type == "ABSORPTION") %>
-    <% if (chiller_generator_type == "DIRECTFIRED") %>
-  ChillerHeater:Absorption:DirectFired,  !- Equipment 1 Object Type
-    <% elsif (chiller_generator_type == "HOTWATER" or chiller_generator_type == "STEAM") %>
-  Chiller:Absorption:Indirect,  !- Equipment 1 Object Type
-    <% end %>
-  <% end %>
-<% elsif (cooling_source == "GSHP") %>
-  HeatPump:WaterToWater:EquationFit:Cooling,  !- Equipment 1 Object Type
-<% elsif (cooling_source == "DISTRICT") %>
-  DistrictCooling,  !- Equipment 1 Object Type
-<% end %>
-<% if (num_chillers > 1) %>
-  <% for i in (1..num_chillers-1) %>
-  <%= name %> Chiller <%= i %>,        !- Equipment 1 Name
-  <% if (chiller_condenser == "WATERCOOLED") %>
-  Chiller:Electric:ReformulatedEIR,  !- Equipment 2 Object Type
-  <% else %>
-  Chiller:Electric:EIR,    !- Equipment 2 Object Type
-  <% end %>
-  <% end %>
-  <%= name %> Chiller <%= num_chillers.to_i %>;        !- Equipment 2 Name
-<% else %>
-  <%= name %> Chiller <%= i %>;        !- Equipment 1 Name
-<% end %>
+<%= iv_equiplist %>;
 
-!======
+
 AvailabilityManagerAssignmentList,
   <%= name %> Availability Managers,  !- Name
   AvailabilityManager:LowTemperatureTurnOff,  !- Availability Manager 1 Object Type
@@ -408,21 +410,25 @@ AvailabilityManager:LowTemperatureTurnOff,
 
 OutdoorAir:Node,
   <%= name %> Chiller OA Node;  !- Name
-!====manual==========
+ 
+<% brnchlist = ""
+if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
+  brnchlist << name + " Heat Recovery Chiller Branch,\n"
+elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL")
+  brnchlist << name + " Heat Recovery Chiller Branch,\n"
+end
+for i in (1..num_chillers)
+ brnchlist << name + " Supply Equipment Branch "+ i.to_s + ",\n"
+end 
+brnchlist << name + " Supply Equipment Bypass Branch"
+%>
+
 BranchList,
   <%= name %> Supply Branches,!- Name
   <%= name %> Supply Inlet Branch,  !- Branch 1 Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Branch 3 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch,  !- Branch 4 Name
+  <%= brnchlist %>,  !- Branch 4 Name
   <%= name %> Supply Outlet Branch;  !- Branch 5 Name
-!==========
+
 
 <% if (pump_type == "CONSTANT")
   iv_comp_obj_type = "Pump:ConstantSpeed"
@@ -723,6 +729,7 @@ ChillerHeater:Absorption:DirectFired,
 
 
 <% if (chiller_condenser == "WATERCOOLED") %>
+
 Branch,
   <%= name %> <%= i %> HR Demand Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -730,9 +737,12 @@ Branch,
   <%= name %> Chiller <%= i %>,   !- Component 1 Name
   <%= name %> Chiller <%= i %> Water Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Chiller <%= i %> Water Outlet Node;  !- Component 1 Outlet Node Name
+
 <% else %>
+
 OutdoorAir:Node,
   <%= name %> Chiller <%= i %> Condenser Inlet Node;    !- Name
+
 <% end %>
 
 SetpointManager:Scheduled,
@@ -1257,49 +1267,44 @@ ConnectorList,
   <%= name %> Sec Supply Splitter, !- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Sec Supply Mixer;    !- Connector 2 Name
-!====manual===
+
+<%iv_branchlist = branch_names.join(" CHW Demand Branch,\n")%>
+
 Connector:Splitter,
   <%= name %> Sec Demand Splitter, !- Name
   <%= name %> Sec Demand Inlet Branch,  !- Inlet Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
+  <%= iv_branchlist %>,  !- Branch Name
   <%= name %> Sec Demand Bypass Branch;  !- Outlet Branch 5 Name
-!==========
+
 Connector:Splitter,
   <%= name %> Sec Supply Splitter, !- Name
   <%= name %> Sec Supply Inlet Branch,  !- Inlet Branch Name
   <%= name %> Sec Supply Heat Exchanger Branch,  !- Outlet Branch 1 Name
   <%= name %> Sec Supply Bypass Branch;  !- Outlet Branch 2 Name
 <% end %>
-!-------
-!===manual====
+
+<% branchlist = ""
+if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
+  branchlist << name + " Heat Recovery Chiller Branch,\n"
+elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL")
+  branchlist << name + " Heat Recovery Chiller Branch,\n"
+end
+for i in (1..num_chillers)
+  branchlist << name + " Supply Equipment Branch " + i.to_s + ",\n"
+end 
+branchlist << name + " Supply Equipment Bypass Branch"
+%>
+
 Connector:Splitter,
   <%= name %> Supply Splitter,!- Name
   <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Outlet Branch 2 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch;  !- Outlet Branch 3 Name
+  <%= branchlist %>;  !- Outlet Branch 3 Name
 
 Connector:Mixer,
   <%= name %> Supply Mixer,   !- Name
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Inlet Branch 2 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch;  !- Inlet Branch 3 Name
-!=======
+  <%= branchlist %>;  !- Inlet Branch 3 Name
+
 <% if loop_config == "PRIMARY-SECONDARY" %>
   Connector:Mixer,
     <%= name %> Sec Supply Mixer,    !- Name
@@ -1307,30 +1312,31 @@ Connector:Mixer,
     <%= name %> Sec Supply Heat Exchanger Branch,  !- Inlet Branch 1 Name
     <%= name %> Sec Supply Bypass Branch;  !- Inlet Branch 2 Name
 <% end %>
-!===manual===
+
+<% if loop_config == "PRIMARY-SECONDARY"
+    iv_branchlist = name + " Heat Exchanger Demand Branch"
+   else
+    iv_branchlist = branch_names.join(" CHW Branch,\n") + " CHW Branch"
+   end %>
+
 BranchList,
   <%= name %> Demand Branches,!- Name
   <%= name %> Demand Inlet Branch,  !- Branch Name
-<% if loop_config == "PRIMARY-SECONDARY"%>
-  <%= name %> Heat Exchanger Demand Branch,  !- Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
-<% end %>
+  <%= iv_branchlist %>,
   <%= name %> Demand Bypass Branch,  !- Branch Name
   <%= name %> Demand Outlet Branch;  !- Branch Name
 
 <% if loop_config == "PRIMARY-SECONDARY"%>
+
+ <%iv_branchlist = branch_names.join(" CHW Branch,\n")%>
+
 BranchList,
   <%= name %> Sec Demand Branches,!- Name
   <%= name %> Sec Demand Inlet Branch,  !- Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
+  <%= iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch,  !- Branch Name
   <%= name %> Sec Demand Outlet Branch;  !- Branch Name
-!=====
+
 BranchList,
   <%= name %> Sec Supply Branches,!- Name
   <%= name %> Sec Supply Inlet Branch,  !- Branch 1 Name
@@ -1422,40 +1428,34 @@ ConnectorList,
   <%= name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
-!====manual===
+
+
+<% if loop_config == "PRIMARY-SECONDARY"
+    iv_branchlist = name + " Heat Exchanger Demand Branch"
+   else
+    iv_branchlist = branch_names.join(" CHW Branch,\n") + " CHW Branch"
+   end %>
+
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
   <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% if loop_config == "PRIMARY-SECONDARY" %>
-    <%= name %> Heat Exchanger Demand Branch,  !- Outlet Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Outlet Branch Name
-  <% end %>
-<% end %>
+  <%= iv_branchlist %>,
   <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
 
 Connector:Mixer,
   <%= name %> Demand Mixer,   !- Name
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% if loop_config == "PRIMARY-SECONDARY" %>
-  <%= name %> Heat Exchanger Demand Branch,  !- Outlet Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Inlet Branch Name
-  <% end %>
-<% end %>
+  <%= iv_branchlist %>,
   <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
 
 <% if loop_config == "PRIMARY-SECONDARY" %>
+<% iv_branchlist = branch_names.join(" CHW Branch,\n") %>
 Connector:Mixer,
   <%= name %> Sec Demand Mixer,    !- Name
   <%= name %> Sec Demand Outlet Branch,  !- Outlet Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Inlet Branch Name
-  <% end %>
+  <% iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch;  !- Inlet Branch 5 Name
-!=======
+
 Pipe:Adiabatic,
   <%= name %> Sec Demand Bypass Pipe,  !- Name
   <%= name %> Sec Demand Bypass Pipe Inlet Node,  !- Inlet Node Name

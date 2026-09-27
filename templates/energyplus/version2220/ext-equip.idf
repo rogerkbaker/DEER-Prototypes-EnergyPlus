@@ -1,13 +1,13 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Exterior:FuelEquipment				|        |
-!  | Schedule:Compact					|   X    |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Exterior:FuelEquipment                                     |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 
 !x!<%#INITIALIZE
@@ -27,7 +27,7 @@ Exterior:FuelEquipment,
   <%= power %>,  !- Design Level {W}
   <%= enduse_subcategory %>;  !- End-Use Subcategory
 
-!x!Schedule:Compact,
-!x!  <%= ext_equip_name %> Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= schedule %>;
+Schedule:Compact,
+  <%= ext_equip_name %> Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= schedule %>;

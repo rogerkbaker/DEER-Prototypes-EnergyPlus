@@ -629,20 +629,21 @@ Connector:Mixer,
 
 !!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment: Change the name of Bypass branch to load profile branch
-!=====manual=====
+
+<%iv_branchlist = branch_names.join(" DHW Demand Branch,\n")%>
+<% if (dhw_loop_configuration == "DEFAULT-LOOP") 
+    iv_branch = name + " Demand Bypass Branch"
+   elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
+    iv_branch = name +" Load Profile Branch"
+end %>   
+
 BranchList,
   <%= name %> Demand Branches,!- Name
   <%= name %> Demand Inlet Branch,  !- Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>	  
-  <%= name %> Load Profile Branch,  !- Branch Name
-<% end %>   
+  <%= iv_branchlist %> DHW Demand Branch,  !- Branch Name
+  <%= iv_branch %>,  !- Branch Name
   <%= name %> Demand Outlet Branch;  !- Branch Name
-!========
+
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  
 
 Branch,
@@ -702,30 +703,26 @@ ConnectorList,
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment: revising the name of Demand Bypass to Demand LoadProfile Branch in splitter and mixer connectors
-!======manual=====
+
+<%iv_branchlist = branch_names.join(" DHW Demand Branch,\n")%>
+<% if (dhw_loop_configuration == "DEFAULT-LOOP")
+  iv_outlet_branch_nm = name + " Demand Bypass Branch"
+elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
+  iv_outlet_branch_nm = name + " Load Profile Branch"
+end %> 
+
+
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
   <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Outlet Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>	
-  <%= name %> Load Profile Branch;  !- Outlet Branch Name
-<% end %> 
+<%= iv_branchlist%> DHW Demand Branch,
+<%= iv_outlet_branch_nm %>;
   
 Connector:Mixer,
   <%= name %> Demand Mixer,   !- Name
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Inlet Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>  
-  <%= name %> Load Profile Branch;  !- Inlet Branch Name
-<% end %> 
+<%= iv_branchlist %> DHW Demand Branch,
+<%= iv_outlet_branch_nm %>;
 !========   
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

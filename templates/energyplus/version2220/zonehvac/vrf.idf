@@ -2,16 +2,16 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow		|        |
-!  | Schedule:Compact						|   X    |
-!  | Fan:OnOff							|        |
-!  | Coil:Cooling:DX:VariableRefrigerantFlow			|        |
-!  | Coil:Heating:DX:VariableRefrigerantFlow			|        |
-!  | Curve:Cubic						|        |
-!  | Curve:Quadratic						|        |
+!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow              |        |
+!  | Schedule:Compact                                           |        |
+!  | Fan:OnOff                                                  |        |
+!  | Coil:Cooling:DX:VariableRefrigerantFlow                    |        |
+!  | Coil:Heating:DX:VariableRefrigerantFlow                    |        |
+!  | Curve:Cubic                                                |        |
+!  | Curve:Quadratic                                            |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -70,10 +70,10 @@ ZoneHVAC:TerminalUnit:VariableRefrigerantFlow,
   20,                      !- Zone Terminal Unit Off Parasitic Electric Energy Use {W}
   ;                        !- Rated Total Heating Capacity Sizing Ratio {W/W}
 
-!x!Schedule:Compact,
-!x!  <%= name %> Fan Mode Schedule,  !- Name
-!x!  Fan Mode Control,        !- Schedule Type Limits Name
-!x!  <%= fan_mode_sch %>;
+Schedule:Compact,
+  <%= name %> Fan Mode Schedule,  !- Name
+  Fan Mode Control,        !- Schedule Type Limits Name
+  <%= fan_mode_sch %>;
 
 
 !x!<% if (fan_config == "BLOW-THROUGH")

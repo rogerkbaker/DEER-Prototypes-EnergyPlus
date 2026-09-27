@@ -2,15 +2,15 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Material							|        |
-!  | Construction						|   X    |
-!  | ConstructionProperty:InternalHeatSource			|        |
-!  | WindowMaterial:SimpleGlazingSystem				|        |
-!  | WindowMaterial:Glazing					|        |
-!  | WindowMaterial:Shade					|        |
+!  | Material                                                   |        |
+!  | Construction                                               |        |
+!  | ConstructionProperty:InternalHeatSource                    |        |
+!  | WindowMaterial:SimpleGlazingSystem                         |        |
+!  | WindowMaterial:Glazing                                     |        |
+!  | WindowMaterial:Shade                                       |        |
 !-------------------------------------------------------------------------
 !
 
@@ -163,37 +163,37 @@ Material,
   8.17,                      !- Density {kg/m3}(2013 ASHRAE Handbook - Fundamentals Section 26 Table 1 - Glass-fiber batts)
   837;                     !- Specific Heat {J/kg-K}(2013 ASHRAE Handbook - Fundamentals Section 26 Table 1 - Glass-fiber batts)
 
-!====manual===
+ 
+<%iv_layerlist = layers.join(",\n")%>
 Construction,
   Exterior Roof,           !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+  <%= iv_layerlist %>;  !- Layer
 
 <% if (radiant_ceilings) %>
+
 ConstructionProperty:InternalHeatSource,
   Radiant Exterior Roof,  !- Name
+  , !- Construction Name
   <%= layers.count - 1 %>,                       !- Source Present After Layer Number
   <%= layers.count - 1 %>,                       !- Temperature Calculation Requested After Layer Number
   1,                       !- Dimensions for the CTF Calculation
   <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
   ;
 
+<%iv_layerlist = layers.join(",\n")%>
 Construction,
   Radiant Exterior Roof,
-  <% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+  <%= iv_layerlist %>;  !- Layer
 
 <% else %>
+
+<%iv_layerlist = layers.join(",\n")%>
 Construction,
   Radiant Exterior Roof,  !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+  <%= iv_layerlist %>;  !- Layer
 <% end %>
 
-!========
+
 <%# Exterior Wall Constructions %>
 
 <%
@@ -250,15 +250,15 @@ Material,
   <%= wall_cav_cond %>,  !- Conductivity {W/m-K}
   8.17,                      !- Density {kg/m3}(2013 ASHRAE Handbook - Fundamentals Section 26 Table 1 - Glass-fiber batts)
   837;                     !- Specific Heat {J/kg-K}(2013 ASHRAE Handbook - Fundamentals Section 26 Table 1 - Glass-fiber batts)
-!====manual
+ 
+<%iv_layerlist = layers.join(",\n")%>
 
 Construction,
   Exterior Wall,           !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+  <%= iv_layerlist %>;  !- Layer
 
-!========
+
+!
 Construction,
   Basement Wall,           !- Name
   Gypsum 5/8in,   !- Outside Layer
@@ -274,6 +274,7 @@ Construction,
 <% if (radiant_ceilings) %>
 ConstructionProperty:InternalHeatSource,
   Radiant Interior Floor,  !- Name
+  ,                        !- Construction Name
   1,                       !- Source Present After Layer Number
   1,                       !- Temperature Calculation Requested After Layer Number
   1,                       !- Dimensions for the CTF Calculation
@@ -310,6 +311,7 @@ Construction,
 <% if (radiant_ceilings) %>
 ConstructionProperty:InternalHeatSource,
   Radiant Interior Ceiling,  !- Name
+  ,                        !- Construction Name
   4,                       !- Source Present After Layer Number
   4,                       !- Temperature Calculation Requested After Layer Number
   1,                       !- Dimensions for the CTF Calculation
@@ -341,6 +343,7 @@ Construction,
 ConstructionProperty:InternalHeatSource,
   Radiant Attic Floor,     !- Name
   1,                       !- Source Present After Layer Number
+  ,                        !- Construction Name
   1,                       !- Temperature Calculation Requested After Layer Number
   1,                       !- Dimensions for the CTF Calculation
   <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
@@ -369,6 +372,7 @@ Construction,
 <% if (radiant_ceilings) %>
 ConstructionProperty:InternalHeatSource,
   Radiant Interior Ceiling To Attic,  !- Name
+  ,                        !- Construction Name
   3,                       !- Source Present After Layer Number
   3,                       !- Temperature Calculation Requested After Layer Number
   1,                       !- Dimensions for the CTF Calculation

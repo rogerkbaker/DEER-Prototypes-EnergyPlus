@@ -1,15 +1,15 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:Case					|        |
-!  | Schedule:Constant					|        |
-!  | Curve:Cubic					|        |
-!  | Schedule:Compact					|  X(1)  |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:Case                                         |        |
+!  | Schedule:Constant                                          |        |
+!  | Curve:Cubic                                                |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 
 !x!<%#INITIALIZE
@@ -169,10 +169,10 @@ Schedule:Constant,
   Binary Control,          !- Schedule Type Limits Name
   <%= avail_sch %>;
 
-!x!Schedule:Compact,
-!x!  <%= case_name %> Case Light Sch,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= lighting_schedule %>;
+Schedule:Compact,
+  <%= case_name %> Case Light Sch,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= lighting_schedule %>;
 
 !x!<% if (credit_type == "SINGLESHELF-HORIZONTAL") %>
 Curve:Cubic,

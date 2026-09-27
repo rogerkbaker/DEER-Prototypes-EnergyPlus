@@ -2,34 +2,34 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Zone						|        |
-!  | DesignSpecification:ZoneAirDistribution			|        |
-!  | DesignSpecification:OutdoorAir				|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneControl:Thermostat					|        |
-!  | Schedule:Constant						|        |
-!  | ThermostatSetpoint:SingleHeating				|        |
-!  | ThermostatSetpoint:SingleCooling				|        |
-!  | ThermostatSetpoint:DualSetpoint				|        |
-!  | SetpointManager:SingleZone:Humidity:Minimum		|        |
-!  | SetpointManager:SingleZone:Humidity:Maximum		|        |
-!  | ZoneControl:Humidistat					|        |
-!  | ZoneHVAC:EquipmentConnections				|        |
-!  | ZoneHVAC:EquipmentList					|   X    |
-!  | NodeList							|   X    |
-!  | ZoneHVAC:IdealLoadsAirSystem				|        |
-!  | OutdoorAir:Node						|        |
-!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
-!  | ZoneHVAC:Baseboard:Convective:Water			|        |
-!  | ZoneHVAC:UnitHeater					|        |
-!  | Fan:ConstantVolume						|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Fan:ZoneExhaust						|        |
+!  | Sizing:Zone                                                |        |
+!  | DesignSpecification:ZoneAirDistribution                    |        |
+!  | DesignSpecification:OutdoorAir                             |        |
+!  | Schedule:Compact                                           |        |
+!  | ZoneControl:Thermostat                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | ThermostatSetpoint:SingleHeating                           |        |
+!  | ThermostatSetpoint:SingleCooling                           |        |
+!  | ThermostatSetpoint:DualSetpoint                            |        |
+!  | SetpointManager:SingleZone:Humidity:Minimum                |        |
+!  | SetpointManager:SingleZone:Humidity:Maximum                |        |
+!  | ZoneControl:Humidistat                                     |        |
+!  | ZoneHVAC:EquipmentConnections                              |        |
+!  | ZoneHVAC:EquipmentList                                     |        |
+!  | NodeList                                                   |        |
+!  | ZoneHVAC:IdealLoadsAirSystem                               |        |
+!  | OutdoorAir:Node                                            |        |
+!  | ZoneHVAC:Baseboard:Convective:Electric                     |        |
+!  | ZoneHVAC:Baseboard:Convective:Water                        |        |
+!  | ZoneHVAC:UnitHeater                                        |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Coil:Heating:Fuel                                          |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Fan:ZoneExhaust                                            |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -529,10 +529,11 @@ DesignSpecification:ZoneAirDistribution,
   ,                        !- Outdoor Air Flow Air Changes per Hour
   ;  !<%= zone_name %> OA Schedule;  !- Outdoor Air Schedule Name
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> OA Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= oa_sch %>;
+Schedule:Compact,
+  <%= zone_name %> OA Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= oa_sch %>;
+
 !x!<% end %>
 
 !x!<% if hvac_type == "UH"
@@ -570,10 +571,10 @@ ThermostatSetpoint:SingleCooling,
   <%= zone_name %> Setpoints,  !- Name
   <%= zone_name %> Cooling Setpoint Schedule;  !- Cooling Setpoint Temperature Schedule Name
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Cooling Setpoint Schedule,  !- Name
-!x!  Temperature,             !- Schedule Type Limits Name
-!x!  <%= tstat_cool_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Cooling Setpoint Schedule,  !- Name
+  Temperature,             !- Schedule Type Limits Name
+  <%= tstat_cool_sch %>;
 
 !x!<% else %>
 Schedule:Constant,
@@ -586,17 +587,17 @@ ThermostatSetpoint:DualSetpoint,
   <%= zone_name %> Heating Setpoint Schedule,  !- Heating Setpoint Temperature Schedule Name
   <%= zone_name %> Cooling Setpoint Schedule;  !- Cooling Setpoint Temperature Schedule Name
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Cooling Setpoint Schedule,  !- Name
-!x!  Temperature,             !- Schedule Type Limits Name
-!x!  <%= tstat_cool_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Cooling Setpoint Schedule,  !- Name
+  Temperature,             !- Schedule Type Limits Name
+  <%= tstat_cool_sch %>;
 
 !x!<% end %>
 
-!x!Schedule:Compact,
-!x!  <%= zone_name %> Heating Setpoint Schedule,  !- Name
-!x!  Temperature,             !- Schedule Type Limits Name
-!x!  <%= tstat_heat_sch %>;
+Schedule:Compact,
+  <%= zone_name %> Heating Setpoint Schedule,  !- Name
+  Temperature,             !- Schedule Type Limits Name
+  <%= tstat_heat_sch %>;
 
 !x!<% branch_name = "#{zone_name} #{hvac_type}" %>
 
@@ -794,26 +795,24 @@ ZoneHVAC:EquipmentConnections,
 !x!  ,                        !- Zone Equipment Sequential Heating Fraction
 !x!<% end %>
 !x!
-!x!NodeList,
-!x!  <%= zone_name %> Inlet Nodes,  !- Name
-!x!<% EnergyPlus.each(inlet_branches) do |branch| %>
-!x!  <%= branch %> Outlet Node,  !- Node Name
-!x!<% end %>
-!x!
+!x!<%iv_branchlist = inlet_branches.join(" Outlet Node,\n")%>
+NodeList,
+  <%= zone_name %> Inlet Nodes,  !- Name
+  <%= iv_branchlist %> Outlet Node;  !- Node Name
+
 !x!<% if (not exhaust_branches.empty?) %>
-!x!NodeList,
-!x!  <%= zone_name %> Exhaust Nodes,  !- Name
-!x!<% EnergyPlus.each(exhaust_branches) do |branch| %>
-!x!  <%= branch %> Inlet Node,  !- Node Name
+!x!<%iv_branchlist = exhaust_branches.join(" Outlet Node,\n")%>
+
+NodeList,
+  <%= zone_name %> Exhaust Nodes,  !- Name
+  <%= iv_branchlist %> Inlet Node;  !- Node Name
 !x!<% end %>
-!x!<% end %>
-!x!
+
 !x!<% if (not return_branches.empty?) %>
-!x!NodeList,
-!x!  <%= zone_name %> Return Nodes,  !- Name
-!x!<% EnergyPlus.each(return_branches) do |branch| %>
-!x!  <%= branch %> Return Node,  !- Node Name
-!x!<% end %>
+!x!<%iv_branchlist = return_branches.join(" Return Node,\n")%>
+NodeList,
+  <%= zone_name %> Return Nodes,  !- Name
+  <%= iv_branchlist %> Return Node;  !- Node Name
 !x!<% end %>
 !======
 !x!<%
@@ -995,10 +994,10 @@ ZoneHVAC:EquipmentConnections,
   ,                        !- Sensible Heat Recovery Effectiveness
   ;                        !- Latent Heat Recovery Effectiveness
 
-!x! Schedule:Compact,
-!x!  <%= branch_name %> Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= hvac_sch %>;
+ Schedule:Compact,
+  <%= branch_name %> Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= hvac_sch %>;
 
 
 !x!<% if (oa_type != "NONE") %>
@@ -1043,10 +1042,10 @@ Branch,
 !x!<% end %>
 !x!<% if (sub_heat_type != "NONE") %>
 !x!
-!x!Schedule:Compact,
-!x!  <%= sub_heat_name %> Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= hvac_sch %>;
+Schedule:Compact,
+  <%= sub_heat_name %> Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= hvac_sch %>;
 
 
 !x!<% end %>
@@ -1132,10 +1131,10 @@ Branch,
     <%= zone_name %> UH Coil HW Outlet Node;  !- Component 1 Outlet Node Name
 !x! <% end %>
 
-!x!Schedule:Compact,
-!x!  <%= branch_name %> Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= hvac_sch %>;
+Schedule:Compact,
+  <%= branch_name %> Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= hvac_sch %>;
 
 !x!<% end %>
 
@@ -1171,10 +1170,10 @@ Branch,
   
 !x!  <% if exh_fan_frac_sch != "" %>
 !x!
-!x!  Schedule:Compact,
-!x!    <%= exh_fan_name %> Balanced Exhaust Fraction Schedule,  !- Name
-!x!    Fraction,          !- Schedule Type Limits Name
-!x!    <%= exh_fan_frac_sch %>;
+  Schedule:Compact,
+    <%= exh_fan_name %> Balanced Exhaust Fraction Schedule,  !- Name
+    Fraction,          !- Schedule Type Limits Name
+    <%= exh_fan_frac_sch %>;
 !x!
 !x!  <% end %>
 
@@ -1182,10 +1181,10 @@ Branch,
 
 !x!<% exh_fan_sch = hvac_sch if exh_fan_sch == "" %>
 !x!
-!x!Schedule:Compact,
-!x!  <%= exh_fan_name %> Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= exh_fan_sch %>;
+Schedule:Compact,
+  <%= exh_fan_name %> Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= exh_fan_sch %>;
 
 
 !x!<% end %>

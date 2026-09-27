@@ -1,14 +1,14 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:WalkIn				|        |
-!  | Schedule:Constant					|        |
-!  | Schedule:Compact					|  X(2)  |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:WalkIn                                       |        |
+!  | Schedule:Constant                                          |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
 !x!parameter "walkin_name"
@@ -103,15 +103,15 @@ Schedule:Compact,
     For: AllDays,            !- Field 2
     Until: 24:00,1.0;        !- Field 3
 
-!x!Schedule:Compact,
-!x!  <%= walkin_name %> Walkin Light Sch,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= lighting_Schedule %>;
+Schedule:Compact,
+  <%= walkin_name %> Walkin Light Sch,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= lighting_Schedule %>;
 
-!x!Schedule:Compact,
-!x!    <%= walkin_name %> Stocking Door Opening Sch,      !- Name
-!x!    Fraction,                !- Schedule Type Limits Name
-!x!    <%= door_opening_sch %>;
+Schedule:Compact,
+    <%= walkin_name %> Stocking Door Opening Sch,      !- Name
+    Fraction,                !- Schedule Type Limits Name
+    <%= door_opening_sch %>;
 
 Schedule:Compact,
   <%= walkin_name %> Defrost Sch,  !- Name

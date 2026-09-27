@@ -2,34 +2,34 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | FluidProperties:GlycolConcentration			|        |
-!  | Sizing:Plant						|        |
-!  | Schedule:Compact						|   X    |
-!  | CondenserLoop						|        |
-!  | SetpointManager:FollowGroundTemperature			|        |
-!  | CondenserEquipmentOperationSchemes				|        |
-!  | CondenserEquipmentList					|        |
-!  | BranchList							|   X    |
-!  | Branch							|        |
-!  | Pump:VariableSpeed						|        |
-!  | GroundHeatExchanger:Vertical				|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|        |
-!  | Connector:Mixer						|        |
-!  | ZoneHVAC:IdealLoadsAirSystem				|        |
-!  | OutdoorAir:Node						|        |
-!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
-!  | ZoneHVAC:Baseboard:Convective:Water			|        |
-!  | ZoneHVAC:UnitHeater					|        |
-!  | Fan:ConstantVolume						|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Fan:ZoneExhaust						|        |
+!  | FluidProperties:GlycolConcentration                        |        |
+!  | Sizing:Plant                                               |        |
+!  | Schedule:Compact                                           |        |
+!  | CondenserLoop                                              |        |
+!  | SetpointManager:FollowGroundTemperature                    |        |
+!  | CondenserEquipmentOperationSchemes                         |        |
+!  | CondenserEquipmentList                                     |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | GroundHeatExchanger:Vertical                               |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | ZoneHVAC:IdealLoadsAirSystem                               |        |
+!  | OutdoorAir:Node                                            |        |
+!  | ZoneHVAC:Baseboard:Convective:Electric                     |        |
+!  | ZoneHVAC:Baseboard:Convective:Water                        |        |
+!  | ZoneHVAC:UnitHeater                                        |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Coil:Heating:Fuel                                          |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Fan:ZoneExhaust                                            |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -58,10 +58,10 @@ Sizing:Plant,
   29.4,                    !- Design Loop Exit Temperature {C}
   5.6;                     !- Loop Design Temperature Difference {deltaC}
 
-!x!Schedule:Compact,
-!x!  <%= system_name %> Operation Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x! <%= operation_schedule %>;
+Schedule:Compact,
+  <%= system_name %> Operation Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+ <%= operation_schedule %>;
 
 CondenserLoop,
   <%= system_name %>,      !- Name
@@ -281,15 +281,14 @@ Connector:Mixer,
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch,  !- Inlet Branch 1 Name
   <%= system_name %> Supply Equipment Bypass Branch;  !- Inlet Branch 2 Name
-!====manual====
-!x!BranchList,
-!x!  <%= system_name %> Demand Branches,!- Name
-!x!  <%= system_name %> Demand Inlet Branch,  !- Branch Name
-!x!<% for zone_name in zone_names %>
-!x!  <%= zone_name %> GHX Demand Branch,  !- Branch Name
-!x!<% end %>
-!x!  <%= system_name %> Demand Bypass Branch,  !- Branch Name
-!x!  <%= system_name %> Demand Outlet Branch;  !- Branch Name
+!x!<%iv_branchlist = zone_names.join(" GHX Demand Branch,\n")%>
+
+BranchList,
+  <%= system_name %> Demand Branches,!- Name
+  <%= system_name %> Demand Inlet Branch,  !- Branch Name
+  <%= iv_branchlist %> GHX Demand Branch,  !- Branch Name
+  <%= system_name %> Demand Bypass Branch,  !- Branch Name
+  <%= system_name %> Demand Outlet Branch;  !- Branch Name
 
 Branch,
   <%= system_name %> Demand Inlet Branch,  !- Name
@@ -336,20 +335,16 @@ ConnectorList,
   <%= system_name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= system_name %> Demand Mixer;   !- Connector 2 Name
-!====manual=====
-!x!Connector:Splitter,
-!x!  <%= system_name %> Demand Splitter,!- Name
-!x!  <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
-!x!<% for zone_name in zone_names %>
-!x!  <%= zone_name %> GHX Demand Branch,  !- Outlet Branch Name
-!x!<% end %>
-!x!  <%= system_name %> Demand Bypass Branch;  !- Outlet Branch Name
-!x!
-!x!Connector:Mixer,
-!x!  <%= system_name %> Demand Mixer,   !- Name
-!x!  <%= system_name %> Demand Outlet Branch,  !- Outlet Branch Name
-!x!<% for zone_name in zone_names %>
-!x!  <%= zone_name %> GHX Demand Branch,  !- Inlet Branch Name
-!x!<% end %>
-!x!  <%= system_name %> Demand Bypass Branch;  !- Inlet Branch Name
-!===========
+ 
+!x!<%iv_branchlist = zone_names.join(" GHX Demand Branch,\n")%>
+Connector:Splitter,
+  <%= system_name %> Demand Splitter,!- Name
+  <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
+  <%= iv_branchlist %> GHX Demand Branch,  !- Outlet Branch Name
+  <%= system_name %> Demand Bypass Branch;  !- Outlet Branch Name
+
+Connector:Mixer,
+  <%= system_name %> Demand Mixer,   !- Name
+  <%= system_name %> Demand Outlet Branch,  !- Outlet Branch Name
+  <%= iv_branchlist %> GHX Demand Branch,  !- Inlet Branch Name
+  <%= system_name %> Demand Bypass Branch;  !- Inlet Branch Name

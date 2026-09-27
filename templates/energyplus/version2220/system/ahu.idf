@@ -2,51 +2,50 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus                                                 | Manual |
-!  | Object Name                                                | Update |
+!  | EnergyPlus 						| Manual |
+!  | Object Name						| Update |
 !-------------------------------------------------------------------------
-!  | Sizing:System                                              |        |
-!  | AirLoopHVAC                                                |        |
-!  | NodeList                                                   |        |
-!  | AvailabilityManagerAssignmentList                          |        |
-!  | AvailabilityManager:NightCycle                             |        |
-!  | AvailabilityManagerAssignmentList                          |        |
-!  | AvailabilityManager:Scheduled                              |        |
-!  | Schedule:Constant                                          |        |
-!  | Schedule:Compact                                           |   X    |
-!  | BranchList                                                 |        |
-!  | Branch                                                     |        |
-!  | Fan:ConstantVolume                                         |        |
-!  | Fan:VariableVolume                                         |        |
-!  | AirLoopHVAC:OutdoorAirSystem                               |        |
-!  | AirLoopHVAC:ControllerList                                 |        |
-!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList                 |        |
-!  | OutdoorAir:Node                                            |        |
-!  | SolarCollector:UnglazedTranspired                          |        |
-!  | HeatExchanger:AirToAir:SensibleAndLatent                   |        |
-!  | EvaporativeCooler:Indirect:ResearchSpecial                 |        |
-!  | Coil:Heating:Water                                         |        |
-!  | Controller:WaterCoil                                       |        |
-!  | Coil:Cooling:Water                                         |        |
-!  | SetpointManager:OutdoorAirPretreat                         |        |
-!  | Controller:OutdoorAir                                      |        |
-!  | Humidifier:Steam:Electric                                  |        |
-!  | Humidifier:Steam:Gas                                       |        |
-!  | SetpointManager:MixedAir                                   |        |
-!  | SetpointManager:Scheduled                                  |        |
-!  | SetpointManager:OutdoorAirReset                            |        |
-!  | SetpointManager:MultiZone:Cooling:Average                  |        |
-!  | SetpointManager:SingleZone:Heating                         |        |
-!  | SetpointManager:SingleZone:Cooling                         |        |
-!  | AirLoopHVAC:SupplyPath                                     |        |
-!  | AirLoopHVAC:ZoneSplitter                                   |   X    |
-!  | AirLoopHVAC:ReturnPath                                     |        |
-!  | AirLoopHVAC:ReturnPlenum                                   |   X    |
-!  | Construction                                               |        |
-!  | Material                                                   |        |
-!  | Zone                                                       |        |
+!  | Sizing:System						|        |
+!  | AirLoopHVAC						|        |
+!  | NodeList							|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:NightCycle				|        |
+!  | AvailabilityManagerAssignmentList				|        |
+!  | AvailabilityManager:Scheduled				|        |
+!  | Schedule:Constant						|        |
+!  | Schedule:Compact						|        |
+!  | BranchList							|        |
+!  | Branch							|        |
+!  | Fan:ConstantVolume						|        |
+!  | Fan:VariableVolume						|        |
+!  | AirLoopHVAC:OutdoorAirSystem				|        |
+!  | AirLoopHVAC:ControllerList					|        |
+!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList			|        |
+!  | OutdoorAir:Node						|        |
+!  | SolarCollector:UnglazedTranspired				|        |
+!  | HeatExchanger:AirToAir:SensibleAndLatent			|        |
+!  | EvaporativeCooler:Indirect:ResearchSpecial			|        |
+!  | Coil:Heating:Water						|        |
+!  | Controller:WaterCoil					|        |
+!  | Coil:Cooling:Water						|        |
+!  | SetpointManager:OutdoorAirPretreat				|        |
+!  | Controller:OutdoorAir					|        |
+!  | Humidifier:Steam:Electric					|        |
+!  | Humidifier:Steam:Gas					|        |
+!  | SetpointManager:MixedAir					|        |
+!  | SetpointManager:Scheduled					|        |
+!  | SetpointManager:OutdoorAirReset				|        |
+!  | SetpointManager:MultiZone:Cooling:Average			|        |
+!  | SetpointManager:SingleZone:Heating				|        |
+!  | SetpointManager:SingleZone:Cooling				|        |
+!  | AirLoopHVAC:SupplyPath					|        |
+!  | AirLoopHVAC:ZoneSplitter					|        |
+!  | AirLoopHVAC:ReturnPath					|        |
+!  | AirLoopHVAC:ReturnPlenum					|        |
+!  | Construction						|        |
+!  | Material							|        |
+!  | Zone							|        |
 !-------------------------------------------------------------------------
-!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -461,6 +460,8 @@ Version, 22.2;
 !x!<%# leave preheat fields blank if no preheat/precool %>
 !x!<%# better to leave Cooling Supply Air Flow Rate blank unless Method is Flow/System %>
 
+!
+
 Sizing:System,
   <%= ahu_name %>,         !- AirLoop Name
   <%= sizing_type %>,                   !- Type of Load to Size On
@@ -837,40 +838,38 @@ AirLoopHVAC:OutdoorAirSystem:EquipmentList,
 OutdoorAir:Node,
   <%= ahu_name %> OA Inlet Node;  !- Name
 
-!=====manual====
 !x!<% if (oa_solar_preheat) %>
-!x!SolarCollector:UnglazedTranspired,
-!x!  <%= ahu_name %> Transpired Solar Collector,  !- Name
-!x!  GapConvectionModel,      !- Boundary Conditions Model Name
-!x!  ,                        !- Availability Schedule Name
-!x!  <%= ahu_name %> OA Inlet Node,  !- Inlet Node Name
-!x!  <%= ahu_name %> Transpired Collector Outlet Node,  !- Outlet Node Name
-!x!  <%= ahu_name %> Unitary Inlet Node,  !- Setpoint Node Name
-!x!  <%= oa_solar_control_zone %> Air Node,  !- Zone Node Name
-!x!  <%= ahu_name %> Free Heating Setpoint Schedule,  !- Free Heating Setpoint Schedule Name
-!x!  0.001,                   !- Diameter of Perforations in Collector {m}
-!x!  0.020,                   !- Distance Between Perforations in Collector {m}
-!x!  0.9,                     !- Thermal Emissivity of Collector Surface {dimensionless}
-!x!  0.9,                     !- Solar Absorbtivity of Collector Surface {dimensionless}
-!x!  11.4,                    !- Effective Overall Height of Collector
-!x!  0.1,                     !- Effective Gap Thickness of Plenum Behind Collector {m}
-!x!  9.2,                     !- Effective Cross Section Area of Plenum Behind Collector {m2}
-!x!  Triangle,                !- Hole Layout Pattern for Pitch
-!x!  VanDeckerHollandsBrunger2001,  !- Heat Exchange Effectiveness Correlation
-!x!  1.165,                   !- Ratio of Actual Collector Surface Area to Projected Surface Area {dimensionless}
-!x!  MediumRough,             !- Roughness of Collector
-!x!  0.001,                   !- Collector Thickness {m}
-!x!  0.25,                    !- Effectiveness for Perforations with Respect to Wind {dimensionless}
-!x!  0.5,                     !- Discharge Coefficient for Openings with Respect to Buoyancy Driven Flow {dimensionless}
-!x!<% EnergyPlus.each(oa_solar_surfaces) do |surface| %>
-!x!  <%= surface %>,          !- Surface Name
-!x!<% end %>
-!========
+<%iv_surfacelist = oa_solar_surfaces.join(",\n")%>
+SolarCollector:UnglazedTranspired,
+  <%= ahu_name %> Transpired Solar Collector,  !- Name
+  GapConvectionModel,      !- Boundary Conditions Model Name
+  ,                        !- Availability Schedule Name
+  <%= ahu_name %> OA Inlet Node,  !- Inlet Node Name
+  <%= ahu_name %> Transpired Collector Outlet Node,  !- Outlet Node Name
+  <%= ahu_name %> Unitary Inlet Node,  !- Setpoint Node Name
+  <%= oa_solar_control_zone %> Air Node,  !- Zone Node Name
+  <%= ahu_name %> Free Heating Setpoint Schedule,  !- Free Heating Setpoint Schedule Name
+  0.001,                   !- Diameter of Perforations in Collector {m}
+  0.020,                   !- Distance Between Perforations in Collector {m}
+  0.9,                     !- Thermal Emissivity of Collector Surface {dimensionless}
+  0.9,                     !- Solar Absorbtivity of Collector Surface {dimensionless}
+  11.4,                    !- Effective Overall Height of Collector
+  0.1,                     !- Effective Gap Thickness of Plenum Behind Collector {m}
+  9.2,                     !- Effective Cross Section Area of Plenum Behind Collector {m2}
+  Triangle,                !- Hole Layout Pattern for Pitch
+  VanDeckerHollandsBrunger2001,  !- Heat Exchange Effectiveness Correlation
+  1.165,                   !- Ratio of Actual Collector Surface Area to Projected Surface Area {dimensionless}
+  MediumRough,             !- Roughness of Collector
+  0.001,                   !- Collector Thickness {m}
+  0.25,                    !- Effectiveness for Perforations with Respect to Wind {dimensionless}
+  0.5,                     !- Discharge Coefficient for Openings with Respect to Buoyancy Driven Flow {dimensionless}
+  <%= iv_surfacelist %>;          !- Surface Name
 
 Schedule:Constant,
   <%= ahu_name %> Free Heating Setpoint Schedule,  !- Name
   Temperature,             !- Schedule Type Limits Name
   <%= 55['F'] %>;          !- Hourly Value
+
 !x!<% end %>
 
 !x!<% if (oa_energy_recovery) %>
@@ -1220,25 +1219,27 @@ Controller:OutdoorAir,
   BypassWhenWithinEconomizerLimits;  !- Heat Recovery Bypass Control Type
 !x!<%# only show BypassWhenWithinEconomizerLimits when there is heat recovery %>
 
-!x!Schedule:Compact,
-!x!  <%= ahu_name %> Outdoor Air Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= oa_sch %>;
+Schedule:Compact,
+  <%= ahu_name %> Outdoor Air Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= oa_sch %>;
 
 
 !x!<% if oa_frac_sch != "NONE" %>
-!x!Schedule:Compact,
-!x!  <%= ahu_name %> Outdoor Air Fraction Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= oa_frac_sch %>;
+
+Schedule:Compact,
+  <%= ahu_name %> Outdoor Air Fraction Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= oa_frac_sch %>;
 
 !x!<% end %>
 
 !x!<% if oa_frac_max_sch != "NONE" %>
-!x!Schedule:Compact,
-!x!  <%= ahu_name %> Outdoor Air Max Fraction Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!  <%= oa_frac_max_sch %>;
+
+Schedule:Compact,
+  <%= ahu_name %> Outdoor Air Max Fraction Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+  <%= oa_frac_max_sch %>;
 
 !x!<% end %>
 
@@ -1567,15 +1568,16 @@ AirLoopHVAC:SupplyPath,
   AirLoopHVAC:ZoneSplitter,  !- Component Object Type
   <%= ahu_name %> Zone Splitter;  !- Component Name
 
-!=====manual====
-!x!AirLoopHVAC:ZoneSplitter,
-!x!  <%= ahu_name %> Zone Splitter,  !- Name
-!x!  <%= ahu_name %> Zone Equipment Inlet Node,  !- Inlet Node Name
-!x!<% EnergyPlus.each(branch_names) do |branch_name| %>
-!x!  <%= branch_name %> Inlet Node,  !- Outlet Node Name
+
+!x!<%iv_branchlist = branch_names.join(" Inlet Node,\n")%>
+
+AirLoopHVAC:ZoneSplitter,
+  <%= ahu_name %> Zone Splitter,  !- Name
+  <%= ahu_name %> Zone Equipment Inlet Node,  !- Inlet Node Name
+ <%= iv_branchlist %> Inlet Node;  !- Outlet Node Name
 !x!<% end %>
-!x!<% end %>
-!========
+
+
 
 !x!<% if (return_plenum)
 !x!  iv_comp_obj_type = "AirLoopHVAC:ReturnPlenum"
@@ -1592,25 +1594,25 @@ AirLoopHVAC:ReturnPath,
   <%= iv_comp_name %>;  !- Component Name
 
 !x!<% if (return_plenum) %>
-!======manual=======
-!x!AirLoopHVAC:ReturnPlenum,
-!x!  <%= ahu_name %> Return Plenum,  ! Name
-!x!  <%= return_plenum_zone_name %>,  ! Zone Name
-!x!  <%= return_plenum_zone_name %> Air Node,  ! Zone Node Name
-!x!  <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
-!x!  ,                        !- Induced Air Outlet Node or NodeList Name
-!x!<% EnergyPlus.each(branch_names) do |branch_name| %>
-!x!  <%= branch_name %> Return Node,  !- Inlet Node Name
-!x!<% end %>
+ 
+!x!<%iv_branchlist = branch_names.join(" Return Node,\n")%>
+
+AirLoopHVAC:ReturnPlenum,
+  <%= ahu_name %> Return Plenum,  ! Name
+  <%= return_plenum_zone_name %>,  ! Zone Name
+  <%= return_plenum_zone_name %> Air Node,  ! Zone Node Name
+  <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
+  ,                        !- Induced Air Outlet Node or NodeList Name
+  <%= iv_branchlist %> Return Node;  !- Inlet Node Name
 !x!<% else %>
-!x!AirLoopHVAC:ZoneMixer,
-!x!  <%= ahu_name %> Zone Mixer,   !- Name
-!x!  <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
-!x!<% EnergyPlus.each(branch_names) do |branch_name| %>
-!x!  <%= branch_name %> Return Node,  !- Inlet Node Name
+!x!<%iv_branchlist = branch_names.join(" Return Node,\n")%>
+
+AirLoopHVAC:ZoneMixer,
+  <%= ahu_name %> Zone Mixer,   !- Name
+  <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
+  <%= iv_branchlist %> Return Node;  !- Inlet Node Name
 !x!<% end %>
-!x!<% end %>
-!===========
+
 
 !x!<% if (return_plenum_zone_name == "#{ahu_name} Return Plenum") %>
 ! Dummy return plenum zone
@@ -1646,7 +1648,6 @@ BuildingSurface:Detailed,
   Floor,                   !- Surface Type
   <%= ahu_name %> Plenum Construction,  !- Construction Name
   <%= return_plenum_zone_name %>,  !- Zone Name
-  <%= return_plenum_zone_name %>,  !- Space Name
   Adiabatic,               !- Outside Boundary Condition
   ,                        !- Outside Boundary Condition Object
   NoSun,                   !- Sun Exposure

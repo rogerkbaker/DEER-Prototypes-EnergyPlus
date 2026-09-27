@@ -1,15 +1,15 @@
 Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:CompressorRack			|        |
-!  | Curve:Quadratic					|        |
-!  | OutdoorAir:Node					|        |
-!  | Refrigeration:CaseAndWalkInList			|   X    |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:CompressorRack                               |        |
+!  | Curve:Quadratic                                            |        |
+!  | OutdoorAir:Node                                            |        |
+!  | Refrigeration:CaseAndWalkInList                            |        |
+!-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
@@ -110,9 +110,8 @@ Curve:Quadratic,
 OutdoorAir:Node,
   <%= rack_name %> CondenserNode;     !- Name
 
-!===manual===
-!x!Refrigeration:CaseAndWalkInList,
-!x!  <%= case_list %>,   !- Name
-!x!<% EnergyPlus.each(case_names) do |case_name| %>
-!x!  <%= case_name %>,  !- Case or WalkIn Name
-!x!<% end %>
+!x!<%iv_caselist = case_names.join(",\n")%>
+
+Refrigeration:CaseAndWalkInList,
+  <%= case_list %>,   !- Name
+  <%= iv_caselist %>;  !- Case or WalkIn Name

@@ -2,11 +2,11 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | WaterUse:Storage						|        |
-!  | Schedule:Constant						|        |
+!  | WaterUse:Storage                                           |        |
+!  | Schedule:Constant                                          |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE

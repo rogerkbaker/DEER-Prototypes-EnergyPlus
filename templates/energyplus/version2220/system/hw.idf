@@ -6,7 +6,7 @@ Version, 22.2;
 !  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
 !  | Sizing:Plant                                               |        |
-!  | Schedule:Compact                                           |   X    |
+!  | Schedule:Compact                                           |        |
 !  | PlantLoop                                                  |        |
 !  | SetpointManager:Scheduled                                  |        |
 !  | Schedule:Constant                                          |        |
@@ -14,7 +14,7 @@ Version, 22.2;
 !  | NodeList                                                   |        |
 !  | PlantEquipmentOperationSchemes                             |        |
 !  | PlantEquipmentOperation:HeatingLoad                        |        |
-!  | PlantEquipmentList                                         |   X    |
+!  | PlantEquipmentList                                         |        |
 !  | AvailabilityManagerAssignmentList                          |        |
 !  | AvailabilityManager:Scheduled                              |        |
 !  | BranchList                                                 |        |
@@ -39,8 +39,8 @@ Version, 22.2;
 !  | Pipe:Adiabatic:Steam                                       |        |
 !  | Pipe:Adiabatic                                             |        |
 !  | ConnectorList                                              |        |
-!  | Connector:Splitter                                         |   X    |
-!  | Connector:Mixer                                            |   X    |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -113,10 +113,10 @@ Sizing:Plant,
   <%= design_temp %>,  !- Design Loop Exit Temperature {C}
   <%= design_delta %>;  !- Loop Design Temperature Difference {deltaC}
 
-!x!Schedule:Compact,
-!x!  <%= name %> Operation Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!<%= operation_schedule %>;
+Schedule:Compact,
+  <%= name %> Operation Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+f<%= operation_schedule %>;
 
 
 PlantLoop,
@@ -1099,16 +1099,16 @@ Connector:Mixer,
 !  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
   <%= iv_gen_branch %>;  !- Branch Name
 !  <%= name %> Supply Bypass Branch;  !- Inlet Branch 2 Name
-!====manual====
-!x!BranchList,
-!x!  <%= name %> Demand Branches,!- Name
-!x!  <%= name %> Demand Inlet Branch,  !- Branch Name
-!x!<% for branch_name in branch_names %>
-!x!  <%= branch_name %> HW Branch,  !- Branch Name
-!x!<% end %>
-!x!  <%= name %> Demand Bypass Branch,  !- Branch Name
-!x!  <%= name %> Demand Outlet Branch;  !- Branch Name
-!=====
+
+!x!<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
+
+BranchList,
+  <%= name %> Demand Branches,!- Name
+  <%= name %> Demand Inlet Branch,  !- Branch Name
+  <%= iv_branchlist%> HW Branch,  !- Branch Name
+  <%= name %> Demand Bypass Branch,  !- Branch Name
+  <%= name %> Demand Outlet Branch;  !- Branch Name
+
 Branch,
   <%= name %> Demand Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -1183,21 +1183,19 @@ ConnectorList,
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
 !====manual====
-!x!Connector:Splitter,
-!x!  <%= name %> Demand Splitter,!- Name
-!x!  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-!x!<% for branch_name in branch_names %>
-!x!  <%= branch_name %> HW Branch,  !- Outlet Branch Name
-!x!<% end %>
-!x!  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
-!x!
-!x!Connector:Mixer,
-!x!  <%= name %> Demand Mixer,   !- Name
-!x!  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-!x!<% for branch_name in branch_names %>
-!x!  <%= branch_name %> HW Branch,  !- Inlet Branch Name
-!x!<% end %>
-!x!  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
+!x!<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
+
+Connector:Splitter,
+  <%= name %> Demand Splitter,!- Name
+  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+  <%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
+  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
+
+Connector:Mixer,
+  <%= name %> Demand Mixer,   !- Name
+  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+  <%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
+  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
 !========
 !x!<% if (chiller_cond_hr) || (chiller_heatpump_hr) %>
 !x!  <%= insert 'chillerheatrecovery.imf',

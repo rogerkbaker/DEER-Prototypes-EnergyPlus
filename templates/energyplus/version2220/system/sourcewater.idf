@@ -2,27 +2,27 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Plant						|        |
-!  | PlantLoop							|        |
-!  | ConnectorList						|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | Schedule:Compact						|   X    |
-!  | PlantEquipmentOperation:CoolingLoad			|        |
-!  | PlantEquipmentOperation:HeatingLoad			|        |
-!  | PlantEquipmentList						|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:ConstantSpeed						|        |
-!  | Connector:Splitter						|   X    |
-!  | EvaporativeFluidCooler:SingleSpeed				|        |
-!  | Boiler:HotWater						|        |
-!  | Pipe:Adiabatic						|        |
-!  | Connector:Mixer						|   X    |
-!  | Curve:Quadratic						|        |
-!  | Curve:Bicubic						|        |
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | ConnectorList                                              |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | Schedule:Compact                                           |        |
+!  | PlantEquipmentOperation:CoolingLoad                        |        |
+!  | PlantEquipmentOperation:HeatingLoad                        |        |
+!  | PlantEquipmentList                                         |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Connector:Splitter                                         |        |
+!  | EvaporativeFluidCooler:SingleSpeed                         |        |
+!  | Boiler:HotWater                                            |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | Connector:Mixer                                            |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Bicubic                                              |        |
 !-------------------------------------------------------------------------
 !
 !x!<%#INITIALIZE
@@ -98,10 +98,10 @@ PlantEquipmentOperationSchemes,
   <%= name %> Cool Operation Scheme,  !- Control Scheme 2 Name
   <%= name %> Operation Schedule;                  !- Control Scheme 2 Schedule Name
 
-!x!Schedule:Compact,
-!x!  <%= name %> Operation Schedule,  !- Name
-!x!  On/Off,                  !- Schedule Type Limits Name
-!x!  <%= operation_schedule %>;
+Schedule:Compact,
+  <%= name %> Operation Schedule,  !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  <%= operation_schedule %>;
 
 PlantEquipmentOperation:CoolingLoad,
   <%= name %> Cool Operation Scheme,  !- Name
@@ -272,32 +272,28 @@ Schedule:Compact,
   Through: 12/31,
   For: Alldays,
   Until: 24:00,<%= low_temp_setpoint %>;
-!====manual===
-!x!BranchList,
-!x!  <%= name %> Demand Branches,
-!x!  <%= name %> Demand Inlet Branch,  !- Branch 1 Name
-!x!  <% for i in (0...branch_names.length()) %>
-!x!  <%= branch_names[i] %>, !- Branch Name
-!x!  <% end %>
-!x!  <%= name %> Demand Bypass Branch,  !- Branch Name
-!x!  <%= name %> Demand Outlet Branch;  !- Branch Name
-!x!
-!x!Connector:Splitter,
-!x!  <%= name %> Demand Splitter,
-!x!  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-!x!  <% for i in (0...branch_names.length()) %>
-!x!  <%= branch_names[i] %>, !- Outlet Branch Name
-!x!  <% end %>
-!x!  <%= name %> Demand Bypass Branch;
-!x!
-!x!Connector:Mixer,
-!x!  <%= name %> Demand Mixer,
-!x!  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-!x!  <% for i in (0...branch_names.length()) %>
-!x!  <%= branch_names[i] %>, !- Outlet Branch Name
-!x!  <% end %>
-!x!  <%= name %> Demand Bypass Branch;
-!===========
+
+!x!<%iv_branchlist = branch_names.join(",\n")%>
+
+BranchList,
+  <%= name %> Demand Branches,
+  <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+  <%= iv_branchlist %>, !- Branch Name
+  <%= name %> Demand Bypass Branch,  !- Branch Name
+  <%= name %> Demand Outlet Branch;  !- Branch Name
+
+Connector:Splitter,
+  <%= name %> Demand Splitter,
+  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+  <%= iv_branchlist %>, !- Outlet Branch Name
+  <%= name %> Demand Bypass Branch;
+
+Connector:Mixer,
+  <%= name %> Demand Mixer,
+  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+  <%= iv_branchlist %>, !- Outlet Branch Name
+  <%= name %> Demand Bypass Branch;
+ 
 ConnectorList,
   <%= name %> Demand Connectors,  !- Name
   Connector:Splitter,      !- Connector 1 Object Type
