@@ -408,15 +408,18 @@ Connector:Mixer,
   <%= system_name %> Supply Mixer,  !- Name
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch;  !- Inlet Branch 1 Name
-!====manual======
+
+<% branchlist = ""
+for i in 1..number_collectors
+  branchlist << system_name + " Collector " + i +  "Branch,"
+end
+branchlist << system_name + " Demand Outlet Branch" %>
+
 BranchList,
   <%= system_name %> Demand Branches,  !- Name
   <%= system_name %> Demand Inlet Branch,  !- Branch Name
-<% for i in 1..number_collectors %>
-  <%= system_name %> Collector <%= i %> Branch,  !- Branch Name
-<% end %>
-  <%= system_name %> Demand Outlet Branch;  !- Branch Name
-!=======
+  <%= branchlist %>;  !- Branch Name
+
 Branch,
   <%= system_name %> Demand Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
