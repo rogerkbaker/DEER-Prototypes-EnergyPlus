@@ -6,7 +6,7 @@
 !  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
 !  | Sizing:Plant                                               |        |
-!  | Schedule:Compact                                           |   X    |
+!  | Schedule:Compact                                           |        |
 !  | PlantLoop                                                  |        |
 !  | SetpointManager:Scheduled                                  |        |
 !  | Schedule:Constant                                          |        |
@@ -14,7 +14,7 @@
 !  | NodeList                                                   |        |
 !  | PlantEquipmentOperationSchemes                             |        |
 !  | PlantEquipmentOperation:HeatingLoad                        |        |
-!  | PlantEquipmentList                                         |   X    |
+!  | PlantEquipmentList                                         |        |
 !  | AvailabilityManagerAssignmentList                          |        |
 !  | AvailabilityManager:Scheduled                              |        |
 !  | BranchList                                                 |        |
@@ -39,8 +39,8 @@
 !  | Pipe:Adiabatic:Steam                                       |        |
 !  | Pipe:Adiabatic                                             |        |
 !  | ConnectorList                                              |        |
-!  | Connector:Splitter                                         |   X    |
-!  | Connector:Mixer                                            |   X    |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE
@@ -116,7 +116,7 @@ Sizing:Plant,
 Schedule:Compact,
   <%= name %> Operation Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
-<%= operation_schedule %>;
+  <%= operation_schedule %>;
 
 
 PlantLoop,
@@ -209,26 +209,30 @@ elsif (heating_source == "CHP")
     iv_equip1_obj_name = "Generator:MicroTurbine"
   end
 end %>
-!===manual=====
+
+<% plantequip = ""
+if (chiller_generator_type == "DIRECTFIRED")
+  plantequip << name + " Heating Source,\n"
+  plantequip << "ChillerHeater:Absorption:DirectFired,\n"
+  plantequip << abschiller_name + " Chiller"
+elsif (boiler_duplicate and heating_source == "STEAMBOILER")
+  plantequip << name + " Heating Source 1,\n"
+  plantequip << "Boiler:Steam,\n"
+  plantequip << name + " Heating Source 2"
+elsif (boiler_duplicate)
+  plantequip << name + " Heating Source 1,\n"
+  plantequip << "Boiler:HotWater,\n"
+  plantequip << name + " Heating Source 2"
+else
+  plantequip << name + " Heating Source"
+end %>
+
 PlantEquipmentList,
   <%= name %> Equipment List, !- Name
-  <%= iv_equip1_obj_name %>,         !- Equipment 1 Object Type
-<% if (chiller_generator_type == "DIRECTFIRED") %>
-  <%= name %> Heating Source,  !- Equipment 1 Name
-  ChillerHeater:Absorption:DirectFired,         !- Equipment 2 Object Type
-  <%= abschiller_name %> Chiller;  !- Equipment 2 Name
-<% elsif (boiler_duplicate and heating_source == "STEAMBOILER") %>
-  <%= name %> Heating Source 1,  !- Equipment 1 Name
-  Boiler:Steam,                      !- Equipment 2 Object Type
- <%= name %> Heating Source 2;  !- Equipment 2 Name
-<% elsif (boiler_duplicate) %>
-  <%= name %> Heating Source 1,  !- Equipment 1 Name
-  Boiler:HotWater,                      !- Equipment 2 Object Type
-  <%= name %> Heating Source 2;  !- Equipment 2 Name
-<% else %>
-  <%= name %> Heating Source;  !- Equipment 1 Name
-<% end %>
-!=========
+  <%= iv_equip1_obj_name %>, !- Equipment 1 Object Name
+  <%= plantequip %>;  !- Equipment 1 Name
+
+
 AvailabilityManagerAssignmentList,
   <%= name %> Availability Managers,  !- Name
   AvailabilityManager:Scheduled,  !- Availability Manager 1 Object Type
@@ -1182,19 +1186,19 @@ ConnectorList,
   <%= name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
-!====manual====
+
 <%iv_branchlist = branch_names.join(" HW Branch,\n")%>
 
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
   <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
+  <%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
   <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
 
 Connector:Mixer,
   <%= name %> Demand Mixer,   !- Name
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
+  <%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
   <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
 !========
 <% if (chiller_cond_hr) || (chiller_heatpump_hr) %>

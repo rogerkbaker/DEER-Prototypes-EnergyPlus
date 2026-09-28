@@ -209,26 +209,30 @@ PlantEquipmentOperation:HeatingLoad,
 !x!    iv_equip1_obj_name = "Generator:MicroTurbine"
 !x!  end
 !x!end %>
-!===manual=====
-!x!PlantEquipmentList,
-!x!  <%= name %> Equipment List, !- Name
-!x!  <%= iv_equip1_obj_name %>,         !- Equipment 1 Object Type
-!x!<% if (chiller_generator_type == "DIRECTFIRED") %>
-!x!  <%= name %> Heating Source,  !- Equipment 1 Name
-!x!  ChillerHeater:Absorption:DirectFired,         !- Equipment 2 Object Type
-!x!  <%= abschiller_name %> Chiller;  !- Equipment 2 Name
-!x!<% elsif (boiler_duplicate and heating_source == "STEAMBOILER") %>
-!x!  <%= name %> Heating Source 1,  !- Equipment 1 Name
-!x!  Boiler:Steam,                      !- Equipment 2 Object Type
-!x! <%= name %> Heating Source 2;  !- Equipment 2 Name
-!x!<% elsif (boiler_duplicate) %>
-!x!  <%= name %> Heating Source 1,  !- Equipment 1 Name
-!x!  Boiler:HotWater,                      !- Equipment 2 Object Type
-!x!  <%= name %> Heating Source 2;  !- Equipment 2 Name
-!x!<% else %>
-!x!  <%= name %> Heating Source;  !- Equipment 1 Name
-!x!<% end %>
-!=========
+
+!x!<% plantequip = ""
+!x!if (chiller_generator_type == "DIRECTFIRED")
+!x!  plantequip << name + " Heating Source,\n"
+!x!  plantequip << "ChillerHeater:Absorption:DirectFired,\n"
+!x!  plantequip << abschiller_name + " Chiller"
+!x!elsif (boiler_duplicate and heating_source == "STEAMBOILER")
+!x!  plantequip << name + " Heating Source 1,\n"
+!x!  plantequip << "Boiler:Steam,\n"
+!x!  plantequip << name + " Heating Source 2"
+!x!elsif (boiler_duplicate)
+!x!  plantequip << name + " Heating Source 1,\n"
+!x!  plantequip << "Boiler:HotWater,\n"
+!x!  plantequip << name + " Heating Source 2"
+!x!else
+!x!  plantequip << name + " Heating Source"
+!x!end %>
+
+PlantEquipmentList,
+  <%= name %> Equipment List, !- Name
+  <%= iv_equip1_obj_name %>, !- Equipment 1 Object Name
+  <%= plantequip %>;  !- Equipment 1 Name
+
+
 AvailabilityManagerAssignmentList,
   <%= name %> Availability Managers,  !- Name
   AvailabilityManager:Scheduled,  !- Availability Manager 1 Object Type
@@ -1182,7 +1186,7 @@ ConnectorList,
   <%= name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
-!====manual====
+
 !x!<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
 
 Connector:Splitter,
