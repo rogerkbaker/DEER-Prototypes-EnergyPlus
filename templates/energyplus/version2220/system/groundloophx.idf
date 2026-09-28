@@ -147,25 +147,37 @@ Branch,
   <%= system_name %> Field Inlet Node,  !- Component 1 Inlet Node Name
   <%= system_name %> Supply Equipment Outlet Node;  !- Component 1 Outlet Node Name
 
-GroundHeatExchanger:Vertical,
+GroundHeatExchanger:System ,
   <%= system_name %> Field,  !- Name
   <%= system_name %> Field Inlet Node,  !- Inlet Node Name
   <%= system_name %> Supply Equipment Outlet Node,  !- Outlet Node Name
   <%= gshp_flow_rate %>,      !- Maximum Flow Rate {m3/s}
-  120,                     !- Number of Bore Holes
-  76.2,                    !- Bore Hole Length {m}
-  0.635080E-01,            !- Bore Hole Radius {m}
-  0.692626E+00,            !- Ground Thermal Conductivity {W/m-K}
-  0.234700E+07,            !- Ground Thermal Heat Capacity {J/m3-K}
-  13.375,                  !- Ground Temperature {C}
-  0.692626E+00,            !- Grout Thermal Conductivity {W/m-K}
-  0.391312E+00,            !- Pipe Thermal Conductivity {W/m-K}
-  2.66667E-02,             !- Pipe Out Diameter {m}
-  2.53977E-02,             !- U-Tube Distance {m}
-  2.41285E-03,             !- Pipe Thickness {m}
-  2,                       !- Maximum Length of Simulation
+Site:GroundTemperature:Undisturbed:KusudaAchenbach , !- Undisturbed Ground Temperature Model Type
+<%= system_name %> Field Temps , !- Undisturbed Ground Temperature Model Name
+0.692626E+00, !- Ground Thermal Conductivity {W/m-K}
+0.234700E+07, !- Ground Thermal Heat Capacity {J/m3-K}
+<%= system_name %> Field Response, !- Response Factors Object Name
+UBHWTcalc , !- g-Function Calculation Method
+GHE -Array; !- GHE:Vertical:Array Object Name
+
+GroundHeatExchanger:Vertical:Properties,
+<%= system_name %> Field Props , !- Name
+1, !- Depth of Top of Borehole {m}
+76.2, !- Borehole Length {m}
+1.27016E-01, !- Borehole Diameter {m}
+0.692626E+00, !- Grout Thermal Conductivity {W/m-K}
+0.234700E+07, !- Grout Thermal Heat Capacity {J/m3-K}
+0.391312E+00, !- Pipe Thermal Conductivity {W/m-K}
+1.77E+06, !- Pipe Thermal Heat Capacity {J/m3-K}
+2.66667E-02, !- Pipe Outer Diameter {m}
+2.41285E-03 , !- Pipe Thickness {m}
+2.53977E-02; !- U-Tube Distance {m}
+
+GroundHeatExchanger:ResponseFactors,
+<%= system_name %> Field Response, !- Name
+<%= system_name %> Field Props, !- GHE Properties
+120, !- Number of Boreholes
   ,                        !- G-Function Reference Ratio
-  35,                      !- Number of Data Pairs of the G Function
   -15.2996,                !- G-Function Ln(T/Ts) Value 1
   -0.348322,               !- G-Function G Value 1
   -14.201,                 !- G-Function Ln(T/Ts) Value 2

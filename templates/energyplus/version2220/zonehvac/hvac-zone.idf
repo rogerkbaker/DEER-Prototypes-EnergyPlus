@@ -782,18 +782,29 @@ ZoneHVAC:EquipmentConnections,
   <%= zone_name %> Air Node,  !- Zone Air Node Name
   <%= iv_zn_ret_air_node %>;  !- Zone Return Air Node Name or NodeList Name
 
-!====Manual====
-!x!ZoneHVAC:EquipmentList,
-!x!  <%= zone_name %> Equipment,  !- Name
-!x!  SequentialLoad,          !- Load Distribution Scheme
-!x!<% EnergyPlus.each_with_index(equipment_list) do |equipment, index| %>
-!x!  <%= equipment[0] %>,     !- Zone Equipment Object Type
-!x!  <%= equipment[1] %>,     !- Zone Equipment Name
-!x!  <%= index + 1 %>,        !- Zone Equipment Cooling Sequence
-!x!  <%= index + 1 %>,        !- Zone Equipment Heating or No-Load Sequence
-!x!  ,                        !- Zone Equipment Sequential Cooling Fraction
-!x!  ,                        !- Zone Equipment Sequential Heating Fraction
-!x!<% end %>
+
+!x!<% equiplist = ""
+!x! numrows = #{equipment_list.count}
+!x! idx = "1"
+!x! EnergyPlus.each_with_index(equipment_list) do |equipment, index|
+!x!  equiplist << equipment[0] + ",\n"
+!x!  equiplist << equipment[1] + ",\n"
+!x!  equiplist << idx
+!x!  equiplist << ",\n"
+!x!  equiplist << idx
+!x!  equiplist << ",\n"
+!x!  if (idx < numrows)
+!x!   equiplist << ",\n"
+!x!  end
+!x!  idx = idx.to_i + 1
+!x! end %>
+
+
+ZoneHVAC:EquipmentList,
+  <%= zone_name %> Equipment,  !- Name
+  SequentialLoad,          !- Load Distribution Scheme
+  <%= equiplist %>;
+
 !x!
 !x!<%iv_branchlist = inlet_branches.join(" Outlet Node,\n")%>
 NodeList,
