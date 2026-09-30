@@ -1,5 +1,38 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone                                                |        |
+!  | Schedule:Compact                                           |        |
+!  | PlantLoop                                                  |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:Uncontrolled                       |        |
+!  | PlantEquipmentList                                         |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | WaterHeater:Sizing                                         |        |
+!  | WaterHeater:Mixed                                          |        |
+!  | TemperingValve                                             |        |
+!  | Pipe:Indoor                                                |        |
+!  | LoadProfile:Plant                                          |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | OutdoorAir:Node                                            |        |
+!  | Schedule:File                                              |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -7,7 +40,7 @@ parameter "name"
 parameter "branch_names"
 
 parameter "op_sch",
-  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1;"
+  :default => "Through: 12/31,\n  For: AllDays,\n  Until: 24:00, 1"
 
 parameter "design_temp", :name => "Domestic Hot Water System Supply Temperature", :description => "Domestic hot water system supply temperature",
   :default => 140['F']  # Water heater setpoint and system supply temperature
@@ -101,7 +134,7 @@ nominal_tank_volume = 0.15 # Nominal Tank Volume for Autosizing Plant Connection
   Schedule:Compact,
     <%= name %> Operation Schedule,  !- Name
     Binary Control,          !- Schedule Type Limits Name
-    <%= op_sch %>;
+    <%= op_sch %>;                        !- Field 3
 
   PlantLoop,
     <%= name %>,             !- Name
@@ -367,7 +400,6 @@ end %>
     <%= name %> Outdoor Air Node;  !- Name
 
 <% end %>
-!-------------
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment : removing tempering valve from supply bypass branch
 <% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
@@ -389,7 +421,6 @@ end %>
     <%= name %> Pump Outlet Node;  !- Pump Outlet Node Name
 
 <% end %>
-!--------------
 ! Comment: changing the name of the pipe:indoor
   <% if (dhw_loop_configuration == "DEFAULT-LOOP")
     iv_comp1_obj_nm = "Pipe:Adiabatic"
@@ -456,7 +487,6 @@ end %>
     <%= iv_flow_rate_frac_sch %>,  !- Flow Rate Fraction Schedule Name
     Water;                   !- Plant Loop Fluid Type
 
-!-------------
 ! Comment: Adding load profile branch
 
   Branch,
@@ -589,20 +619,20 @@ end %>
 <% end %>
 !!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment: Change the name of Bypass branch to load profile branch
-!=====manual=====
-BranchList,
-  <%= name %> Demand Branches,!- Name
-  <%= name %> Demand Inlet Branch,  !- Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
-  <%= name %> Load Profile Branch,  !- Branch Name
-<% end %>
-  <%= name %> Demand Outlet Branch;  !- Branch Name
-!========
+<%iv_branchlist = branch_names.join(" DHW Demand Branch,\n")%>
+<% if (dhw_loop_configuration == "DEFAULT-LOOP")
+    iv_branch = name + " Demand Bypass Branch"
+   elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
+    iv_branch = name +" Load Profile Branch"
+   end %>
+
+  BranchList,
+    <%= name %> Demand Branches,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist %> DHW Demand Branch,  !- Branch 2 Name
+    <%= iv_branch %>,        !- Branch 3 Name
+    <%= name %> Demand Outlet Branch;  !- Branch 4 Name
+
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   Branch,
@@ -662,31 +692,25 @@ BranchList,
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment: revising the name of Demand Bypass to Demand LoadProfile Branch in splitter and mixer connectors
-!======manual=====
-Connector:Splitter,
-  <%= name %> Demand Splitter,!- Name
-  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Outlet Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
-  <%= name %> Load Profile Branch;  !- Outlet Branch Name
-<% end %>
+<%iv_branchlist = branch_names.join(" DHW Demand Branch,\n")%>
+<% if (dhw_loop_configuration == "DEFAULT-LOOP")
+  iv_outlet_branch_nm = name + " Demand Bypass Branch"
+ elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
+  iv_outlet_branch_nm = name + " Load Profile Branch"
+ end %>
 
-Connector:Mixer,
-  <%= name %> Demand Mixer,   !- Name
-  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> DHW Demand Branch,  !- Inlet Branch Name
-<% end %>
-<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
-  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
-<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
-  <%= name %> Load Profile Branch;  !- Inlet Branch Name
-<% end %>
-!========
+  Connector:Splitter,
+    <%= name %> Demand Splitter,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist%> DHW Demand Branch,  !- Outlet Branch 1 Name
+    <%= iv_outlet_branch_nm %>;  !- Outlet Branch 2 Name
+
+  Connector:Mixer,
+    <%= name %> Demand Mixer,!- Name
+    <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+    <%= iv_branchlist %> DHW Demand Branch,  !- Inlet Branch 1 Name
+    <%= iv_outlet_branch_nm %>;  !- Inlet Branch 2 Name
+
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 <% else # if not plantloop %>
 

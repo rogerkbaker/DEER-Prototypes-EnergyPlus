@@ -1,4 +1,51 @@
 !Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:System                                              |        |
+!  | AirLoopHVAC                                                |        |
+!  | NodeList                                                   |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:NightCycle                             |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | Schedule:Constant                                          |        |
+!  | Schedule:Compact                                           |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Fan:VariableVolume                                         |        |
+!  | AirLoopHVAC:OutdoorAirSystem                               |        |
+!  | AirLoopHVAC:ControllerList                                 |        |
+!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList                 |        |
+!  | OutdoorAir:Node                                            |        |
+!  | SolarCollector:UnglazedTranspired                          |        |
+!  | HeatExchanger:AirToAir:SensibleAndLatent                   |        |
+!  | EvaporativeCooler:Indirect:ResearchSpecial                 |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Controller:WaterCoil                                       |        |
+!  | Coil:Cooling:Water                                         |        |
+!  | SetpointManager:OutdoorAirPretreat                         |        |
+!  | Controller:OutdoorAir                                      |        |
+!  | Humidifier:Steam:Electric                                  |        |
+!  | Humidifier:Steam:Gas                                       |        |
+!  | SetpointManager:MixedAir                                   |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | SetpointManager:MultiZone:Cooling:Average                  |        |
+!  | SetpointManager:SingleZone:Heating                         |        |
+!  | SetpointManager:SingleZone:Cooling                         |        |
+!  | AirLoopHVAC:SupplyPath                                     |        |
+!  | AirLoopHVAC:ZoneSplitter                                   |        |
+!  | AirLoopHVAC:ReturnPath                                     |        |
+!  | AirLoopHVAC:ReturnPlenum                                   |        |
+!  | Construction                                               |        |
+!  | Material                                                   |        |
+!  | Zone                                                       |        |
+!-------------------------------------------------------------------------
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -412,51 +459,7 @@ end %>
 
 <%# leave preheat fields blank if no preheat/precool %>
 <%# better to leave Cooling Supply Air Flow Rate blank unless Method is Flow/System %>
-!-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
-!-------------------------------------------------------------------------
-!  | Sizing:System						|        |
-!  | AirLoopHVAC						|        |
-!  | NodeList							|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:NightCycle				|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | Schedule:Constant						|        |
-!  | Schedule:Compact						|   X    |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Fan:ConstantVolume						|        |
-!  | Fan:VariableVolume						|        |
-!  | AirLoopHVAC:OutdoorAirSystem				|        |
-!  | AirLoopHVAC:ControllerList					|        |
-!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList			|        |
-!  | OutdoorAir:Node						|        |
-!  | SolarCollector:UnglazedTranspired				|        |
-!  | HeatExchanger:AirToAir:SensibleAndLatent			|        |
-!  | EvaporativeCooler:Indirect:ResearchSpecial			|        |
-!  | Coil:Heating:Water						|        |
-!  | Controller:WaterCoil					|        |
-!  | Coil:Cooling:Water						|        |
-!  | SetpointManager:OutdoorAirPretreat				|        |
-!  | Controller:OutdoorAir					|        |
-!  | Humidifier:Steam:Electric					|        |
-!  | Humidifier:Steam:Gas					|        |
-!  | SetpointManager:MixedAir					|        |
-!  | SetpointManager:Scheduled					|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | SetpointManager:MultiZone:Cooling:Average			|        |
-!  | SetpointManager:SingleZone:Heating				|        |
-!  | SetpointManager:SingleZone:Cooling				|        |
-!  | AirLoopHVAC:SupplyPath					|        |
-!  | AirLoopHVAC:ZoneSplitter					|   X    |
-!  | AirLoopHVAC:ReturnPath					|        |
-!  | AirLoopHVAC:ReturnPlenum					|   X    |
-!  | Construction						|        |
-!  | Material							|        |
-!  | Zone							|        |
-!-------------------------------------------------------------------------
+
 !
 
 Sizing:System,
@@ -836,8 +839,8 @@ OutdoorAir:Node,
   <%= ahu_name %> OA Inlet Node;  !- Name
 
 <% if (oa_solar_preheat) %>
-
 <%iv_surfacelist = oa_solar_surfaces.join(",\n")%>
+
 SolarCollector:UnglazedTranspired,
   <%= ahu_name %> Transpired Solar Collector,  !- Name
   GapConvectionModel,      !- Boundary Conditions Model Name
@@ -867,6 +870,7 @@ Schedule:Constant,
   <%= ahu_name %> Free Heating Setpoint Schedule,  !- Name
   Temperature,             !- Schedule Type Limits Name
   <%= 55['F'] %>;          !- Hourly Value
+
 <% end %>
 
 <% if (oa_energy_recovery) %>
@@ -1223,6 +1227,7 @@ Schedule:Compact,
 
 
 <% if oa_frac_sch != "NONE" %>
+
 Schedule:Compact,
   <%= ahu_name %> Outdoor Air Fraction Schedule,  !- Name
   Unit Interval,           !- Schedule Type Limits Name
@@ -1231,6 +1236,7 @@ Schedule:Compact,
 <% end %>
 
 <% if oa_frac_max_sch != "NONE" %>
+
 Schedule:Compact,
   <%= ahu_name %> Outdoor Air Max Fraction Schedule,  !- Name
   Unit Interval,           !- Schedule Type Limits Name
@@ -1573,6 +1579,7 @@ AirLoopHVAC:ZoneSplitter,
 <% end %>
 
 
+
 <% if (return_plenum)
   iv_comp_obj_type = "AirLoopHVAC:ReturnPlenum"
   iv_comp_name = ahu_name + " Return Plenum"
@@ -1588,6 +1595,7 @@ AirLoopHVAC:ReturnPath,
   <%= iv_comp_name %>;  !- Component Name
 
 <% if (return_plenum) %>
+ 
 <%iv_branchlist = branch_names.join(" Return Node,\n")%>
 
 AirLoopHVAC:ReturnPlenum,
@@ -1641,6 +1649,7 @@ BuildingSurface:Detailed,
   Floor,                   !- Surface Type
   <%= ahu_name %> Plenum Construction,  !- Construction Name
   <%= return_plenum_zone_name %>,  !- Zone Name
+  ,                        !- Space Name
   Adiabatic,               !- Outside Boundary Condition
   ,                        !- Outside Boundary Condition Object
   NoSun,                   !- Sun Exposure

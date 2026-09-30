@@ -294,6 +294,7 @@ Branch,
   <%= name %> Water Heater,  !- Component 2 Name
   <%= preheat_name %> Storage Tank Use Outlet Node,  !- Component 2 Inlet Node Name
   <%= name %> Water Heater Outlet Node;  !- Component 2 Outlet Node Name
+
 !x!<% else %>
 Branch,
   <%= name %> Supply Equipment Branch,  !- Name
@@ -302,6 +303,7 @@ Branch,
   <%= name %> Water Heater,  !- Component 1 Name
   <%= name %> Water Heater Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Water Heater Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 
 WaterHeater:Sizing,
@@ -400,17 +402,17 @@ Schedule:Constant,
   <%= name %> Water Heater Ambient Temperature Schedule,  !- Name
   Temperature,             !- Schedule Type Limits Name
   <%= water_heater_ambient_temp %>;  !- Hourly Value
+
 !x!<% elsif (water_heater_ambient_method == "ZONE") %>
 
 !x!<% else %>
 OutdoorAir:Node,
   <%= name %> Outdoor Air Node;  !- Name
+
 !x!<% end %>
-!-------------
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
 ! Comment : removing tempering valve from supply bypass branch
- 
 
 !x!<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>
 Branch,
@@ -428,8 +430,9 @@ TemperingValve,
   <%= name %> Water Heater Outlet Node,  !- Stream 2 Source Node Name
   <%= name %> Supply Outlet Node,  !- Temperature Setpoint Node Name
   <%= name %> Pump Outlet Node;  !- Pump Outlet Node Name
+
 !x!<% end %>
-!--------------
+
 ! Comment: changing the name of the pipe:indoor
 
 !x!  <% if (dhw_loop_configuration == "DEFAULT-LOOP")
@@ -500,7 +503,6 @@ LoadProfile:Plant,
     <%= name %> Load Profile Load Schedule,  	 !- Load Schedule Name
     <%= peak_flow_rate %>,            !- Peak Flow Rate {m3/s}
     <%= iv_flow_rate_frac_sch %>;  !- Flow Rate Fraction Schedule Name	
-!-------------
 	
 ! Comment: Adding load profile branch 	
 	
@@ -588,11 +590,11 @@ Pump:VariableSpeed,
   1.282051282,             !- Design Shaft Power per Unit Flow Rate per Unit Head {W/((m3/s)-Pa)}
   ,                        !- Design Minimum Flow Rate Fraction
   General;                 !- End-Use Subcategory  
+
 !x!<% end %>
 !x!<% end %> 
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
 
 ConnectorList,
   <%= name %> Supply Connectors,  !- Name
@@ -607,11 +609,13 @@ Connector:Splitter,
   <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
   <%= name %> Supply Equipment Branch  !- Outlet Branch 1 Name
   <%= name %> Supply Equipment Bypass Branch;  !- Outlet Branch 2 Name
+
 !x!<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
 Connector:Splitter,
   <%= name %> Supply Splitter, !- Name
   <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
   <%= name %> Supply Equipment Branch;  !- Outlet Branch 1 Name
+
 !x!<% end %>
 
 !x!<% if (dhw_loop_configuration == "DEFAULT-LOOP") %>  
@@ -620,11 +624,13 @@ Connector:Mixer,
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= name %> Supply Equipment Branch,  !- Inlet Branch 1 Name
   <%= name %> Supply Equipment Bypass Branch;  !- Inlet Branch 2 Name
+
 !x!<% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>  
 Connector:Mixer,
   <%= name %> Supply Mixer,    !- Name
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= name %> Supply Equipment Branch;  !- Inlet Branch 1 Name
+
 !x!<% end %> 
 
 !!<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -700,7 +706,6 @@ ConnectorList,
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
 
-
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ! Comment: revising the name of Demand Bypass to Demand LoadProfile Branch in splitter and mixer connectors
 
@@ -714,15 +719,14 @@ ConnectorList,
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
   <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<%= iv_branchlist%> DHW Demand Branch,
-<%= iv_outlet_branch_nm %>;
+  <%= iv_branchlist%> DHW Demand Branch,
+  <%= iv_outlet_branch_nm %>;
   
 Connector:Mixer,
   <%= name %> Demand Mixer,   !- Name
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<%= iv_branchlist %> DHW Demand Branch,
-<%= iv_outlet_branch_nm %>;
-
+  <%= iv_branchlist %> DHW Demand Branch,
+  <%= iv_outlet_branch_nm %>;
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
@@ -808,12 +812,12 @@ Schedule:Constant,
 !x!<% elsif (water_heater_ambient_method == "OUTDOORS") %>
 OutdoorAir:Node,
   <%= name %> Outdoor Air Node;  !- Name
+
 !x!<% end %>
 !x!
 !x!<% end %>
 
 ! Comment: adding file:schedule class for measure case (SWWH015)
-
 
 !x!<% if (case_configuration == "MEASURE") %>
 Schedule:File,
@@ -827,4 +831,5 @@ Schedule:File,
     No,                      !- Interpolate to Timestep
     60,                      !- Minutes per Item
     Yes;                     !- Adjust Schedule for Daylight Savings
+
 !x!<% end %>

@@ -1,0 +1,33 @@
+This document describes the process to manually strip all masking characters from templates after running IDFUpdater. 
+
+Step One: Copy all upversioned idf files to pxt files. You can use the copytopxt.bat file to quickly execute this task.
+
+Step Two: This Step is best accomplished using Notepad+, which facilitates making changes to multiple open documents concurrently. this task will strip the mask (!x!) which is prepended to all lines that we don't want IDFUpdater to touch. It also strips the last two fields of all parameterized Schedule:Compact objects (IDFUpdater inserts the additional two fields based on an expected minumum 5 fields for the object, despite the parameter containing all relevant fields).
+
+Pass 1 manual unmasking: Open all upversioned pxt files in folder using Notepad+. Use Global Replace (Cntl-H) to replace the following text with nothing (blank replace):
+!x!
+
+Pass 2 manual unmasking places an exclamation mark (!) in front of all instances of the "Version" object. While each template needs a version number for IDFUpdater to properly update, that version object must be commented out after updating, as EnergyPlus only allows one Version object per composed IDF file. The only Version object that should remain unmasked is in the General.pxt file. I find it easiest to use Global Replace to find all instances of "Version," and replace them with "!Version,". I subsequently go into the General.pxt file and uncomment the version object.
+
+Pass 3 manual unmasking (stripping extra fields off compact schedules): this is a two-step process, where step 1 unifies the space between the end of the schedule parameter and the delimiting commma while step 2 deletes the uniform block from the Field 1 comma until just before the object's closing semi-colon.
+Step 1: using regex selction in Replace dialog (lower left) -
+
+Find: %>,.*!- Field 1
+Replace: %>, !- Field 1
+
+Step 2: using extended field selection in Replace dialog - 
+
+Find: , !- Field 1
+    ,                        !- Field 2
+    
+Replace: <blank>
+    
+The fully unmasked files should be ready to use, subject to customary QC and testing guidance.
+
+All these steps can be automated if one chooses, as the execution of the tasks is programmatic and should not require judgement by the user. Such an automated script would consist of the following steps, executed on each upversioned file in the templates folder and its subfolders:
+
+1) open the idf file
+2) globally delete !x!.
+3) globally comment the Version object, except for the general file.
+4) globally replace the text block shown in Pass 2 (which includes two linefeeds).
+5) save the modified file with a .pxt suffix.

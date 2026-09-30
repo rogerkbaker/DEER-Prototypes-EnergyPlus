@@ -2,34 +2,34 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Zone						|        |
-!  | Schedule:Compact						|   X    |
-!  | PlantLoop							|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Schedule:Constant						|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | PlantEquipmentOperation:Uncontrolled			|        |
-!  | PlantEquipmentList						|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:VariableSpeed						|        |
-!  | Pump:ConstantSpeed						|        |
-!  | Pipe:Adiabatic						|        |
-!  | WaterHeater:Sizing						|        |
-!  | WaterHeater:Mixed						|        |
-!  | TemperingValve						|        |
-!  | Pipe:Indoor						|        |
-!  | LoadProfile:Plant						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|        |
-!  | Connector:Mixer						|        |
-!  | OutdoorAir:Node						|        |
-!  | Schedule:File						|        |
+!  | Sizing:Zone                                                |        |
+!  | Schedule:Compact                                           |        |
+!  | PlantLoop                                                  |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:Uncontrolled                       |        |
+!  | PlantEquipmentList                                         |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | WaterHeater:Sizing                                         |        |
+!  | WaterHeater:Mixed                                          |        |
+!  | TemperingValve                                             |        |
+!  | Pipe:Indoor                                                |        |
+!  | LoadProfile:Plant                                          |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | OutdoorAir:Node                                            |        |
+!  | Schedule:File                                              |        |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE
@@ -635,7 +635,7 @@ Connector:Mixer,
     iv_branch = name + " Demand Bypass Branch"
    elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
     iv_branch = name +" Load Profile Branch"
-end %>   
+   end %>   
 
 BranchList,
   <%= name %> Demand Branches,!- Name
@@ -707,10 +707,9 @@ ConnectorList,
 <%iv_branchlist = branch_names.join(" DHW Demand Branch,\n")%>
 <% if (dhw_loop_configuration == "DEFAULT-LOOP")
   iv_outlet_branch_nm = name + " Demand Bypass Branch"
-elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
+ elsif (dhw_loop_configuration == "RECIRCULATION-LOOP")
   iv_outlet_branch_nm = name + " Load Profile Branch"
-end %> 
-
+ end %> 
 
 Connector:Splitter,
   <%= name %> Demand Splitter,!- Name
@@ -723,7 +722,7 @@ Connector:Mixer,
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
 <%= iv_branchlist %> DHW Demand Branch,
 <%= iv_outlet_branch_nm %>;
-!========   
+
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   

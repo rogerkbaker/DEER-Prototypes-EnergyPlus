@@ -1,13 +1,13 @@
 !Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneInfiltration:DesignFlowRate			|        |
-!  | Schedule:Compact					|        |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate                            |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 
 <%#INITIALIZE
@@ -162,16 +162,16 @@ Schedule:Compact,
   Until: 10:00, <%= aggregate_infiltration_schedule_array_weekday[3] %>,       !- Field 7
   Until: 11:00, <%= aggregate_infiltration_schedule_array_weekday[4] %>,       !- Field 8
   Until: 12:00, <%= aggregate_infiltration_schedule_array_weekday[5] %>,       !- Field 9
-  Until: 13:00, <%= aggregate_infiltration_schedule_array_weekday[6] %>,       !- Field 10
-  Until: 14:00, <%= aggregate_infiltration_schedule_array_weekday[7] %>,       !- Field 11
-  Until: 15:00, <%= aggregate_infiltration_schedule_array_weekday[8] %>,       !- Field 12
-  Until: 16:00, <%= aggregate_infiltration_schedule_array_weekday[9] %>,       !- Field 13
-  Until: 17:00, <%= aggregate_infiltration_schedule_array_weekday[10] %>,       !- Field 14
-  Until: 18:00, <%= aggregate_infiltration_schedule_array_weekday[11] %>,       !- Field 15
-  Until: 19:00, <%= aggregate_infiltration_schedule_array_weekday[12] %>,       !- Field 16
-  Until: 20:00, <%= aggregate_infiltration_schedule_array_weekday[13] %>,       !- Field 17
-  Until: 21:00, <%= aggregate_infiltration_schedule_array_weekday[14] %>,       !- Field 18
-  Until: 22:00, <%= aggregate_infiltration_schedule_array_weekday[15] %>,       !- Field 19
+  Until: 13:00, <%= aggregate_infiltration_schedule_array_weekday[6] %>, !- Field 10
+  Until: 14:00, <%= aggregate_infiltration_schedule_array_weekday[7] %>, !- Field 11
+  Until: 15:00, <%= aggregate_infiltration_schedule_array_weekday[8] %>, !- Field 12
+  Until: 16:00, <%= aggregate_infiltration_schedule_array_weekday[9] %>, !- Field 13
+  Until: 17:00, <%= aggregate_infiltration_schedule_array_weekday[10] %>, !- Field 14
+  Until: 18:00, <%= aggregate_infiltration_schedule_array_weekday[11] %>, !- Field 15
+  Until: 19:00, <%= aggregate_infiltration_schedule_array_weekday[12] %>, !- Field 16
+  Until: 20:00, <%= aggregate_infiltration_schedule_array_weekday[13] %>, !- Field 17
+  Until: 21:00, <%= aggregate_infiltration_schedule_array_weekday[14] %>, !- Field 18
+  Until: 22:00, <%= aggregate_infiltration_schedule_array_weekday[15] %>, !- Field 19
   Until: 23:00, <%= aggregate_infiltration_schedule_array_weekday[16] %>,       !- Field 20
   Until: 24:00, <%= aggregate_infiltration_schedule_array_weekday[17] %>,       !- Field 21
   For: Weekends,                                                        !- Field 22

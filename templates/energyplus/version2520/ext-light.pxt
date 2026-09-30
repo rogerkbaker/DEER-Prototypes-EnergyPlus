@@ -1,5 +1,15 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Exterior:Lights                                            |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "name", :name => "Exterior Lighting Name", :description => "Exterior lighting name", :domain => String
 
@@ -39,5 +49,5 @@ end
   Schedule:Compact,
     <%= name %> Schedule,    !- Name
     Unit Interval,           !- Schedule Type Limits Name
-    <%= sch %>;
+    <%= sch %>;                        !- Field 3
 

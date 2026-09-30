@@ -1,3 +1,5 @@
+!Version, 2.2;
+
 <%# Override this file to add your own EnergyPlus objects. %>
 
 <%#

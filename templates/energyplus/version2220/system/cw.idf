@@ -136,6 +136,7 @@ SetpointManager:FollowOutdoorAirTemperature,
   80,                      !- Maximum Setpoint Temperature {C}
   5,                       !- Minimum Setpoint Temperature {C}
   <%= name %> Supply Outlet Node;  !- Setpoint Node or NodeList Name
+
 !x!<% end %>
 
 !SetpointManager:Scheduled,
@@ -168,12 +169,14 @@ CondenserEquipmentOperationSchemes,
 PlantEquipmentOperation:Uncontrolled,
   <%= name %> Operation Scheme,  !- Name
   <%= name %> Equipment List;  !- Priority Control 1 Equipment List Name
+
 !x!<% else %>
 PlantEquipmentOperation:CoolingLoad,
   <%= name %> Operation Scheme,  !- Name
   0.0,                     !- Load Range 1 Lower Limit {W}
   1000000000000,           !- Load Range 1 Upper Limit {W}
   <%= name %> Equipment List;  !- Priority Control 1 Equipment List Name
+
 !x!<% end %>
 
 !x!<% towerlist = ""
@@ -310,6 +313,7 @@ Branch,
   <%= name %> Cooling Tower, !- Component 1 Name
   <%= name %> Cooling Tower Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Cooling Tower Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 !x!<%#
 !x!UPDATE:  Not sure if this warning is relevant anymore?
@@ -396,6 +400,7 @@ CoolingTower:SingleSpeed,
         ,                        !- Cell Minimum  Water Flow Rate Fraction
         ,                        !- Cell Maximum Water Flow Rate Fraction
         <%= ct_sizing %>;                       !- Sizing Factor
+
 !x!    <% end %>
 !x!  <% else %>
 !x!
@@ -484,6 +489,7 @@ CoolingTowerPerformance:CoolTools,
   -0.0185854671815598,     !- Coefficient 33
   0.00115667701293848,     !- Coefficient 34
   0.000807370664460284;    !- Coefficient 35
+
 !x!  <% end %>
 Curve:Cubic,
   <%= name %> CoolingTowerFanRatioCurve,  !- Name
@@ -493,6 +499,7 @@ Curve:Cubic,
   1.04191823356909,        !- Coefficient4 x**3
   0.15,                    !- Minimum Value of x
   1.0;                     !- Maximum Value of x
+
 !x!<% end # tower_type == "VARIABLESPEED" %>
 
 
@@ -594,17 +601,16 @@ Connector:Mixer,
   <%= name %> Supply Mixer,  !- Name
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= branchlist %>;  !- Outlet Branch 2 Name
+
 !x!
 !x!<%iv_branchlist = branch_names.join(" HR Demand Branch,\n")%>
  
 BranchList,
   <%= name %> Demand Branches,  !- Name
   <%= name %> Demand Inlet Branch,  !- Branch Name
-<%= iv_branchlist %> HR Demand Branch,
+  <%= iv_branchlist %> HR Demand Branch,
   <%= name %> Demand Bypass Branch,  !- Branch Name
   <%= name %> Demand Outlet Branch;  !- Branch Name
-
-
 
 Branch,
   <%= name %> Demand Inlet Branch,  !- Name

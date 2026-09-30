@@ -1,5 +1,24 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate                            |        |
+!  | Schedule:Compact                                           |        |
+!  | Lights                                                     |        |
+!  | ElectricEquipment                                          |        |
+!  | GasEquipment                                               |        |
+!  | People                                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | WaterUse:Connections                                       |        |
+!  | WaterUse:Equipment                                         |        |
+!  | Branch                                                     |        |
+!  | InternalMass                                               |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!
 !x!parameter "zone_name"
@@ -224,21 +243,28 @@
     <%= equipment_fraction_lost %>,  !- Fraction Lost
     <%= equip_subcat %>;     !- End-Use Subcategory
 
+  Schedule:Compact,
+    <%= zone_name %> Elec Equip Sch,  !- Name
+    Unit Interval,           !- Schedule Type Limits Name
+    <%= equip_sch %>,        !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
 !x!<% end %>
 !x!<% if (equip_2_area > 0.0) %>
 
-  ElectricEquipment,       !- Field 2
-    <%= zone_name %> Elec Equip 2, !- Field 3
-    <%= zone_name %>,        !- Field 4
-    <%= zone_name %> Elec Equip Sch 2, !- Field 5
-    Watts/Area,              !- Field 6
-    ,                        !- Field 7
-    <%= equip_2_area %>,     !- Field 8
-    ,                        !- Field 9
-    <%= equipment_fraction_latent_2 %>, !- Field 10
-    <%= equip_2_frac_rad %>, !- Field 11
-    <%= equip_2_frac_lost %>,!- Field 12
-    <%= equip_2_subcat %>;   !- Field 13
+  ElectricEquipment,
+    <%= zone_name %> Elec Equip 2,  !- Name
+    <%= zone_name %>,        !- Zone or ZoneList or Space or SpaceList Name
+    <%= zone_name %> Elec Equip Sch 2,  !- Schedule Name
+    Watts/Area,              !- Design Level Calculation Method
+    ,                        !- Design Level {W}
+    <%= equip_2_area %>,     !- Watts per Floor Area {W/m2}
+    ,                        !- Watts per Person {W/person}
+    <%= equipment_fraction_latent_2 %>,  !- Fraction Latent
+    <%= equip_2_frac_rad %>, !- Fraction Radiant
+    <%= equip_2_frac_lost %>,!- Fraction Lost
+    <%= equip_2_subcat %>;   !- End-Use Subcategory
 
   Schedule:Compact,
     <%= zone_name %> Elec Equip Sch 2,  !- Name
@@ -380,13 +406,15 @@
 
 !x!<% end %>
 !x!<% end %>
-
- 
 !x!<% if dhw_flow > 0 %>
- Schedule:Compact,
+
+  Schedule:Compact,
     <%= zone_name %> DHW Sch,!- Name
     Fraction,                !- Schedule Type Limits Name
-    <%= dhw_sch %>;          !- Field 1
+    <%= dhw_sch %>,          !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
 !x!  <% if dhw_plantloop %>
 !x!
 !x!  <% if (dhw_recovery)
@@ -397,18 +425,18 @@
 !x!    iv_dw_hx_destination = ""
 !x!    end %>
 
-  WaterUse:Connections,    !- Field 2
-    <%= zone_name %> DHW Connections, !- Field 3
-    <%= zone_name %> DHW Inlet Node, !- Field 4
-    <%= zone_name %> DHW Outlet Node, !- Field 5
-    ,                        !- Field 6
-    <%= graywater_storage_tank %>, !- Field 7
-    ,                        !- Field 8
-    ,                        !- Field 9
-    <%= iv_dw_hx_type %>,    !- Field 10
-    <%= iv_dw_hx_destination %>, !- Field 11
-    ,                        !- Field 12
-    <%= zone_name %> DHW Equipment; !- Field 13
+  WaterUse:Connections,
+    <%= zone_name %> DHW Connections,  !- Name
+    <%= zone_name %> DHW Inlet Node,  !- Inlet Node Name
+    <%= zone_name %> DHW Outlet Node,  !- Outlet Node Name
+    ,                        !- Supply Water Storage Tank Name
+    <%= graywater_storage_tank %>,  !- Reclamation Water Storage Tank Name
+    ,                        !- Hot Water Supply Temperature Schedule Name
+    ,                        !- Cold Water Supply Temperature Schedule Name
+    <%= iv_dw_hx_type %>,    !- Drain Water Heat Exchanger Type
+    <%= iv_dw_hx_destination %>,  !- Drain Water Heat Exchanger Destination
+    ,                        !- Drain Water Heat Exchanger U-Factor Times Area {W/K}
+    <%= zone_name %> DHW Equipment;  !- Water Use Equipment 1 Name
 
 !x!    <% if dhw_temp == dhw_target
 !x!      hw_supp_temp_sch = ""

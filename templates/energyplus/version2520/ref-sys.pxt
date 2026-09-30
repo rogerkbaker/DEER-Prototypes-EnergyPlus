@@ -1,5 +1,24 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:System                                       |        |
+!  | Refrigeration:CaseAndWalkInList                            |        |
+!  | Refrigeration:CompressorList                               |        |
+!  | Refrigeration:Condenser:AirCooled                          |        |
+!  | Refrigeration:Condenser:EvaporativeCooled                  |        |
+!  | Curve:Linear                                               |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:Actuator                            |        |
+!  | EnergyManagementSystem:OutputVariable                      |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -66,19 +85,18 @@ ref_sys_comp_list = "#{ref_system_name} Compressors List"
     <%= suction_pipe_zone_name %>,  !- Suction Piping Zone Name
     <%= enduse_subcategory %>;  !- End-Use Subcategory
 
-!===manual===
-Refrigeration:CaseAndWalkInList,
-  <%= case_walkin_list %>,   !- Name
-<% EnergyPlus.each(case_walkin_names) do |case_walkin_name| %>
-  <%= case_walkin_name %>,  !- Case or WalkIn Name
-<% end %>
+<%iv_caselist = case_walkin_names.join(",\n")%>
 
-Refrigeration:CompressorList,
-  <%= ref_sys_comp_list %>,   !- Name
-<% EnergyPlus.each(ref_sys_comp_names) do |ref_sys_comp_name| %>
-  <%= ref_sys_comp_name %>,  !- Refrigeration Compressor Name
-<% end %>
-!======
+  Refrigeration:CaseAndWalkInList,
+    <%= case_walkin_list %>, !- Name
+    <%= iv_caselist %>;      !- Case or WalkIn 1 Name
+
+<%iv_complist = ref_sys_comp_names.join(",\n")%>
+
+  Refrigeration:CompressorList,
+    <%= ref_sys_comp_list %>,!- Name
+    <%= iv_complist %>;      !- Refrigeration Compressor 1 Name
+
 <% if (condenser_type == "AirCooled") %>
 
   Refrigeration:Condenser:AirCooled,
@@ -120,7 +138,6 @@ Refrigeration:CompressorList,
 <% else %>
 <%   raise("error: unknown option condenser_type = '#{condenser_type}'") %>
 <% end %>
-
 <% if (cond_curves_source == "SelfContained") %>
 
   Curve:Linear,
@@ -149,13 +166,12 @@ Refrigeration:CompressorList,
     22.2;                    !- Maximum Value of x
 
 <% end %>
-
 !Afshin Faramarzi and Behzad Rizi, 11/11/2024 - added EnergyManagementSystem to the model to control saturated condensing temperature
 <% if (cond_floating) %>
 <% if (condenser_type == "EvaporativelyCooled")
-  iv_output_var = "Site Outdoor Air Wetbulb Temperature"
+iv_output_var = "Site Outdoor Air Wetbulb Temperature"
 else
-  iv_output_var = "Site Outdoor Air Drybulb Temperature"
+iv_output_var = "Site Outdoor Air Drybulb Temperature"
 end %>
 
   EnergyManagementSystem:Sensor,
@@ -186,4 +202,5 @@ end %>
     CondTempControl<%= ref_system_name %>,  !- Name
     SET CondensingTempOverride<%= ref_system_name %> = T_sensor_<%= ref_system_name %> + <%= cond_sct_delta %>,  !- Program Line 1
     SET CondensingTempOverride<%= ref_system_name %> = @Max <%= cond_min_temp %> CondensingTempOverride<%= ref_system_name %>;  !- Program Line 2
+
 <% end %>

@@ -1,22 +1,22 @@
 !Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneInfiltration:DesignFlowRate			|        |
-!  | Schedule:Compact					|   X    |
-!  | Lights						|        |
-!  | ElectricEquipment					|        |
-!  | GasEquipment					|        |
-!  | People						|        |
-!  | Schedule:Constant					|        |
-!  | WaterUse:Connections				|        |
-!  | WaterUse:Equipment					|        |
-!  | Branch						|        |
-!  | InternalMass					|        |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneInfiltration:DesignFlowRate                            |        |
+!  | Schedule:Compact                                           |        |
+!  | Lights                                                     |        |
+!  | ElectricEquipment                                          |        |
+!  | GasEquipment                                               |        |
+!  | People                                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | WaterUse:Connections                                       |        |
+!  | WaterUse:Equipment                                         |        |
+!  | Branch                                                     |        |
+!  | InternalMass                                               |        |
+!-------------------------------------------------------------------------
 !
 
 <%#INITIALIZE

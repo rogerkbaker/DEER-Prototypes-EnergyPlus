@@ -168,6 +168,7 @@ Material,
 Construction,
   Exterior Roof,           !- Name
   <%= iv_layerlist %>;  !- Layer
+
 !x!
 !x!<% if (radiant_ceilings) %>
 
@@ -179,6 +180,7 @@ ConstructionProperty:InternalHeatSource,
   1,                       !- Dimensions for the CTF Calculation
   <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
   ;
+
 !x!
 !x!<%iv_layerlist = layers.join(",\n")%>
 Construction,
@@ -191,6 +193,7 @@ Construction,
 Construction,
   Radiant Exterior Roof,  !- Name
   <%= iv_layerlist %>;  !- Layer
+
 !x!<% end %>
 
 
@@ -263,6 +266,7 @@ Construction,
   Basement Wall,           !- Name
   Gypsum 5/8in,   !- Outside Layer
   Concrete HW Solid 8in;  !- Layer 2
+
 !x!
 !x!<%# Floor Constructions %>
 !x!
@@ -270,6 +274,7 @@ Construction,
   Interior Floor,          !- Name
   Concrete MW Solid 4in,  !- Outside Layer
   Carpet;                  !- Layer 2
+
 !x!
 !x!<% if (radiant_ceilings) %>
 ConstructionProperty:InternalHeatSource,
@@ -295,6 +300,7 @@ Construction,
   Radiant Interior Floor,  !- Name
   Concrete MW Solid 4in,  !- Layer 2
   Carpet;                  !- Layer 3
+
 !x!<% end %>
 
 Construction,
@@ -332,6 +338,7 @@ Construction,
   Radiant Interior Ceiling,  !- Name
   Carpet,                    !- Outside Layer
   Concrete MW Solid 4in;  !- Layer 2
+
 !x!<% end %>
 
 Construction,
@@ -355,18 +362,21 @@ Construction,
   Plaster 1/4in,           !- Layer 2
   Rigid Insulation 1in,    !- Layer 3
   Plywood;                !- Layer 4
+
 !x!<% else %>
 
 Construction,
   Radiant Attic Floor,     !- Name
   Gypsum 5/8in,           !- Outside Layer
   Plywood;                !- Layer 2
+
 !x!<% end %>
 !x!
 Construction,
   Interior Ceiling To Attic,  !- Name
   Plywood,                !- Outside Layer
   Gypsum 5/8in;           !- Layer 2
+
 !x!
 !x!
 !x!<% if (radiant_ceilings) %>
@@ -385,12 +395,14 @@ ConstructionProperty:InternalHeatSource,
   Rigid Insulation 1in,    !- Layer 2
   Plaster 1/4in,           !- Layer 3
   Plaster 1/4in;           !- Layer 4
+
 !x!<% else %>
 
 Construction,
   Radiant Interior Ceiling To Attic,  !- Name
   Plywood,                !- Outside Layer
   Gypsum 5/8in;           !- Layer 2
+
 !x!<% end %>
 !x!
 !x!<%# Slab-On-Grade Constructions %>
@@ -399,6 +411,7 @@ Construction,
   Exterior Floor,          !- Name
   Concrete HW Solid 6in,  !- Outside Layer
   Carpet;                  !- Layer 2
+
 !x!
 !x!<% if (foundation_type == "Full Slab")
 !x!  iv_outside_layer1 = "Slab_Insulation"
@@ -421,6 +434,7 @@ Construction,
 Construction,
   Slab Footing,    !- Name
   Concrete NW Solid 6in;         !- Outside Layer
+
 !x!
 !x!<%# Opaque Door Constructions %>
 
@@ -1012,6 +1026,7 @@ WindowMaterial:Shade,
 Construction,
   Exterior Skylight,     !- Name
   Theoretical Skylight Glazing;  !- Outside Layer
+
 !x!
 !x!<%# FIX: Not used %>
 !x!<% if (skylight_type == "DIFFUSING") %>

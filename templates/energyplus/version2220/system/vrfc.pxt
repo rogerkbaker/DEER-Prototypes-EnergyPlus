@@ -2,18 +2,18 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | AirConditioner:VariableRefrigerantFlow			|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneTerminalUnitList					|   X    |
-!  | Branch							|        |
-!  | OutdoorAir:Node						|        |
-!  | Curve:Biquadratic						|        |
-!  | Curve:Cubic						|        |
-!  | Curve:Quadratic						|        |
-!  | Curve:Linear						|        |
+!  | AirConditioner:VariableRefrigerantFlow                     |        |
+!  | Schedule:Compact                                           |        |
+!  | ZoneTerminalUnitList                                       |        |
+!  | Branch                                                     |        |
+!  | OutdoorAir:Node                                            |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Cubic                                                |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Linear                                               |        |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE
@@ -165,14 +165,12 @@ Schedule:Compact,
   Binary Control,          !- Schedule Type Limits Name
   <%= op_sch %>;
 
-
 <%iv_branchlist = branch_names.join(" Terminal Unit,\n")%>
 
 ZoneTerminalUnitList,
   <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
-!<% EnergyPlus.each(branches) do |zone_name| %>
-  <%= iv_branchlist %> Terminal Unit,  !- Zone Terminal Unit Name
-!<% end %>
+  <%= iv_branchlist %> Terminal Unit;  !- Zone Terminal Unit Name
+
 
 <% if (cond_type == "WATER") %>
 Branch,

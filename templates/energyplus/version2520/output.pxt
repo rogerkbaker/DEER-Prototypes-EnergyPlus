@@ -1,5 +1,29 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Output:Diagnostics,DisplayExtraWarnings                    |        |
+!  | Output:SQLite                                              |        |
+!  | Output:Surfaces:Drawing,DXF                                |        |
+!  | Output:VariableDictionary,IDF                              |        |
+!  | Output:Constructions,Constructions                         |        |
+!  | Output:Surfaces:List,Details                               |        |
+!  | OutputControl:Table:Style                                  |        |
+!  | EnergyManagementSystem:OutputVariable                      |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | Output:Meter                                               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | Output:Table:SummaryReports                                |        |
+!  | OutputControl:ReportingTolerances                          |        |
+!  | EnvironmentalImpactFactors                                 |        |
+!  | FuelFactors                                                |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "power_generator",
   :default => false, :domain => Boolean
@@ -24,7 +48,7 @@ parameter "reporting_tolerance", :name => "Reporting Tolerance", :description =>
 
   OutputControl:Table:Style,
     CommaAndHTML,            !- Column Separator
-    JtoKWH;                  !- Unit Conversion
+    JtoKWH;                  !- Unit Con!Version
 
 <%# NOTE: There seems to be a bug with the SystemTimestep frequency. It reports at 5-minute intervals? %>
 
@@ -107,7 +131,7 @@ end %>
   EnvironmentalImpactFactors,
     0.775556,                !- District Heating Water Efficiency
     3.180952,                !- District Cooling COP {W/W}
-    0.722069,                !- District Heating Steam Conversion Efficiency
+    0.722069,                !- District Heating Steam Con!Version Efficiency
     80.7272,                 !- Total Carbon Equivalent Emission Factor From N2O {kg/kg}
     6.2727,                  !- Total Carbon Equivalent Emission Factor From CH4 {kg/kg}
     0.2727;                  !- Total Carbon Equivalent Emission Factor From CO2 {kg/kg}

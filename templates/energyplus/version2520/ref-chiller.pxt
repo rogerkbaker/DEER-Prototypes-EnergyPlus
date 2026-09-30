@@ -1,5 +1,15 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:AirChiller                                   |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "chiller_name"
 parameter "cap_type", :default => "UnitLoadFactorSensibleOnly"
@@ -17,32 +27,32 @@ parameter "defrost_power", :default =>28400['W']
 parameter "temp_term_defrost_fraction", :default =>""
 parameter "htg_power_sch", :default =>
 "
-    Through: 12/31,
-    For:AllDays,
-    Interpolate:Average,
-    Until: 5:00,0,
-    Until: 5:40,1,
-    Until: 10:00,0,
-    Until: 10:40,1,
-    Until: 15:00,0,
-    Until: 15:40,1,
-    Until: 22:00,0,
-    Until: 22:50,1,
-    Until: 24:00,0
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 5:00,0,           !- Field 4
+    Until: 5:40,1,           !- Field 6
+    Until: 10:00,0,          !- Field 8
+    Until: 10:40,1,          !- Field 10
+    Until: 15:00,0,          !- Field 12
+    Until: 15:40,1,          !- Field 14
+    Until: 22:00,0,          !- Field 16
+    Until: 22:50,1,          !- Field 18
+    Until: 24:00,0;          !- Field 20
 "
 parameter "defrost_sch", :default=>
-"   Through: 12/31,
-    For:AllDays,
-    Interpolate:Average,
-    Until: 5:00,0,
-    Until: 5:30,1,
-    Until: 10:00,0,
-    Until: 10:30,1,
-    Until: 15:00,0,
-    Until: 15:30,1,
-    Until: 22:00,0,
-    Until: 22:40,1,
-    Until: 24:00,0
+"   Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 5:00,0,           !- Field 4
+    Until: 5:30,1,           !- Field 6
+    Until: 10:00,0,          !- Field 8
+    Until: 10:30,1,          !- Field 10
+    Until: 15:00,0,          !- Field 12
+    Until: 15:30,1,          !- Field 14
+    Until: 22:00,0,          !- Field 16
+    Until: 22:40,1,          !- Field 18
+    Until: 24:00,0;          !- Field 20
 "
 %>
 
@@ -87,10 +97,10 @@ parameter "defrost_sch", :default=>
   Schedule:Compact,
     <%= chiller_name %> htg power sch,  !- Name
     ON/OFF,                  !- Schedule Type Limits Name
-    <%= htg_power_sch %>;
+    <%= htg_power_sch %>;                        !- Field 3
 
   Schedule:Compact,
     <%= chiller_name %> defrost sch,  !- Name
     ON/OFF,                  !- Schedule Type Limits Name
-    <%= defrost_sch %>;
+    <%= defrost_sch %>;                        !- Field 3
 

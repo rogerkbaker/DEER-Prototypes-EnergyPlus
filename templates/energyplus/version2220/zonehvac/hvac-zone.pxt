@@ -2,34 +2,34 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:Zone						|        |
-!  | DesignSpecification:ZoneAirDistribution			|        |
-!  | DesignSpecification:OutdoorAir				|        |
-!  | Schedule:Compact						|   X    |
-!  | ZoneControl:Thermostat					|        |
-!  | Schedule:Constant						|        |
-!  | ThermostatSetpoint:SingleHeating				|        |
-!  | ThermostatSetpoint:SingleCooling				|        |
-!  | ThermostatSetpoint:DualSetpoint				|        |
-!  | SetpointManager:SingleZone:Humidity:Minimum		|        |
-!  | SetpointManager:SingleZone:Humidity:Maximum		|        |
-!  | ZoneControl:Humidistat					|        |
-!  | ZoneHVAC:EquipmentConnections				|        |
-!  | ZoneHVAC:EquipmentList					|   X    |
-!  | NodeList							|   X    |
-!  | ZoneHVAC:IdealLoadsAirSystem				|        |
-!  | OutdoorAir:Node						|        |
-!  | ZoneHVAC:Baseboard:Convective:Electric			|        |
-!  | ZoneHVAC:Baseboard:Convective:Water			|        |
-!  | ZoneHVAC:UnitHeater					|        |
-!  | Fan:ConstantVolume						|        |
-!  | Coil:Heating:Fuel						|        |
-!  | Coil:Heating:Electric					|        |
-!  | Coil:Heating:Water						|        |
-!  | Fan:ZoneExhaust						|        |
+!  | Sizing:Zone                                                |        |
+!  | DesignSpecification:ZoneAirDistribution                    |        |
+!  | DesignSpecification:OutdoorAir                             |        |
+!  | Schedule:Compact                                           |        |
+!  | ZoneControl:Thermostat                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | ThermostatSetpoint:SingleHeating                           |        |
+!  | ThermostatSetpoint:SingleCooling                           |        |
+!  | ThermostatSetpoint:DualSetpoint                            |        |
+!  | SetpointManager:SingleZone:Humidity:Minimum                |        |
+!  | SetpointManager:SingleZone:Humidity:Maximum                |        |
+!  | ZoneControl:Humidistat                                     |        |
+!  | ZoneHVAC:EquipmentConnections                              |        |
+!  | ZoneHVAC:EquipmentList                                     |        |
+!  | NodeList                                                   |        |
+!  | ZoneHVAC:IdealLoadsAirSystem                               |        |
+!  | OutdoorAir:Node                                            |        |
+!  | ZoneHVAC:Baseboard:Convective:Electric                     |        |
+!  | ZoneHVAC:Baseboard:Convective:Water                        |        |
+!  | ZoneHVAC:UnitHeater                                        |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Coil:Heating:Fuel                                          |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Fan:ZoneExhaust                                            |        |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE
@@ -533,6 +533,7 @@ Schedule:Compact,
   <%= zone_name %> OA Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
   <%= oa_sch %>;
+
 <% end %>
 
 <% if hvac_type == "UH"
@@ -809,10 +810,6 @@ ZoneHVAC:EquipmentList,
 NodeList,
   <%= zone_name %> Inlet Nodes,  !- Name
   <%= iv_branchlist %> Outlet Node;  !- Node Name
-!<% EnergyPlus.each(inlet_branches) do |branch| %>
-!  <%= branch %> Outlet Node,  !- Node Name
-!<% end %>
-
 
 <% if (not exhaust_branches.empty?) %>
 <%iv_branchlist = exhaust_branches.join(" Outlet Node,\n")%>
@@ -820,9 +817,6 @@ NodeList,
 NodeList,
   <%= zone_name %> Exhaust Nodes,  !- Name
   <%= iv_branchlist %> Inlet Node;  !- Node Name
-!<% EnergyPlus.each(exhaust_branches) do |branch| %>
-!  <%= branch %> Inlet Node,  !- Node Name
-!<% end %>
 <% end %>
 
 <% if (not return_branches.empty?) %>
@@ -830,9 +824,6 @@ NodeList,
 NodeList,
   <%= zone_name %> Return Nodes,  !- Name
   <%= iv_branchlist %> Return Node;  !- Node Name
-!<% EnergyPlus.each(return_branches) do |branch| %>
-!  <%= branch %> Return Node,  !- Node Name
-!<% end %>
 <% end %>
 !======
 <%

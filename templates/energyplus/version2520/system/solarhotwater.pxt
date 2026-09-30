@@ -1,5 +1,40 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | SolarCollectorPerformance:FlatPlate                        |        |
+!  | Schedule:Compact                                           |        |
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:Uncontrolled                       |        |
+!  | PlantEquipmentList                                         |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | NodeList                                                   |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | WaterHeater:Mixed                                          |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | SolarCollector:FlatPlate:Water                             |        |
+!  | Shading:Site:Detailed                                      |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:InternalVariable                    |        |
+!  | EnergyManagementSystem:Actuator                            |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -151,7 +186,7 @@ end
   Schedule:Compact,
     <%= system_name %> Operation Schedule,  !- Name
     Binary Control,          !- Schedule Type Limits Name
-    <%= operation_schedule %>;
+    <%= operation_schedule %>;                        !- Field 3
 
   Sizing:Plant,
     <%= system_name %>,      !- Plant or Condenser Loop Name
@@ -345,7 +380,7 @@ end %>
   Schedule:Compact,
     <%= system_name %> Use Side Flow Schedule,  !- Name
     Unit Interval,           !- Schedule Type Limits Name
-    <%= use_side_flow_schedule %>;
+    <%= use_side_flow_schedule %>;                        !- Field 3
 
 <% end %>
 
@@ -379,15 +414,16 @@ end %>
     <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
     <%= system_name %> Supply Equipment Branch;  !- Inlet Branch 1 Name
 
-!====manual======
-BranchList,
-  <%= system_name %> Demand Branches,  !- Name
-  <%= system_name %> Demand Inlet Branch,  !- Branch Name
-<% for i in 1..number_collectors %>
-  <%= system_name %> Collector <%= i %> Branch,  !- Branch Name
-<% end %>
-  <%= system_name %> Demand Outlet Branch;  !- Branch Name
-!=======
+<% branchlist = ""
+for i in 1..number_collectors
+  branchlist << system_name + " Collector " + i +  "Branch,"
+end
+branchlist << system_name + " Demand Outlet Branch" %>
+
+  BranchList,
+    <%= system_name %> Demand Branches,  !- Name
+    <%= system_name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= branchlist %>;       !- Branch 2 Name
 
   Branch,
     <%= system_name %> Demand Inlet Branch,  !- Name
@@ -478,20 +514,21 @@ end %>
     <%= system_name %> Demand Mixer;  !- Connector 2 Name
 
 !=====manual=====
+<% collector = ""
+ EnergyPlus.each((1..(number_collectors-1).to_a) do |i|
+  collector << system_name + " Collector " + i + " Branch,"
+ end
+    collector << system_name + " Collector " + number_collectors + " Branch" %>
 Connector:Splitter,
   <%= system_name %> Demand Splitter,  !- Name
   <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% EnergyPlus.each((1..number_collectors).to_a) do |i| %>
-  <%= system_name %> Collector <%= i %> Branch,  !- Outlet Branch Name
-<% end %>
+  <%= collector;  !- Outlet Branch Name
 
 Connector:Mixer,
   <%= system_name %> Demand Mixer,  !- Name
   <%= system_name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% EnergyPlus.each((1..number_collectors).to_a) do |i| %>
-  <%= system_name %> Collector <%= i %> Branch,  !- Inlet Branch Name
-<% end %>
-!==========
+<%= collector;  !- Outlet Branch Name
+
 <% sys_prefix = system_name.delete(' ') %>
 
   EnergyManagementSystem:Sensor,

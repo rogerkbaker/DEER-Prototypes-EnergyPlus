@@ -173,6 +173,7 @@ SolarCollectorPerformance:FlatPlate,
   -0.00501,                !- Coefficient 3 of Efficiency Equation {W/m2-K2}
   1.1787,                  !- Coefficient 2 of Incident Angle Modifier
   -0.6569;                 !- Coefficient 3 of Incident Angle Modifier
+
 !x!<% end %>
 !x!<% end %>
 
@@ -186,6 +187,7 @@ Sizing:Plant,
   Heating,                 !- Loop Type
   <%= design_temp %>,  !- Design Loop Exit Temperature {C}
   10.0;                    !- Loop Design Temperature Difference {deltaC}
+
 !x!<%# NOTE: Design temperature difference does not affect water heater sizing. %>
 
 PlantLoop,
@@ -370,13 +372,15 @@ Schedule:Constant,
 !x!<% elsif (storage_tank_ambient_method == "OUTDOORS") %>
 OutdoorAir:Node,
   <%= system_name %> Outdoor Air Node;  !- Name
-!x!<% end %>
 
+!x!<% end %>
 !x!<% if (use_side_connections == "STAND-ALONE") %>
-!x!Schedule:Compact,
-!x!  <%= system_name %> Use Side Flow Schedule,  !- Name
-!x!  Unit Interval,           !- Schedule Type Limits Name
-!x!<%= use_side_flow_schedule %>;
+
+Schedule:Compact,
+  <%= system_name %> Use Side Flow Schedule,  !- Name
+  Unit Interval,           !- Schedule Type Limits Name
+<%= use_side_flow_schedule %>;
+
 !x!<% end %>
 
 Branch,
@@ -408,15 +412,18 @@ Connector:Mixer,
   <%= system_name %> Supply Mixer,  !- Name
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch;  !- Inlet Branch 1 Name
-!====manual======
-!x!BranchList,
-!x!  <%= system_name %> Demand Branches,  !- Name
-!x!  <%= system_name %> Demand Inlet Branch,  !- Branch Name
-!x!<% for i in 1..number_collectors %>
-!x!  <%= system_name %> Collector <%= i %> Branch,  !- Branch Name
-!x!<% end %>
-!x!  <%= system_name %> Demand Outlet Branch;  !- Branch Name
-!=======
+
+!x!<% branchlist = ""
+!x!for i in 1..number_collectors
+!x!  branchlist << system_name + " Collector " + i +  "Branch,"
+!x!end
+!x!branchlist << system_name + " Demand Outlet Branch" %>
+
+BranchList,
+  <%= system_name %> Demand Branches,  !- Name
+  <%= system_name %> Demand Inlet Branch,  !- Branch Name
+  <%= branchlist %>;  !- Branch Name
+
 Branch,
   <%= system_name %> Demand Inlet Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -490,6 +497,7 @@ Shading:Site:Detailed,
   <%= collector_x_origin + collector_width%>,  !- Vertex 4 X-coordinate {m}
   <%= y_origin + collector_length * Math.cos(inclination) %>,  !- Vertex 4 Y-coordinate {m}
   <%= z_origin + collector_length * Math.sin(inclination) %>;  !- Vertex 4 Z-coordinate {m}
+
 !x!<% end %>
 
 Branch,
@@ -512,20 +520,23 @@ ConnectorList,
   Connector:Mixer,         !- Connector 2 Object Type
   <%= system_name %> Demand Mixer;  !- Connector 2 Name
 !=====manual=====
+!x!<% collector = ""
+!x! EnergyPlus.each((1..(number_collectors-1).to_a) do |i|
+!x!  collector << system_name + " Collector " + i + " Branch,"
+!x! end 
+!x!    collector << system_name + " Collector " + number_collectors + " Branch" %>
+
 !x!Connector:Splitter,
 !x!  <%= system_name %> Demand Splitter,  !- Name
 !x!  <%= system_name %> Demand Inlet Branch,  !- Inlet Branch Name
-!x!<% EnergyPlus.each((1..number_collectors).to_a) do |i| %>
-!x!  <%= system_name %> Collector <%= i %> Branch,  !- Outlet Branch Name
-!x!<% end %>
+!x!  <%= collector;  !- Outlet Branch Name
 !x!
 !x!Connector:Mixer,
 !x!  <%= system_name %> Demand Mixer,  !- Name
 !x!  <%= system_name %> Demand Outlet Branch,  !- Outlet Branch Name
-!x!<% EnergyPlus.each((1..number_collectors).to_a) do |i| %>
-!x!  <%= system_name %> Collector <%= i %> Branch,  !- Inlet Branch Name
-!x!<% end %>
-!==========
+!x!!x!<%= collector;  !- Outlet Branch Name
+!x!
+
 !x!<% sys_prefix = system_name.delete(' ') %>
 
 EnergyManagementSystem:Sensor,

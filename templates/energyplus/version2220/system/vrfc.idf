@@ -171,7 +171,6 @@ ZoneTerminalUnitList,
   <%= name %> Terminal Unit List,  !- Zone Terminal Unit List Name
   <%= iv_branchlist %> Terminal Unit;  !- Zone Terminal Unit Name
 
-
 !x!<% if (cond_type == "WATER") %>
 Branch,
   <%= name %> HR Demand Branch,  !- Name
@@ -180,9 +179,11 @@ Branch,
   <%= name %> VRF Heat Pump,   !- Component 1 Name
   <%= name %> VRF Heat Pump Water Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> VRF Heat Pump Water Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% else %>
 OutdoorAir:Node,
   <%= name %> Outdoor Air Node;  !- Name
+
 !x!<% end %>
 
 !x!<% if (manufacturer == "MITSUBISHI") %>
@@ -544,9 +545,6 @@ Curve:Biquadratic,
   Temperature,             !- Input Unit Type for Y
   Dimensionless;           !- Output Unit Type
 
-
-
-
 Curve:Biquadratic,
   <%= name %> VRFCoolEIRFT,  !- Name
   0.147471429,             !- Coefficient1 Constant
@@ -595,8 +593,6 @@ Curve:Biquadratic,
   Temperature,             !- Input Unit Type for X
   Temperature,             !- Input Unit Type for Y
   Dimensionless;           !- Output Unit Type
-
-
 
 !x!<%###### Still using PLR and Combination curves from Mistubishi here ######%>
 
@@ -649,8 +645,6 @@ Curve:Quadratic,
   Dimensionless;           !- Output Unit Type
 
 !x!<%#########################################################%>
-
-
 
 Curve:Biquadratic,
   <%= name %> VRFHeatCapFT,  !- Name
@@ -752,7 +746,6 @@ Curve:Biquadratic,
   Temperature,             !- Input Unit Type for Y
   Dimensionless;           !- Output Unit Type
 
-
 !x!<%###### Still using PLR and Combination curves from Mistubishi here ######%>
 
 Curve:Cubic,
@@ -810,6 +803,5 @@ Curve:Biquadratic,
   Dimensionless;           !- Output Unit Type
 
 !x!<%#########################################################%>
-
 
 !x!<% end %>

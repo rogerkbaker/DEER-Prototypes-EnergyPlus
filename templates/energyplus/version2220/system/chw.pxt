@@ -1,4 +1,4 @@
-!Version, 22.2;
+!!Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
@@ -13,15 +13,15 @@
 !  | SetpointManager:Scheduled                                  |        |
 !  | Branch                                                     |        |
 !  | HeatExchanger:FluidToFluid                                 |        |
-!  | Schedule:Compact                                           |   X    |
+!  | Schedule:Compact                                           |        |
 !  | Schedule:Constant                                          |        |
 !  | SetpointManager:OutdoorAirReset                            |        |
-!  | NodeList                                                   |   X    |
-!  | PlantEquipmentList                                         |   X    |
+!  | NodeList                                                   |        |
+!  | PlantEquipmentList                                         |        |
 !  | AvailabilityManagerAssignmentList                          |        |
 !  | AvailabilityManager:LowTemperatureTurnOff                  |        |
 !  | OutdoorAir:Node                                            |        |
-!  | BranchList                                                 |   X    |
+!  | BranchList                                                 |        |
 !  | Pump:ConstantSpeed                                         |        |
 !  | Pump:VariableSpeed                                         |        |
 !  | Chiller:Electric:ReformulatedEIR                           |        |
@@ -34,7 +34,7 @@
 !  | Curve:Cubic                                                |        |
 !  | Pipe:Adiabatic                                             |        |
 !  | ConnectorList                                              |        |
-!  | Connector:Splitter                                         |   X    |
+!  | Connector:Splitter                                         |        |
 !  | Connector:Mixer                                            |        |
 !  | Curve:Bicubic                                              |        |
 !-------------------------------------------------------------------------
@@ -327,12 +327,12 @@ end
 for i in (1..num_chillers)
   nodelst << name + " Supply Equipment Outlet Node " + i.to_s + ",\n"
 end
-nodelst << name + " Supply Outlet Node"
- %>
+nodelst << name + " Supply Outlet Node" %>
 
 NodeList,
-  <%= name %> Setpoint Nodes,  !- Name
+ <%= name %> Setpoint Nodes,  !- Name
  <%= nodelst %>;
+
 
 PlantEquipmentOperationSchemes,
   <%= name %> Operation Schemes,  !- Name
@@ -391,9 +391,9 @@ end %>
 
 PlantEquipmentList,
   <%= name %> Equipment List, !- Name
-<%= iv_equiplist %>;
+  <%= iv_equiplist %>;
 
-
+! 
 AvailabilityManagerAssignmentList,
   <%= name %> Availability Managers,  !- Name
   AvailabilityManager:LowTemperatureTurnOff,  !- Availability Manager 1 Object Type
@@ -410,7 +410,7 @@ AvailabilityManager:LowTemperatureTurnOff,
 
 OutdoorAir:Node,
   <%= name %> Chiller OA Node;  !- Name
- 
+
 <% brnchlist = ""
 if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
   brnchlist << name + " Heat Recovery Chiller Branch,\n"
@@ -420,15 +420,14 @@ end
 for i in (1..num_chillers)
  brnchlist << name + " Supply Equipment Branch "+ i.to_s + ",\n"
 end 
-brnchlist << name + " Supply Equipment Bypass Branch"
-%>
+brnchlist << name + " Supply Equipment Bypass Branch" %>
 
 BranchList,
   <%= name %> Supply Branches,!- Name
   <%= name %> Supply Inlet Branch,  !- Branch 1 Name
   <%= brnchlist %>,  !- Branch 4 Name
   <%= name %> Supply Outlet Branch;  !- Branch 5 Name
-
+ 
 
 <% if (pump_type == "CONSTANT")
   iv_comp_obj_type = "Pump:ConstantSpeed"
@@ -729,7 +728,6 @@ ChillerHeater:Absorption:DirectFired,
 
 
 <% if (chiller_condenser == "WATERCOOLED") %>
-
 Branch,
   <%= name %> <%= i %> HR Demand Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -737,12 +735,9 @@ Branch,
   <%= name %> Chiller <%= i %>,   !- Component 1 Name
   <%= name %> Chiller <%= i %> Water Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Chiller <%= i %> Water Outlet Node;  !- Component 1 Outlet Node Name
-
 <% else %>
-
 OutdoorAir:Node,
   <%= name %> Chiller <%= i %> Condenser Inlet Node;    !- Name
-
 <% end %>
 
 SetpointManager:Scheduled,
@@ -1267,22 +1262,22 @@ ConnectorList,
   <%= name %> Sec Supply Splitter, !- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Sec Supply Mixer;    !- Connector 2 Name
-
+  
 <%iv_branchlist = branch_names.join(" CHW Demand Branch,\n")%>
 
 Connector:Splitter,
   <%= name %> Sec Demand Splitter, !- Name
   <%= name %> Sec Demand Inlet Branch,  !- Inlet Branch Name
-  <%= iv_branchlist %>,  !- Branch Name
+  <%= iv_branchlist %> CHW Demand Branch,  !- Branch Name
   <%= name %> Sec Demand Bypass Branch;  !- Outlet Branch 5 Name
-
+!==========
 Connector:Splitter,
   <%= name %> Sec Supply Splitter, !- Name
   <%= name %> Sec Supply Inlet Branch,  !- Inlet Branch Name
   <%= name %> Sec Supply Heat Exchanger Branch,  !- Outlet Branch 1 Name
   <%= name %> Sec Supply Bypass Branch;  !- Outlet Branch 2 Name
 <% end %>
-
+!-------
 <% branchlist = ""
 if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
   branchlist << name + " Heat Recovery Chiller Branch,\n"
@@ -1292,8 +1287,7 @@ end
 for i in (1..num_chillers)
   branchlist << name + " Supply Equipment Branch " + i.to_s + ",\n"
 end 
-branchlist << name + " Supply Equipment Bypass Branch"
-%>
+branchlist << name + " Supply Equipment Bypass Branch" %>
 
 Connector:Splitter,
   <%= name %> Supply Splitter,!- Name
@@ -1304,7 +1298,7 @@ Connector:Mixer,
   <%= name %> Supply Mixer,   !- Name
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= branchlist %>;  !- Inlet Branch 3 Name
-
+ 
 <% if loop_config == "PRIMARY-SECONDARY" %>
   Connector:Mixer,
     <%= name %> Sec Supply Mixer,    !- Name
@@ -1336,7 +1330,7 @@ BranchList,
   <%= iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch,  !- Branch Name
   <%= name %> Sec Demand Outlet Branch;  !- Branch Name
-
+!=====
 BranchList,
   <%= name %> Sec Supply Branches,!- Name
   <%= name %> Sec Supply Inlet Branch,  !- Branch 1 Name
@@ -1429,7 +1423,6 @@ ConnectorList,
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
 
-
 <% if loop_config == "PRIMARY-SECONDARY"
     iv_branchlist = name + " Heat Exchanger Demand Branch"
    else
@@ -1450,12 +1443,13 @@ Connector:Mixer,
 
 <% if loop_config == "PRIMARY-SECONDARY" %>
 <% iv_branchlist = branch_names.join(" CHW Branch,\n") %>
+
 Connector:Mixer,
   <%= name %> Sec Demand Mixer,    !- Name
   <%= name %> Sec Demand Outlet Branch,  !- Outlet Branch Name
   <% iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch;  !- Inlet Branch 5 Name
-
+!=======
 Pipe:Adiabatic,
   <%= name %> Sec Demand Bypass Pipe,  !- Name
   <%= name %> Sec Demand Bypass Pipe Inlet Node,  !- Inlet Node Name

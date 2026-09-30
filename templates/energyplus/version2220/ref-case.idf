@@ -193,6 +193,7 @@ Curve:Cubic,
   0.00000123732,           !- Coefficient4 x**3
   -35.0,                   !- Minimum Value of x
   20.0;                    !- Maximum Value of x
+
 !x!<% elsif (credit_type == "SINGLESHELF-HORIZONTAL-DOE") %>
 ! This curve was taken from DOE's retail-supermarket 2004 model
 
@@ -280,6 +281,7 @@ Schedule:Compact,
   Until: 21:00, 117.0,     !- Field 27
   Until: 22:00, 90.0,      !- Field 29
   Until: 24:00, 0.0;       !- Field 31
+
 !x!<% elsif (case_type == "SELF-CONTAINED") %>
 Schedule:Compact,
   <%= case_name %> Restock Sch,  !- Name
@@ -296,6 +298,7 @@ Schedule:Compact,
   Until: 15:00,90.0,       !- Field 17
   Until: 16:00,80.0,       !- Field 19
   Until: 24:00,0.0;        !- Field 21
+
 !x!<% else %>
 Schedule:Compact,
   <%= case_name %> Restock Sch,  !- Name
@@ -306,6 +309,7 @@ Schedule:Compact,
   Until: 14:00,50.0,       !- Field 5
   Until: 15:00,35.0,       !- Field 7
   Until: 24:00,0.0;        !- Field 9
+
 !x!<% end %>
 
 !x!<% if case_credit %>
@@ -313,4 +317,5 @@ Schedule:Compact,
 !x!  <%= case_name %> Credit Sch,  !- Name
 !x!  Unit Interval,           !- Schedule Type Limits Name
 !x!  <%= credit_sch %>;
+
 !x!<% end %>

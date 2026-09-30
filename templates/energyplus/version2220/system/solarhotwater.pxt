@@ -2,36 +2,36 @@
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | SolarCollectorPerformance:FlatPlate			|        |
-!  | Schedule:Compact						|   X    |
-!  | Sizing:Plant						|        |
-!  | PlantLoop							|        |
-!  | PlantEquipmentOperationSchemes				|        |
-!  | PlantEquipmentOperation:Uncontrolled			|        |
-!  | PlantEquipmentList						|        |
-!  | SetpointManager:Scheduled					|        |
-!  | Schedule:Constant						|        |
-!  | NodeList							|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Pump:VariableSpeed						|        |
-!  | WaterHeater:Mixed						|        |
-!  | Pipe:Adiabatic						|        |
-!  | ConnectorList						|        |
-!  | Connector:Splitter						|        |
-!  | Connector:Mixer						|        |
-!  | SolarCollector:FlatPlate:Water				|        |
-!  | Shading:Site:Detailed					|        |
-!  | EnergyManagementSystem:Sensor				|        |
-!  | EnergyManagementSystem:InternalVariable			|        |
-!  | EnergyManagementSystem:Actuator				|        |
-!  | EnergyManagementSystem:ProgramCallingManager		|        |
-!  | EnergyManagementSystem:Program				|        |
+!  | SolarCollectorPerformance:FlatPlate                        |        |
+!  | Schedule:Compact                                           |        |
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:Uncontrolled                       |        |
+!  | PlantEquipmentList                                         |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | NodeList                                                   |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | WaterHeater:Mixed                                          |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | SolarCollector:FlatPlate:Water                             |        |
+!  | Shading:Site:Detailed                                      |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:InternalVariable                    |        |
+!  | EnergyManagementSystem:Actuator                            |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | EnergyManagementSystem:Program                             |        |
 !-------------------------------------------------------------------------
 !
 <%#INITIALIZE

@@ -116,8 +116,7 @@ Sizing:Plant,
 Schedule:Compact,
   <%= name %> Operation Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
-f<%= operation_schedule %>;
-
+ <%= operation_schedule %>;
 
 PlantLoop,
   <%= name %>,  !- Name
@@ -352,6 +351,7 @@ Branch,
   <%= abschiller_name %> Chiller,  !- Component 1 Name
   <%= abschiller_name %> Heat Inlet Node,  !- Component 1 Inlet Node Name
   <%= abschiller_name %> Heat Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 
 
@@ -478,6 +478,7 @@ Boiler:HotWater,
   LeavingSetpointModulated,  !- Boiler Flow Mode
   ,                        !- Parasitic Electric Load {W}
   ;                        !- Sizing Factor
+
 !x!  <% else %>
 !x!
 !x!<% if (boiler_fuel == "NATURALGAS")
@@ -511,8 +512,9 @@ Boiler:HotWater,
   LeavingSetpointModulated,  !- Boiler Flow Mode
   ,                        !- Parasitic Electric Load {W}
   ;                        !- Sizing Factor
+
 !x!  <% end %>
-!-------------
+
 !x!<% if (boiler_type == "ELECTRIC") %>
   ! Constant Efficiency Boiler Curve
 
@@ -631,6 +633,7 @@ Boiler:Steam,
   <%= name %> Heating Source 2 Inlet Node,  !- Water Inlet Node Name
   <%= name %> Supply Equipment Outlet Node 2,  !- Steam Outlet Node Name
   1;                        !- Sizing Factor
+
 !x!  <% else %>
 
 Boiler:Steam,
@@ -649,6 +652,7 @@ Boiler:Steam,
   <%= name %> Heating Source Inlet Node,  !- Water Inlet Node Name
   <%= name %> Supply Equipment Outlet Node ,  !- Steam Outlet Node Name
   1;                        !- Sizing Factor
+
 !x!  <% end %>
 
 !x!<% elsif (heating_source == "DISTRICT") %>
@@ -1092,16 +1096,16 @@ Connector:Splitter,
   <%= name %> Supply Splitter,!- Name
   <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
   <%= iv_outlet_branch_name %>,  !- Outlet Branch 1 Name
-!  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
   <%= iv_gen_branch %>;  !- Branch Name
+
 !  <%= name %> Supply Bypass Branch;  !- Outlet Branch 2 Name
 
 Connector:Mixer,
   <%= name %> Supply Mixer,   !- Name
   <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= iv_outlet_branch_name %>,  !- Outlet Branch 1 Name
-!  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
   <%= iv_gen_branch %>;  !- Branch Name
+
 !  <%= name %> Supply Bypass Branch;  !- Inlet Branch 2 Name
 
 !x!<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
@@ -1172,12 +1176,14 @@ Branch,
   <%= name %> Demand Outlet Pipe,  !- Name
   <%= name %> Demand Outlet Pipe Inlet Node,  !- Inlet Node Name
   <%= name %> Demand Outlet Node;  !- Outlet Node Name
+
 !x!<% else %>
 
   Pipe:Adiabatic:Steam,
   <%= name %> Demand Outlet Pipe,  !- Name
   <%= name %> Demand Outlet Pipe Inlet Node,  !- Inlet Node Name
   <%= name %> Demand Outlet Node;  !- Outlet Node Name
+
 !x!<% end %>
 
 ConnectorList,
@@ -1200,7 +1206,7 @@ Connector:Mixer,
   <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
   <%= iv_branchlist %> HW Branch,  !- Outlet Branch Name
   <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
-!========
+
 !x!<% if (chiller_cond_hr) || (chiller_heatpump_hr) %>
 !x!  <%= insert 'chillerheatrecovery.imf',
 !x!    :name=>name,

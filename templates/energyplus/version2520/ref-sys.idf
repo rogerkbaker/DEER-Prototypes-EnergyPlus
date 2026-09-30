@@ -1,5 +1,24 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:System                                       |        |
+!  | Refrigeration:CaseAndWalkInList                            |        |
+!  | Refrigeration:CompressorList                               |        |
+!  | Refrigeration:Condenser:AirCooled                          |        |
+!  | Refrigeration:Condenser:EvaporativeCooled                  |        |
+!  | Curve:Linear                                               |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:Actuator                            |        |
+!  | EnergyManagementSystem:OutputVariable                      |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -66,19 +85,18 @@
     <%= suction_pipe_zone_name %>,  !- Suction Piping Zone Name
     <%= enduse_subcategory %>;  !- End-Use Subcategory
 
-!===manual===
-!x!Refrigeration:CaseAndWalkInList,
-!x!  <%= case_walkin_list %>,   !- Name
-!x!<% EnergyPlus.each(case_walkin_names) do |case_walkin_name| %>
-!x!  <%= case_walkin_name %>,  !- Case or WalkIn Name
-!x!<% end %>
-!x!
-!x!Refrigeration:CompressorList,
-!x!  <%= ref_sys_comp_list %>,   !- Name
-!x!<% EnergyPlus.each(ref_sys_comp_names) do |ref_sys_comp_name| %>
-!x!  <%= ref_sys_comp_name %>,  !- Refrigeration Compressor Name
-!x!<% end %>
-!======
+!x!<%iv_caselist = case_walkin_names.join(",\n")%>
+
+  Refrigeration:CaseAndWalkInList,
+    <%= case_walkin_list %>, !- Name
+    <%= iv_caselist %>;      !- Case or WalkIn 1 Name
+
+!x!<%iv_complist = ref_sys_comp_names.join(",\n")%>
+
+  Refrigeration:CompressorList,
+    <%= ref_sys_comp_list %>,!- Name
+    <%= iv_complist %>;      !- Refrigeration Compressor 1 Name
+
 !x!<% if (condenser_type == "AirCooled") %>
 
   Refrigeration:Condenser:AirCooled,
@@ -185,3 +203,4 @@
     SET CondensingTempOverride<%= ref_system_name %> = T_sensor_<%= ref_system_name %> + <%= cond_sct_delta %>,  !- Program Line 1
     SET CondensingTempOverride<%= ref_system_name %> = @Max <%= cond_min_temp %> CondensingTempOverride<%= ref_system_name %>;  !- Program Line 2
 
+!x!<% end %>

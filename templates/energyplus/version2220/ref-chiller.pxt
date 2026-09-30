@@ -1,13 +1,13 @@
-H!Version, 22.2;
+!Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Refrigeration:AirChiller				|        |
-!  | Schedule:Compact					|  X(2)  |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:AirChiller                                   |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
 !
 <%#INITIALIZE
 parameter "chiller_name"

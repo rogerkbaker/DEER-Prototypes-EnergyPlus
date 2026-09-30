@@ -1,5 +1,38 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant                                               |        |
+!  | Schedule:Compact                                           |        |
+!  | CondenserLoop                                              |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:Actuator                            |        |
+!  | EnergyManagementSystem:Program                             |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | SetpointManager:FollowOutdoorAirTemperature                |        |
+!  | CondenserEquipmentOperationSchemes                         |        |
+!  | PlantEquipmentOperation:Uncontrolled                       |        |
+!  | PlantEquipmentOperation:CoolingLoad                        |        |
+!  | CondenserEquipmentList                                     |        |
+!  | BranchList                                                 |        |
+!  | HeaderedPumps:VariableSpeed                                |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Branch                                                     |        |
+!  | CoolingTower:SingleSpeed                                   |        |
+!  | CoolingTower:VariableSpeed                                 |        |
+!  | CoolingTowerPerformance:CoolTools                          |        |
+!  | Curve:Cubic                                                |        |
+!  | HeatExchanger:FluidToFluid                                 |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "name"
 parameter "branch_names"
@@ -40,9 +73,7 @@ parameter "clear_water_supply_tank", :default=>""
   Schedule:Compact,
     <%= name %> Operation Schedule,  !- Name
     On/Off,                  !- Schedule Type Limits Name
-    <%= operation_schedule %>, !- Field 1
-    ,                        !- Field 2
-    ;                        !- Field 3
+    <%= operation_schedule %>;                        !- Field 3
 
   CondenserLoop,
     <%= name %>,             !- Name
@@ -149,49 +180,56 @@ end %>
     <%= name %> Equipment List;  !- Range 1 Equipment List Name
 
 <% end %>
-!=====manual====
-CondenserEquipmentList,
-  <%= name %> Equipment List,  !- Name
-<% if num_towers > 1 %>
-  <% for i in 1..(num_towers - 1) %>
-    <% if (tower_type == "VARIABLESPEED") %>
-      CoolingTower:VariableSpeed,  !- Equipment Object Type
-    <% elsif (tower_type == "SINGLESPEED") %>
-      CoolingTower:SingleSpeed,  !- Equipment Object Type
-    <% end %>
-    <%= name %> Cooling Tower <%= i %>,  !- Equipment Name
-  <% end %>
-  <% if (tower_type == "VARIABLESPEED") %>
-    CoolingTower:VariableSpeed,  !- Equipment Object Type
-  <% elsif (tower_type == "SINGLESPEED") %>
-    CoolingTower:SingleSpeed,  !- Equipment Object Type
-  <% end %>
-  <%= name %> Cooling Tower <%= num_towers %>;  !- Equipment Name
-<% else %>
-  <% if (tower_type == "VARIABLESPEED") %>
-    CoolingTower:VariableSpeed,  !- Equipment 1 Object Type
-  <% elsif (tower_type == "SINGLESPEED") %>
-    CoolingTower:SingleSpeed,  !- Equipment 1 Object Type
-  <% end %>
-  <%= name %> Cooling Tower;  !- Equipment 1 Name
-<% end %>
+<% towerlist = ""
+if num_towers > 1
+  for i in 1..(num_towers - 1)
+    if (tower_type == "VARIABLESPEED")
+     towerlist << "CoolingTower:VariableSpeed,\n"
+    elsif (tower_type == "SINGLESPEED")
+     towerlist << "CoolingTower:SingleSpeed,\n"
+    end
+    towerlist << name + " Cooling Tower " + i.to_s + ",\n"
+  end
 
-BranchList,
-  <%= name %> Supply Branches,  !- Name
-  <%= name %> Supply Inlet Branch,  !- Branch 1 Name
-  <% if num_towers > 1 %>
-    <% for i in 1..num_towers %>
-    <%= name %> Cooling Tower <%= i %> Branch,  !- Branch 2 Name
-    <% end %>
-  <% else %>
-  <%= name %> Cooling Tower Branch,  !- Branch 2 Name
-  <% end %>
-  <% if (heat_addition) %>
-    <%= name %> Heat Exchanger Branch,  !- Branch 3 Name
-  <% end %>
-  <%= name %> Supply Equipment Bypass Branch,  !- Branch Name
-  <%= name %> Supply Outlet Branch;  !- Branch Name
-!=============
+  if (tower_type == "VARIABLESPEED")
+    towerlist << "CoolingTower:VariableSpeed,\n"
+  elsif (tower_type == "SINGLESPEED")
+    towerlist << "CoolingTower:SingleSpeed,\n"
+  end
+  name + " Cooling Tower + num_towers.to_s
+else
+  if (tower_type == "VARIABLESPEED")
+    towerlist << "CoolingTower:VariableSpeed,\n"
+  elsif (tower_type == "SINGLESPEED") %>
+    towerlist << "CoolingTower:SingleSpeed,\n"
+  end
+  name + " Cooling Tower"
+end %>
+
+
+  CondenserEquipmentList,
+    <%= name %> Equipment List,  !- Name
+    <%= towerlist %>;        !- Equipment 1 Object Type
+
+<% branchlist = ""
+  if num_towers > 1 %>
+    for i in 1..num_towers %>
+      branchlist << name + " Cooling Tower " + i.to_s + " Branch,\n"
+    end
+  else
+    branchlist << name + " Cooling Tower Branch,\n"
+  end
+  if (heat_addition)
+    branchlist << name + " Heat Exchanger Branch,\n"
+  end
+  branchlist << name + " Supply Equipment Bypass Branch" %>
+
+  BranchList,
+    <%= name %> Supply Branches,  !- Name
+    <%= name %> Supply Inlet Branch,  !- Branch 1 Name
+    <%= branchlist %>,       !- Branch 2 Name
+    <%= name %> Supply Outlet Branch;  !- Branch 3 Name
+
 <% if num_towers > 1
   iv_comp_1_obj_type = "HeaderedPumps:VariableSpeed"
 else
@@ -535,52 +573,41 @@ setting Fan Power at zero.  (Not currently possible.)
     Connector:Mixer,         !- Connector 2 Object Type
     <%= name %> Supply Mixer;!- Connector 2 Name
 
-!=====manual=====
-Connector:Splitter,
-  <%= name %> Supply Splitter,  !- Name
-  <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
-  <% if num_towers > 1 %>
-    <% for i in 1..num_towers %>
-      <%= name %> Cooling Tower <%= i %> Branch,  !- Outlet Branch 1 Name
-    <% end %>
-    <% if (heat_addition) %>
-      <%= name %> Heat Exchanger Branch,  !- Outlet Branch 2 Name
-    <% end %>
-  <% else %>
-  <%= name %> Cooling Tower Branch,  !- Outlet Branch 1 Name
-    <% if (heat_addition) %>
-      <%= name %> Heat Exchanger Branch,  !- Outlet Branch 2 Name
-    <% end %>
-  <% end %>
-      <%= name %> Supply Equipment Bypass Branch;  !- Outlet Branch 2 Name
+<% branchlist = ""
+if num_towers > 1
+  for i in 1..num_towers
+    branchlist << name + " Cooling Tower " + i.to_s + " Branch,\n"
+  end
+  if (heat_addition)
+    branchlist << name + " Heat Exchanger Branch,\n"
+  end
+else
+  branchlist << name + " Cooling Tower Branch,\n"
+  if (heat_addition)
+    branchlist << name + " Heat Exchanger Branch,"
+  end
+end
+branchlist << name + " Supply Equipment Bypass Branch" %>
 
-Connector:Mixer,
-  <%= name %> Supply Mixer,  !- Name
-  <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
-  <% if num_towers > 1 %>
-    <% for i in 1..num_towers %>
-      <%= name %> Cooling Tower <%= i %> Branch,  !- Inlet Branch 1 Name
-    <% end %>
-    <% if (heat_addition) %>
-      <%= name %> Heat Exchanger Branch,  !- Outlet Branch 2 Name
-    <% end %>
-  <% else %>
-    <%= name %> Cooling Tower Branch,  !- Inlet Branch 1 Name
-    <% if (heat_addition) %>
-      <%= name %> Heat Exchanger Branch,  !- Outlet Branch 2 Name
-    <% end %>
-  <% end %>
-  <%= name %> Supply Equipment Bypass Branch;  !- Inlet Branch 2 Name
+  Connector:Splitter,
+    <%= name %> Supply Splitter,  !- Name
+    <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
+    <%= branchlist %>;       !- Outlet Branch 1 Name
 
-BranchList,
-  <%= name %> Demand Branches,  !- Name
-  <%= name %> Demand Inlet Branch,  !- Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HR Demand Branch,  !- Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-  <%= name %> Demand Outlet Branch;  !- Branch Name
-!===========
+  Connector:Mixer,
+    <%= name %> Supply Mixer,!- Name
+    <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
+    <%= branchlist %>;       !- Inlet Branch 1 Name
+
+
+<%iv_branchlist = branch_names.join(" HR Demand Branch,\n")%>
+
+  BranchList,
+    <%= name %> Demand Branches,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist %> HR Demand Branch,  !- Branch 2 Name
+    <%= name %> Demand Bypass Branch,  !- Branch 3 Name
+    <%= name %> Demand Outlet Branch;  !- Branch 4 Name
 
   Branch,
     <%= name %> Demand Inlet Branch,  !- Name
@@ -628,20 +655,17 @@ BranchList,
     Connector:Mixer,         !- Connector 2 Object Type
     <%= name %> Demand Mixer;!- Connector 2 Name
 
-!====manual=====
-Connector:Splitter,
-  <%= name %> Demand Splitter,!- Name
-  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HR Demand Branch,  !- Outlet Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
+<%iv_branchlist = branch_names.join(" HR Demand Branch,\n")%>
 
-Connector:Mixer,
-  <%= name %> Demand Mixer,   !- Name
-  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HR Demand Branch,  !- Inlet Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
-!==========
+  Connector:Splitter,
+    <%= name %> Demand Splitter,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist %> HR Demand Branch,  !- Outlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Outlet Branch 2 Name
+
+  Connector:Mixer,
+    <%= name %> Demand Mixer,!- Name
+    <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+    <%= iv_branchlist %> HR Demand Branch,  !- Inlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Inlet Branch 2 Name
+

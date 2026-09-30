@@ -217,7 +217,6 @@ Refrigeration:Compressor,
     10.0,                    !- Minimum Value of y
     48.9;                    !- Maximum Value of y
 
-
 !x!<% elsif (comp_curves_source == "Copeland_R507_Med_3DS3150ETFE") %>
 ! Capacity Curve for Copeland 3DS3-150E-TFE,   !nominal capacity Btu/h = 116000
 ! Results in Watts, Inputs:  Sat Suction Temp (C), Sat Discharge Temp (C)
@@ -524,7 +523,6 @@ Refrigeration:Compressor,
     Dimensionless,           !- Input Unit Type for Y
     Dimensionless;           !- Output Unit Type
 
-
 !x!<% elsif (comp_curves_source == "Bitzer_NH3_Low_OSNA8591-K") %>
 
   ! Capacity Curve for Bitzer OSNA8591-K,   !nominal cooling capacity = 113.4 KW
@@ -608,8 +606,5 @@ Refrigeration:Compressor,
     12.8,                    !- Maximum Value of x
     10.0,                    !- Minimum Value of y
     53.0;                    !- Maximum Value of y
-
-
-    
 
 !x!<% end %>

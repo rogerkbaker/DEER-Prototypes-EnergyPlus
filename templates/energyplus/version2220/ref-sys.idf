@@ -107,6 +107,7 @@ Refrigeration:Condenser:AirCooled,
     0.25,                    !- Minimum Fan Air Flow Ratio {dimensionless}
     ,  !- Air Inlet Node Name or Zone Name
     ;           !- End-Use Subcategory
+
 !x!<% elsif (condenser_type == "EvaporativelyCooled") %>
 ! Evaporatively condenser from EnergyPlus default values
 ! Behzad Rizi, 2024-03-20
@@ -131,6 +132,7 @@ Refrigeration:Condenser:AirCooled,
   ,                      !- Evaporative Water Supply Tank Name
   ,                      !- Evaporative Condenser Availability Schedule Name
   General;               !- End-Use Subcategory
+
 !x!<% else %>
 !x!<%   raise("error: unknown option condenser_type = '#{condenser_type}'") %>
 !x!<% end %>
@@ -142,6 +144,7 @@ Refrigeration:Condenser:AirCooled,
     500.,                    !- Coefficient2 x
     11.0,                    !- Minimum Value of x
     22.2;                    !- Maximum Value of x
+
 !x!<% elsif (cond_curves_source == "MediumTemp") %>
   Curve:Linear,
     <%= ref_system_name %> Condenser HR curve,  !- Name
@@ -149,6 +152,7 @@ Refrigeration:Condenser:AirCooled,
     <%= cond_hr_mt_air %>,                   !- Coefficient2 x
     11.0,                    !- Minimum Value of x
     22.2;                    !- Maximum Value of x
+
 !x!<% elsif (cond_curves_source == "LowTemp") %>
   Curve:Linear,
     <%= ref_system_name %> Condenser HR curve, !- Name
@@ -156,6 +160,7 @@ Refrigeration:Condenser:AirCooled,
     <%= cond_hr_lt_air %>,                   !- Coefficient2 x
     11.0,                    !- Minimum Value of x
     22.2;                    !- Maximum Value of x
+
 !x!<% end %>
 
 !Afshin Faramarzi and Behzad Rizi, 11/11/2024 - added EnergyManagementSystem to the model to control saturated condensing temperature 	
@@ -195,4 +200,5 @@ EnergyManagementSystem:Program,
 CondTempControl<%= ref_system_name %>,       !- Name
 SET CondensingTempOverride<%= ref_system_name %> = T_sensor_<%= ref_system_name %> + <%= cond_sct_delta %>,  !- Program Line 1
 SET CondensingTempOverride<%= ref_system_name %> = @Max <%= cond_min_temp %> CondensingTempOverride<%= ref_system_name %>;  !- Program Line 2
+
 !x!<% end %>

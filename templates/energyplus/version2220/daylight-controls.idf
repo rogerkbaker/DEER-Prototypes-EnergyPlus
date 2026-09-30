@@ -79,4 +79,5 @@ Daylighting:ReferencePoint,
   <%= x_2 %>,              !- X-Coordinate of Reference Point {m}
   <%= y_2 %>,              !- Y-Coordinate of Reference Point {m}
   <%= z_2 %>;              !- Z-Coordinate of Reference Point {m}
+
 !x!<% end %>

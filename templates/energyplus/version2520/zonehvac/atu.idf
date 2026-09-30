@@ -1,5 +1,27 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneHVAC:AirDistributionUnit                               |        |
+!  | AirTerminal:SingleDuct:VAV:NoReheat                        |        |
+!  | AirTerminal:SingleDuct:VAV:Reheat                          |        |
+!  | AirTerminal:SingleDuct:ConstantVolume:CooledBeam           |        |
+!  | Branch                                                     |        |
+!  | AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction    |        |
+!  | AirLoopHVAC:ZoneMixer                                      |        |
+!  | Coil:Cooling:Water                                         |        |
+!  | AirTerminal:SingleDuct:ParallelPIU:Reheat                  |        |
+!  | AirTerminal:SingleDuct:SeriesPIU:Reheat                    |        |
+!  | AirTerminal:DualDuct:VAV                                   |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Coil:Heating:Steam                                         |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -222,9 +244,8 @@
     <%= atu_flow_min_frac %>,!- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
     ,                        !- Minimum Air Flow Fraction Schedule Name
-    <%= design_spec_OA_name %>,
-    ;  !- Minimum Air Flow Turndown Schedule Name
-!x!    <% #TRC - add missing field so minimum flow can be autosized to account for OA requirement %>,  !- Design Specification Outdoor Air Object Name
+    <%= design_spec_OA_name %>,  !- Design Specification Outdoor Air Object Name
+    ;                        !- Minimum Air Flow Turndown Schedule Name
 
 !x!<% else %>
 !x!<% if (atu_reheat_coil_type == "RESISTANCE")
@@ -322,30 +343,29 @@
     <%= atu_name %> ATU,     !- Component 1 Name
     <%= atu_name %> Chilled Beam CW Inlet Node,  !- Component 1 Inlet Node Name
     <%= atu_name %> Chilled Beam CW Outlet Node;  !- Component 1 Outlet Node Name
-=manually reinserted===
+
 !x!<% elsif (atu_type == "CAV-IND") %>
-AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction,
-  <%= atu_name %> ATU,     !- Name
-  ,                        !- Availability Schedule Name
-  <%= atu_flow %>,         !- Maximum Total Air Flow Rate {m3/s}
-  <%= atu_ind_frac %>,     !- Induction Ratio {}
-  <%= atu_name %> Inlet Node,  !- Supply Air Inlet Node Name
-  <%= atu_name %> Secondary Inlet Node,  !- Induced Air Inlet Node Name
-  <%= atu_name %> Outlet Node,  !- Air Outlet Node Name
-  <%= atu_name %> Heating Coil Demand Inlet Node,  !- Hot Water Inlet Node Name
-  <%= atu_name %> Cooling Coil Demand Inlet Node,  !- Cold Water Inlet Node Name
-  Coil:Heating:Water,      !- Heating Coil Object Type
-  <%= atu_name %> Heating Coil,  !- Heating Coil Name
-  Autosize,                !- Maximum Hot Water Flow Rate {m3/s}
-  0.0,                     !- Minimum Hot Water Flow Rate {m3/s}
-  0.001,                   !- Heating Convergence Tolerance
-  Coil:Cooling:Water,      !- Cooling Coil Object Type
-  <%= atu_name %> Cooling Coil,  !- Cooling Coil Name
-  Autosize,                !- Maximum Cold Water Flow Rate {m3/s}
-  0.0,                     !- Minimum Cold Water Flow Rate {m3/s}
-  0.001,                   !- Cooling Convergence Tolerance
-  <%= atu_name %> ATU Mixer;  !- Zone Mixer Name
-!========
+
+  AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction,
+    <%= atu_name %> ATU,     !- Name
+    ,                        !- Availability Schedule Name
+    <%= atu_flow %>,         !- Maximum Total Air Flow Rate {m3/s}
+    <%= atu_ind_frac %>,     !- Induction Ratio
+    <%= atu_name %> Inlet Node,  !- Supply Air Inlet Node Name
+    <%= atu_name %> Secondary Inlet Node,  !- Induced Air Inlet Node Name
+    <%= atu_name %> Outlet Node,  !- Air Outlet Node Name
+    Coil:Heating:Water,      !- Heating Coil Object Type
+    <%= atu_name %> Heating Coil,  !- Heating Coil Name
+    Autosize,                !- Maximum Hot Water Flow Rate {m3/s}
+    0.0,                     !- Minimum Hot Water Flow Rate {m3/s}
+    0.001,                   !- Heating Convergence Tolerance
+    Coil:Cooling:Water,      !- Cooling Coil Object Type
+    <%= atu_name %> Cooling Coil,  !- Cooling Coil Name
+    Autosize,                !- Maximum Cold Water Flow Rate {m3/s}
+    0.0,                     !- Minimum Cold Water Flow Rate {m3/s}
+    0.001,                   !- Cooling Convergence Tolerance
+    <%= atu_name %> ATU Mixer;  !- Zone Mixer Name
+
   AirLoopHVAC:ZoneMixer,
     <%= atu_name %> ATU Mixer,  !- Name
     <%= atu_name %> Outlet Node,  !- Outlet Node Name

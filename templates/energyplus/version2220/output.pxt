@@ -1,4 +1,29 @@
 !Version, 22.2;
+! Inventory of EnergyPlus Objects in this Template, 
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Output:Diagnostics,DisplayExtraWarnings                    |        |
+!  | Output:SQLite                                              |        |
+!  | Output:Surfaces:Drawing,DXF                                |        |
+!  | Output:VariableDictionary,IDF                              |        |
+!  | Output:Constructions,Constructions                         |        |
+!  | Output:Surfaces:List,Details                               |        |
+!  | OutputControl:Table:Style                                  |        |
+!  | EnergyManagementSystem:OutputVariable                      |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | Output:Meter                                               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | Output:Table:SummaryReports                                |        |
+!  | OutputControl:ReportingTolerances                          |        |
+!  | EnvironmentalImpactFactors                                 |        |
+!  | FuelFactors                                                |        |
+!-------------------------------------------------------------------------
+!
+
 <%#INITIALIZE
 parameter "power_generator",
   :default => false, :domain => Boolean
@@ -6,30 +31,6 @@ parameter "power_generator",
 parameter "reporting_tolerance", :name => "Reporting Tolerance", :description => "Reporting tolerance for unmet hours",
   :default => 2['deltaF'], :domain => Quantity
 %>
-! Inventory of EnergyPlus Objects in this Template, 
-! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | Output:Diagnostics,DisplayExtraWarnings		|        |
-!  | Output:SQLite					|        |
-!  | Output:Surfaces:Drawing,DXF			|        |
-!  | Output:VariableDictionary,IDF			|        |
-!  | Output:Constructions,Constructions			|        |
-!  | Output:Surfaces:List,Details			|        |
-!  | OutputControl:Table:Style				|        |
-!  | EnergyManagementSystem:OutputVariable		|        |
-!  | EnergyManagementSystem:Sensor			|        |
-!  | Output:Meter					|        |
-!  | EnergyManagementSystem:Program			|        |
-!  | EnergyManagementSystem:ProgramCallingManager	|        |
-!  | Output:Table:SummaryReports			|        |
-!  | OutputControl:ReportingTolerances			|        |
-!  | EnvironmentalImpactFactors				|        |
-!  | FuelFactors					|        |
-!-----------------------------------------------------------------
-!
 
 
 Output:Diagnostics,DisplayExtraWarnings;

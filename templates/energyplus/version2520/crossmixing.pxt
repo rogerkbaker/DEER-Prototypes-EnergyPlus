@@ -1,5 +1,15 @@
-!  version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneMixing                                                 |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "zone_name"           # Primary zone where mixing occurs
 parameter "source_zone_name"    # Secondary zone where mixing air originates from
@@ -39,7 +49,5 @@ parameter "mixing_schedule", :default=>"Through: 12/31,\n  For: AllDays,\n  Unti
   Schedule:Compact,
     <%= zone_name + " : " + source_zone_name%> Air Mixing Schedule,  !- Name
     Unit Interval,           !- Schedule Type Limits Name
-    <%= mixing_schedule %>,  !- Field 1
-    ,                        !- Field 2
-    ;                        !- Field 3
+    <%= mixing_schedule %>;                        !- Field 3
 

@@ -1,5 +1,20 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneHVAC:TerminalUnit:VariableRefrigerantFlow              |        |
+!  | Schedule:Compact                                           |        |
+!  | Fan:OnOff                                                  |        |
+!  | Coil:Cooling:DX:VariableRefrigerantFlow                    |        |
+!  | Coil:Heating:DX:VariableRefrigerantFlow                    |        |
+!  | Curve:Cubic                                                |        |
+!  | Curve:Quadratic                                            |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -65,8 +80,10 @@
   Schedule:Compact,
     <%= name %> Fan Mode Schedule,  !- Name
     Fan Mode Control,        !- Schedule Type Limits Name
-    <%= fan_mode_sch %>;     !- Field 1
-    
+    <%= fan_mode_sch %>,     !- Field 1
+    ,                        !- Field 2
+    ;                        !- Field 3
+
 !x!<% if (fan_config == "BLOW-THROUGH")
 !x!  iv_air_inlet_node = name + "Inlet Node",  !- Air Inlet Node Name
 !x!  iv_air_outlet_node = name + "Fan Outlet Node",  !- Air Outlet Node Name
@@ -75,20 +92,19 @@
 !x!  iv_air_outlet_node = name + "Outlet Node",  !- Air Outlet Node Name
 !x!end %>
 
-
-    Fan:OnOff,               !- Field 2
-    <%= name %> Fan,         !- Field 3
-    ,                        !- Field 4
-    <%= fan_eff %>,          !- Field 5
-    <%= fan_rise %>,         !- Field 6
-    <%= fan_flow %>,         !- Field 7
-    <%= fan_motor_eff %>,    !- Field 8
-    1.0,                     !- Field 9
-    <%= iv_air_inlet_node %>,!- Field 10
-    <%= iv_air_outlet_node %>, !- Field 11
-    ,                        !- Field 12
-    ,                        !- Field 13
-    <%= fan_subcat %>;       !- Field 14
+  Fan:OnOff,
+    <%= name %> Fan,         !- Name
+    ,                        !- Availability Schedule Name
+    <%= fan_eff %>,          !- Fan Total Efficiency
+    <%= fan_rise %>,         !- Pressure Rise {Pa}
+    <%= fan_flow %>,         !- Maximum Flow Rate {m3/s}
+    <%= fan_motor_eff %>,    !- Motor Efficiency
+    1.0,                     !- Motor In Airstream Fraction
+    <%= iv_air_inlet_node %>,!- Air Inlet Node Name
+    <%= iv_air_outlet_node %>,  !- Air Outlet Node Name
+    ,                        !- Fan Power Ratio Function of Speed Ratio Curve Name
+    ,                        !- Fan Efficiency Ratio Function of Speed Ratio Curve Name
+    <%= fan_subcat %>;       !- End-Use Subcategory
 
 !x!<% if (fan_config == "BLOW-THROUGH")
 !x!  iv_coil_air_in_node = name + "Fan Outlet Node"

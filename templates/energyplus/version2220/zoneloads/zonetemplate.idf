@@ -135,6 +135,7 @@ ZoneInfiltration:DesignFlowRate,
   ,                        !- Temperature Term Coefficient
   ,                        !- Velocity Term Coefficient
   ;                        !- Velocity Squared Term Coefficient
+
 !x!<% elsif (infil_area_adj > 0.0 && infiltration_method == 'Flow/ExteriorArea') %>
 ZoneInfiltration:DesignFlowRate,
   <%= zone_name %> Infiltration,  !- Name
@@ -164,6 +165,7 @@ ZoneInfiltration:DesignFlowRate,
   ,                        !- Temperature Term Coefficient
   <%= infil_velocity_coef %>,                        !- Velocity Term Coefficient
   ;                        !- Velocity Squared Term Coefficient
+
 !x!<% else %>
 !x!    <% infil_ach = 0 %>
 !x!<% end %>
@@ -395,6 +397,7 @@ Schedule:Constant,
   <%= zone_name %> Air Velocity Sch,  !- Name
   Nonnegative Number,      !- Schedule Type Limits Name
   0.2;                     !- Hourly Value
+
 !x!<% end %>
 !x!<% end %>
 
@@ -468,7 +471,7 @@ Schedule:Constant,
 	
 !x!  <% elsif (dhw_loop_configuration == "RECIRCULATION-LOOP") %>
   
-	Branch,
+   Branch,
     <%= zone_name %> DHW Demand Branch,  !- Name
     ,                        !- Pressure Drop Curve Name
     WaterUse:Connections,    !- Component 1 Object Type
@@ -479,6 +482,7 @@ Schedule:Constant,
     <%= zone_name %> DHW Pump,    !- Component 2 Name
     <%= zone_name %> DHW Outlet Node,  !- Component 2 Inlet Node Name
     <%= zone_name %> Pump Oulet Node;  !- Component 2 Outlet Node Name
+
 !x!  <% end %>
   
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -498,6 +502,7 @@ Schedule:Constant,
     <%= zone_name %> DHW Latent Fract Sch,  !- Name
     Unit Interval,           !- Schedule Type Limits Name
     0.05;                  !- Hourly Value
+
 !x!  <% end # if dhw_plantloop%>
 !x!<% end # if dhw_flow > 0%>
 

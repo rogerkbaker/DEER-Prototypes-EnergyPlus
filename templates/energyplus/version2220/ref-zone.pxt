@@ -1,21 +1,21 @@
 !Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
-!-----------------------------------------------------------------
-!  | EnergyPlus 					| Manual |
-!  | Object Name					| Update |
-!-----------------------------------------------------------------
-!  | ZoneControl:Thermostat				|        |
-!  | Schedule:Compact					|  X(2)  |
-!  | ScheduleTypeLimits					|        |
-!  | ThermostatSetpoint:DualSetpoint			|        |
-!  | ZoneHVAC:EquipmentConnections			|        |
-!  | ZoneHVAC:EquipmentList				|        |
-!  | ZoneHVAC:UnitHeater				|        |
-!  | Coil:Heating:Electric				|        |
-!  | Fan:ConstantVolume 				|        |
-!  | ZoneHVAC:RefrigerationChillerSet			|        |
-!-----------------------------------------------------------------
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ZoneControl:Thermostat                                     |        |
+!  | Schedule:Compact                                           |        |
+!  | ScheduleTypeLimits                                         |        |
+!  | ThermostatSetpoint:DualSetpoint                            |        |
+!  | ZoneHVAC:EquipmentConnections                              |        |
+!  | ZoneHVAC:EquipmentList                                     |        |
+!  | ZoneHVAC:UnitHeater                                        |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | ZoneHVAC:RefrigerationChillerSet                           |        |
+!-------------------------------------------------------------------------
 !
 <%#INITIALIZE
 require "modelkit/energyplus"
@@ -62,15 +62,15 @@ parameter "clg_sp", :default=>
     <%= zone_name %> Heating Setpoints sch,!- Heating Setpoint Temperature Schedule Name
     <%= zone_name %> Cooling Setpoints sch;!- Cooling Setpoint Temperature Schedule Name
 
-  Schedule:Compact,
-    <%= zone_name %> Heating Setpoints sch,!- Name
-    Temperature,             !- Schedule Type Limits Name
-    <%= htg_sp %>;
+ Schedule:Compact,
+   <%= zone_name %> Heating Setpoints sch,!- Name
+   Temperature,             !- Schedule Type Limits Name
+   <%= htg_sp %>;
 
-  Schedule:Compact,
-    <%= zone_name %> Cooling Setpoints sch,!- Name
-    Temperature,             !- Schedule Type Limits Name
-    <%= clg_sp %>;
+ Schedule:Compact,
+   <%= zone_name %> Cooling Setpoints sch,!- Name
+   Temperature,             !- Schedule Type Limits Name
+   <%= clg_sp %>;
 
 <% if (add_heater)
     zone_air_exh_node_name = zone_name + " Exhaust Nodes"
@@ -163,7 +163,6 @@ parameter "clg_sp", :default=>
     Until: 24:00,1;          !- Field 11
 <% end %>
 
-
 <%iv_airchillerlist = air_chiller_names.join(",\n")%>
 
 ZoneHVAC:RefrigerationChillerSet,
@@ -173,7 +172,4 @@ ZoneHVAC:RefrigerationChillerSet,
     ,                        !- Air Inlet Node Name
     ,                        !- Air Outlet Node Name
   <%= iv_airchillerlist %>;  !- Refrigeration Compressor Name
-!<% EnergyPlus.each(air_chiller_names) do |air_chiller_name| %>
-!  <%= air_chiller_name %>,  !- Refrigeration Compressor Name
-!<% end %>
 

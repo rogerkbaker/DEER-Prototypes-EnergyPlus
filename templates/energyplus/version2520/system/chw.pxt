@@ -1,5 +1,45 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | PlantEquipmentList                                         |        |
+!  | PlantEquipmentOperation:CoolingLoad                        |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Branch                                                     |        |
+!  | HeatExchanger:FluidToFluid                                 |        |
+!  | Schedule:Compact                                           |        |
+!  | Schedule:Constant                                          |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | NodeList                                                   |        |
+!  | PlantEquipmentList                                         |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:LowTemperatureTurnOff                  |        |
+!  | OutdoorAir:Node                                            |        |
+!  | BranchList                                                 |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Chiller:Electric:ReformulatedEIR                           |        |
+!  | Chiller:Electric:EIR                                       |        |
+!  | ChillerHeater:Absorption:DirectFired                       |        |
+!  | Chiller:Absorption:Indirect                                |        |
+!  | HeatPump:WaterToWater:EquationFit:Cooling                  |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Cubic                                                |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!  | Curve:Bicubic                                              |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -215,7 +255,7 @@ parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n 
   Schedule:Compact,
     <%= name %> Operation Schedule,  !- Name
     Binary Control,          !- Schedule Type Limits Name
-    <%= operation_schedule %>;
+    <%= operation_schedule %>;                        !- Field 3
 
 <% if loop_config == "PRIMARY-SECONDARY-COMMON"
   avail_mgr_list = name + " Availability Managers"
@@ -274,20 +314,21 @@ end %>
     <%= name %> Setpoint Nodes;  !- Setpoint Node or NodeList Name
 
 <% end %>
-!====manual=====
-NodeList,
-  <%= name %> Setpoint Nodes,  !- Name
-<% if (chiller_cond_hr) || (chiller_heatpump_hr) %>
-  <%= name %> Heat Recovery Chiller Outlet Node,  !- Node Name
-<% end %>
-<% if (chiller_economizer) %>
-  <%= name %> Free Cooling HX Outlet Node,  !- Node Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Node Name
-<% end %>
-  <%= name %> Supply Outlet Node;  !- Node Name
-!=======
+<% nodelst = ""
+if (chiller_cond_hr) || (chiller_heatpump_hr)
+  nodelst << name + " Heat Recovery Chiller Outlet Node,\n"
+end
+if (chiller_economizer)
+  nodelst << name + " Free Cooling HX Outlet Node,\n"
+end
+for i in (1..num_chillers)
+  nodelst << name + " Supply Equipment Outlet Node " + i.to_s + ",\n"
+end
+nodelst << name + " Supply Outlet Node" %>
+
+  NodeList,
+    <%= name %> Setpoint Nodes,  !- Name
+    <%= nodelst %>;          !- Node 1 Name
 
   PlantEquipmentOperationSchemes,
     <%= name %> Operation Schemes,  !- Name
@@ -301,53 +342,53 @@ NodeList,
     100000000000000,         !- Load Range 1 Upper Limit {W}
     <%= name %> Equipment List;  !- Range 1 Equipment List Name
 
-!===manual update===
-PlantEquipmentList,
-  <%= name %> Equipment List, !- Name
-<% if (chiller_cond_hr) %>
-  Chiller:Electric:EIR,    !- Equipment 1 Object Type
-  Heat Recovery Chiller,        !- Equipment 1 Name
-<% elsif (chiller_heatpump_hr) %>
-  HeatPump:WaterToWater:EquationFit:Cooling,    !- Equipment 1 Object Type
-  Heat Recovery Chiller,        !- Equipment 1 Name
-<% end %>
-<% if (chiller_economizer) %>
-  HeatExchanger:FluidToFluid,  !- Equipment Object Type
-  <%= name %> Free Cooling HX,  !- Equipment Name
-<% end %>
-<% if (cooling_source == "CHILLER") %>
-  <% if (chiller_type == "ELECTRIC") %>
-    <% if (chiller_condenser == "WATERCOOLED") %>
-  Chiller:Electric:ReformulatedEIR,  !- Equipment 1 Object Type
-    <% else %>
-  Chiller:Electric:EIR,    !- Equipment 1 Object Type
-    <% end %>
-  <% elsif (chiller_type == "ABSORPTION") %>
-    <% if (chiller_generator_type == "DIRECTFIRED") %>
-  ChillerHeater:Absorption:DirectFired,  !- Equipment 1 Object Type
-    <% elsif (chiller_generator_type == "HOTWATER" or chiller_generator_type == "STEAM") %>
-  Chiller:Absorption:Indirect,  !- Equipment 1 Object Type
-    <% end %>
-  <% end %>
-<% elsif (cooling_source == "GSHP") %>
-  HeatPump:WaterToWater:EquationFit:Cooling,  !- Equipment 1 Object Type
-<% elsif (cooling_source == "DISTRICT") %>
-  DistrictCooling,  !- Equipment 1 Object Type
-<% end %>
-<% if (num_chillers > 1) %>
-  <% for i in (1..num_chillers-1) %>
-  <%= name %> Chiller <%= i %>,        !- Equipment 1 Name
-  <% if (chiller_condenser == "WATERCOOLED") %>
-  Chiller:Electric:ReformulatedEIR,  !- Equipment 2 Object Type
-  <% else %>
-  Chiller:Electric:EIR,    !- Equipment 2 Object Type
-  <% end %>
-  <% end %>
-  <%= name %> Chiller <%= num_chillers.to_i %>;        !- Equipment 2 Name
-<% else %>
-  <%= name %> Chiller <%= i %>;        !- Equipment 1 Name
-<% end %>
-!======
+<% iv_equiplist = ""
+   if (chiller_cond_hr)
+     iv_equiplist << "Chiller:Electric:EIR," + "Heat Recovery Chiller,\n"
+   elsif (chiller_heatpump_hr)
+  iv_equiplist << "HeatPump:WaterToWater:EquationFit:Cooling," + "Heat Recovery Chiller,\n"
+  end
+  if (chiller_economizer)
+   iv_equiplist << "HeatExchanger:FluidToFluid," + name + " Free Cooling HX,\n"
+  end
+  if (cooling_source == "CHILLER")
+   if (chiller_type == "ELECTRIC")
+    if (chiller_condenser == "WATERCOOLED")
+      iv_equiplist << "Chiller:Electric:ReformulatedEIR,\n"
+    else
+      iv_equiplist << "Chiller:Electric:EIR,\n"
+    end
+  elsif (chiller_type == "ABSORPTION")
+    if (chiller_generator_type == "DIRECTFIRED")
+     iv_equiplist << "ChillerHeater:Absorption:DirectFired,\n"
+    elsif (chiller_generator_type == "HOTWATER" or chiller_generator_type == "STEAM")
+     iv_equiplist << "Chiller:Absorption:Indirect,\n"
+    end
+  end
+elsif (cooling_source == "GSHP")
+  iv_equiplist << "HeatPump:WaterToWater:EquationFit:Cooling,\n"
+elsif (cooling_source == "DISTRICT")
+  iv_equiplist << "DistrictCooling,\n"
+end
+if (num_chillers > 1)
+  for i in (1..num_chillers-1)
+   iv_equiplist = iv_equiplist + name + " Chiller " + i.to_s + ",\n"
+   if (chiller_condenser == "WATERCOOLED")
+    iv_equiplist << "Chiller:Electric:ReformulatedEIR,\n"
+   else
+    iv_equiplist << "Chiller:Electric:EIR,\n"
+   end
+  end
+  iv_equiplist << name + " Chiller " + num_chillers.to_s
+else
+  iv_equiplist << name + " Chiller " + i
+end %>
+
+  PlantEquipmentList,
+    <%= name %> Equipment List,  !- Name
+    <%= iv_equiplist %>;     !- Equipment 1 Object Type
+
+!
 
   AvailabilityManagerAssignmentList,
     <%= name %> Availability Managers,  !- Name
@@ -366,21 +407,23 @@ PlantEquipmentList,
   OutdoorAir:Node,
     <%= name %> Chiller OA Node;  !- Name
 
-!====manual==========
-BranchList,
-  <%= name %> Supply Branches,!- Name
-  <%= name %> Supply Inlet Branch,  !- Branch 1 Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Branch 3 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch,  !- Branch 4 Name
-  <%= name %> Supply Outlet Branch;  !- Branch 5 Name
-!==========
+<% brnchlist = ""
+if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
+  brnchlist << name + " Heat Recovery Chiller Branch,\n"
+elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL")
+  brnchlist << name + " Heat Recovery Chiller Branch,\n"
+end
+for i in (1..num_chillers)
+ brnchlist << name + " Supply Equipment Branch "+ i.to_s + ",\n"
+end
+brnchlist << name + " Supply Equipment Bypass Branch" %>
+
+  BranchList,
+    <%= name %> Supply Branches,  !- Name
+    <%= name %> Supply Inlet Branch,  !- Branch 1 Name
+    <%= brnchlist %>,        !- Branch 2 Name
+    <%= name %> Supply Outlet Branch;  !- Branch 3 Name
+
 <% if (pump_type == "CONSTANT")
   iv_comp_obj_type = "Pump:ConstantSpeed"
 elsif (pump_type == "VARIABLE")
@@ -642,42 +685,42 @@ elsif (chiller_condenser == "EVAPCOOLED")
   iv_condenser_type = "EvaporativelyCooled"
 end %>
 
-ChillerHeater:Absorption:DirectFired,
-  <%= name %> Chiller <%= i %>,             !- Name
-  Autosize,                  !- Nominal Cooling Capacity {W}
-  0.8,                     !- Heating to Cooling Capacity Ratio
-  0.97,                    !- Fuel Input to Cooling Output Ratio
-  1.25,                    !- Fuel Input to Heating Output Ratio
-  0.01,                    !- Electric Input to Cooling Output Ratio
-  0.005,                       !- Electric Input to Heating Output Ratio
-  <%= name %> Chiller <%= i %> Inlet Node,  !- Chilled Water Inlet Node Name
-  <%= name %> Supply Equipment Outlet Node <%= i %>, !- Chilled Water Outlet Node Name
-  <%= iv_cond_inlet_node %>,  !- Condenser Inlet Node Name
-  <%= iv_cond_outlet_node %>,  !- Condenser Outlet Node Name
-  <%= name %> Heat <%= i %> Inlet Node,  !- Hot Water Inlet Node Name
-  <%= name %> Heat <%= i %> Outlet Node,  !- Hot Water Outlet Node Name
-  0.000001,                     !- Minimum Part Load Ratio
-  1.0,                     !- Maximum Part Load Ratio
-  0.6,                     !- Optimum Part Load Ratio
-  29,                      !- Design Entering Condenser Water Temperature {C}
-  7,                       !- Design Leaving Chilled Water Temperature {C}
-  <%= design_flow %>,                  !- Design Chilled Water Flow Rate {m3/s}
-  Autosize,                  !- Design Condenser Water Flow Rate {m3/s}
-  Autosize,                  !- Design Hot Water Flow Rate {m3/s}
-  <%= name %> GasAbsFlatBiQuad,        !- Cooling Capacity Function of Temperature Curve Name
-  <%= name %> GasAbsFlatBiQuad,        !- Fuel Input to Cooling Output Ratio Function of Temperature Curve Name
-  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
-  <%= name %> GasAbsFlatBiQuad,        !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
-  <%= name %> GasAbsFlatQuad,          !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
-  <%= name %> GasAbsInvLinearQuad,     !- Heating Capacity Function of Cooling Capacity Curve Name
-  <%= name %> GasAbsLinearQuad,        !- Fuel Input to Heat Output Ratio During Heating Only Operation Curve Name
-  EnteringCondenser,       !- Temperature Curve Input Variable
-  <%= iv_condenser_type %>,               !- Condenser Type
-  2,                       !- Chilled Water Temperature Lower Limit {C}
-  0,                       !- Fuel Higher Heating Value {kJ/kg}
-  VariableFlow,            !- Chiller Flow Mode
-  NaturalGas,              !- Fuel Type
-  <%= chiller_sizing %>;                        !- Sizing Factor
+
+  ChillerHeater:Absorption:DirectFired,
+    <%= name %> Chiller <%= i %>,  !- Name
+    Autosize,                !- Nominal Cooling Capacity {W}
+    0.8,                     !- Heating to Cooling Capacity Ratio
+    0.97,                    !- Fuel Input to Cooling Output Ratio
+    1.25,                    !- Fuel Input to Heating Output Ratio
+    0.01,                    !- Electric Input to Cooling Output Ratio
+    0.005,                   !- Electric Input to Heating Output Ratio
+    <%= name %> Chiller <%= i %> Inlet Node,  !- Chilled Water Inlet Node Name
+    <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Chilled Water Outlet Node Name
+    <%= iv_cond_inlet_node %>,  !- Condenser Inlet Node Name
+    <%= iv_cond_outlet_node %>,  !- Condenser Outlet Node Name
+    <%= name %> Heat <%= i %> Inlet Node,  !- Hot Water Inlet Node Name
+    <%= name %> Heat <%= i %> Outlet Node,  !- Hot Water Outlet Node Name
+    0.000001,                !- Minimum Part Load Ratio
+    1.0,                     !- Maximum Part Load Ratio
+    0.6,                     !- Optimum Part Load Ratio
+    29,                      !- Design Entering Condenser Water Temperature {C}
+    7,                       !- Design Leaving Chilled Water Temperature {C}
+    <%= design_flow %>,      !- Design Chilled Water Flow Rate {m3/s}
+    Autosize,                !- Design Condenser Water Flow Rate {m3/s}
+    Autosize,                !- Design Hot Water Flow Rate {m3/s}
+    <%= name %> GasAbsFlatBiQuad,  !- Cooling Capacity Function of Temperature Curve Name
+    <%= name %> GasAbsFlatBiQuad,  !- Fuel Input to Cooling Output Ratio Function of Temperature Curve Name
+    <%= name %> GasAbsLinearQuad,  !- Fuel Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
+    <%= name %> GasAbsFlatBiQuad,  !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
+    <%= name %> GasAbsFlatQuad,  !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
+    <%= name %> GasAbsInvLinearQuad,  !- Heating Capacity Function of Cooling Capacity Curve Name
+    <%= name %> GasAbsLinearQuad,  !- Fuel Input to Heat Output Ratio During Heating Only Operation Curve Name
+    EnteringCondenser,       !- Temperature Curve Input Variable
+    <%= iv_condenser_type %>,!- Condenser Type
+    2,                       !- Chilled Water Temperature Lower Limit {C}
+    0,                       !- Fuel Higher Heating Value {kJ/kg}
+    NaturalGas,              !- Fuel Type
+    <%= chiller_sizing %>;   !- Sizing Factor
 
 <% if (chiller_condenser == "WATERCOOLED") %>
 
@@ -786,26 +829,70 @@ ChillerHeater:Absorption:DirectFired,
 <% elsif (cooling_source == "GSHP") %>
 <% gshp_cooling_power = gshp_cooling_capacity / gshp_cooling_cop %>
 
-HeatPump:WaterToWater:EquationFit:Cooling,
-  <%= name %> Chiller <%= i %>,  !- Name
-  <%= name %> Chiller Water Inlet Node <%= i %>,  !- Source Side Inlet Node Name
-  <%= name %> Chiller Water Outlet Node <%= i %>,  !- Source Side Outlet Node Name
-  <%= name %> Chiller Inlet Node <%= i %>,  !- Load Side Inlet Node Name
-  <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Load Side Outlet Node Name
-  1,                       !- Rated Load Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
-  1,                       !- Rated Source Side Flow Rate {m3/s} <%# Not used since performance is not a function of flow rate (see coefficients 4 & 5 below %>
-  <%= gshp_cooling_capacity %>,  !- Rated Cooling Capacity {W}
-  <%= gshp_cooling_power %>,  !- Rated Cooling Power Consumption {W}
-  -1.15,                   !- Cooling Capacity Coefficient 1
-  3.47,                    !- Cooling Capacity Coefficient 2
-  -1.32,                   !- Cooling Capacity Coefficient 3
-  0,                       !- Cooling Capacity Coefficient 4
-  0,                       !- Cooling Capacity Coefficient 5
-  -8.65,                   !- Cooling Compressor Power Coefficient 1
-  0.96,                    !- Cooling Compressor Power Coefficient 2
-  8.69,                    !- Cooling Compressor Power Coefficient 3
-  0,                       !- Cooling Compressor Power Coefficient 4
-  0;                       !- Cooling Compressor Power Coefficient 5
+
+  HeatPump:WaterToWater:EquationFit:Cooling,
+    <%= name %> Chiller <%= i %>,  !- Name
+    <%= name %> Chiller Water Inlet Node <%= i %>,  !- Source Side Inlet Node Name
+    <%= name %> Chiller Water Outlet Node <%= i %>,  !- Source Side Outlet Node Name
+    <%= name %> Chiller Inlet Node <%= i %>,  !- Load Side Inlet Node Name
+    <%= name %> Supply Equipment Outlet Node <%= i %>,  !- Load Side Outlet Node Name
+    1,                       !- Reference Load Side Flow Rate {m3/s}
+    1,                       !- Reference Source Side Flow Rate {m3/s}
+    <%= gshp_cooling_capacity %>,  !- Reference Cooling Capacity {W}
+    <%= gshp_cooling_power %>,  !- Reference Cooling Power Consumption {W}
+    <%= name %> Chiller <%= i %> CapacityCurve,  !- Cooling Capacity Curve Name
+    <%= name %> Chiller <%= i %> PowerCurve,  !- Cooling Compressor Power Curve Name
+    ,                        !- Reference Coefficient of Performance {W/W}
+    ,                        !- Sizing Factor
+    ;                        !- Companion Heating Heat Pump Name
+
+  CURVE:QUADLINEAR,
+    <%= name %> Chiller <%= i %> CapacityCurve,  !- Name
+    -1.15,                   !- Coefficient1 Constant
+    3.47,                    !- Coefficient2 w
+    -1.32,                   !- Coefficient3 x
+    0.,                      !- Coefficient4 y
+    0.,                      !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+  CURVE:QUADLINEAR,
+    <%= name %> Chiller <%= i %> PowerCurve,  !- Name
+    -8.65,                   !- Coefficient1 Constant
+    0.96,                    !- Coefficient2 w
+    8.69,                    !- Coefficient3 x
+    0.,                      !- Coefficient4 y
+    0.,                      !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+! Coefficients replaced by curves for HPW2W
+!  -1.15,                   !- Cooling Capacity Coefficient 1
+!  3.47,                    !- Cooling Capacity Coefficient 2
+!  -1.32,                   !- Cooling Capacity Coefficient 3
+!  0,                       !- Cooling Capacity Coefficient 4
+!  0,                       !- Cooling Capacity Coefficient 5
+!  -8.65,                   !- Cooling Compressor Power Coefficient 1
+!  0.96,                    !- Cooling Compressor Power Coefficient 2
+!  8.69,                    !- Cooling Compressor Power Coefficient 3
+!  0,                       !- Cooling Compressor Power Coefficient 4
+!  0;                       !- Cooling Compressor Power Coefficient 5
 
   Branch,
     <%= name %> GHX Demand Branch <%= i %>,  !- Name
@@ -941,7 +1028,6 @@ HeatPump:WaterToWater:EquationFit:Cooling,
     <%= name %> Heat Recovery Chiller Outlet Node;  !- Component 1 Outlet Node Name
 
 <% end %>
-!-----------
 <% if (chiller_cond_hr) %>
 
 <% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
@@ -1028,6 +1114,90 @@ end %>
     <%= name %> Heat Recovery Chiller Inlet Node,  !- Component 1 Inlet Node Name
     <%= name %> Heat Recovery Chiller Outlet Node;  !- Component 1 Outlet Node Name
 
+<% end %>
+<% if (chiller_heatpump_hr) %>
+<% chiller_hr_power = chiller_hr_cap / chiller_hr_cop %>
+<% if (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL")
+  iv_chw_inlet_node = name + " Heat Recovery Chiller Inlet Node"
+elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "SERIES")
+  iv_chw_inlet_node = name + " Pump Outlet Node"
+end %>
+
+  HeatPump:WaterToWater:EquationFit:Cooling,
+    Heat Recovery Chiller,   !- Name
+    Heat Recovery Chiller Demand Inlet Node,  !- Source Side Inlet Node Name
+    Heat Recovery Chiller Chiller Outlet Node,  !- Source Side Outlet Node Name
+    <%= iv_chw_inlet_node %>,!- Load Side Inlet Node Name
+    <%= name %> Heat Recovery Chiller Outlet Node,  !- Load Side Outlet Node Name
+    <%= chiller_hr_load_flow %>,  !- Reference Load Side Flow Rate {m3/s}
+    <%= chiller_hr_source_flow %>,  !- Reference Source Side Flow Rate {m3/s}
+    <%= chiller_hr_cap %>,   !- Reference Cooling Capacity {W}
+    <%= chiller_hr_power %>, !- Reference Cooling Power Consumption {W}
+    Heat Recovery Chiller CapacityCurve,  !- Cooling Capacity Curve Name
+    Heat Recovery Chiller PowerCurve,  !- Cooling Compressor Power Curve Name
+    ,                        !- Reference Coefficient of Performance {W/W}
+    ,                        !- Sizing Factor
+    ;                        !- Companion Heating Heat Pump Name
+
+  CURVE:QUADLINEAR,
+    Heat Recovery Chiller CapacityCurve,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 w
+    0,                       !- Coefficient3 x
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+  CURVE:QUADLINEAR,
+    Heat Recovery Chiller PowerCurve,  !- Name
+    1,                       !- Coefficient1 Constant
+    0,                       !- Coefficient2 w
+    0,                       !- Coefficient3 x
+    0,                       !- Coefficient4 y
+    0,                       !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+! Coefficients replaced by curves for HPW2W
+!    1,!-1.15,                   !- Cooling Capacity Coefficient 1
+!    0,!3.47,                    !- Cooling Capacity Coefficient 2
+!    0,!-1.32,                   !- Cooling Capacity Coefficient 3
+!    0,!0,                       !- Cooling Capacity Coefficient 4
+!    0,!0,                       !- Cooling Capacity Coefficient 5
+!    1,!-8.65,                   !- Cooling Compressor Power Coefficient 1
+!    0,!0.96,                    !- Cooling Compressor Power Coefficient 2
+!    0,!8.69,                    !- Cooling Compressor Power Coefficient 3
+!    0,!0,              !- Cooling Compressor Power Coefficient 4
+!    0;!0;             !- Cooling Compressor Power Coefficient 5
+! Prior Coefficients no nonger used
+!    -0.0000165512319654226,             !- Cooling Capacity Coefficient 1
+!    0.0000349043402820826,              !- Cooling Capacity Coefficient 2
+!    -0.0000140930060297251,             !- Cooling Capacity Coefficient 3
+!    0.999994016718119,              !- Cooling Capacity Coefficient 4
+!    1.75903551280499E-06,             !- Cooling Capacity Coefficient 5
+!    -0.1856841344852,             !- Cooling Compressor Power Coefficient 1
+!    -0.00611874950118363,              !- Cooling Compressor Power Coefficient 2
+!    0.206641840515658,              !- Cooling Compressor Power Coefficient 3
+!    -6.69008616963401,              !- Cooling Compressor Power Coefficient 4
+!    7.66500853002071;             !- Cooling Compressor Power Coefficient 5
+
   SetpointManager:Scheduled,
     <%= name %> Chiller Heat Recovery Setpoint Manager,  !- Name
     Temperature,             !- Control Variable
@@ -1087,15 +1257,13 @@ end %>
     Connector:Mixer,         !- Connector 2 Object Type
     <%= name %> Sec Supply Mixer;  !- Connector 2 Name
 
-!====manual===
-Connector:Splitter,
-  <%= name %> Sec Demand Splitter, !- Name
-  <%= name %> Sec Demand Inlet Branch,  !- Inlet Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
-  <%= name %> Sec Demand Bypass Branch;  !- Outlet Branch 5 Name
-!==========
+<%iv_branchlist = branch_names.join(" CHW Demand Branch,\n")%>
+
+  Connector:Splitter,
+    <%= name %> Sec Demand Splitter,  !- Name
+    <%= name %> Sec Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist %> CHW Demand Branch,  !- Outlet Branch 1 Name
+    <%= name %> Sec Demand Bypass Branch;  !- Outlet Branch 2 Name
 
   Connector:Splitter,
     <%= name %> Sec Supply Splitter,  !- Name
@@ -1104,34 +1272,27 @@ Connector:Splitter,
     <%= name %> Sec Supply Bypass Branch;  !- Outlet Branch 2 Name
 
 <% end %>
-!-------
-!===manual====
-Connector:Splitter,
-  <%= name %> Supply Splitter,!- Name
-  <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Outlet Branch 2 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch;  !- Outlet Branch 3 Name
+<% branchlist = ""
+if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
+  branchlist << name + " Heat Recovery Chiller Branch,\n"
+elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL")
+  branchlist << name + " Heat Recovery Chiller Branch,\n"
+end
+for i in (1..num_chillers)
+  branchlist << name + " Supply Equipment Branch " + i.to_s + ",\n"
+end
+branchlist << name + " Supply Equipment Bypass Branch" %>
 
-Connector:Mixer,
-  <%= name %> Supply Mixer,   !- Name
-  <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
-<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% elsif (chiller_heatpump_hr) && (chiller_heatpump_hr_type == "PARALLEL") %>
-  <%= name %> Heat Recovery Chiller Branch,  !- Branch 2 Name
-<% end %>
-<% for i in (1..num_chillers) %>
-  <%= name %> Supply Equipment Branch <%= i %>,  !- Inlet Branch 2 Name
-<% end %>
-  <%= name %> Supply Equipment Bypass Branch;  !- Inlet Branch 3 Name
-!=======
+  Connector:Splitter,
+    <%= name %> Supply Splitter,  !- Name
+    <%= name %> Supply Inlet Branch,  !- Inlet Branch Name
+    <%= branchlist %>;       !- Outlet Branch 1 Name
+
+  Connector:Mixer,
+    <%= name %> Supply Mixer,!- Name
+    <%= name %> Supply Outlet Branch,  !- Outlet Branch Name
+    <%= branchlist %>;       !- Inlet Branch 1 Name
+
 <% if loop_config == "PRIMARY-SECONDARY" %>
 
   Connector:Mixer,
@@ -1141,30 +1302,28 @@ Connector:Mixer,
     <%= name %> Sec Supply Bypass Branch;  !- Inlet Branch 2 Name
 
 <% end %>
-!===manual===
-BranchList,
-  <%= name %> Demand Branches,!- Name
-  <%= name %> Demand Inlet Branch,  !- Branch Name
-<% if loop_config == "PRIMARY-SECONDARY"%>
-  <%= name %> Heat Exchanger Demand Branch,  !- Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
-<% end %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-  <%= name %> Demand Outlet Branch;  !- Branch Name
+<% if loop_config == "PRIMARY-SECONDARY"
+    iv_branchlist = name + " Heat Exchanger Demand Branch"
+   else
+    iv_branchlist = branch_names.join(" CHW Branch,\n") + " CHW Branch"
+   end %>
+
+  BranchList,
+    <%= name %> Demand Branches,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist %>,    !- Branch 2 Name
+    <%= name %> Demand Bypass Branch,  !- Branch 3 Name
+    <%= name %> Demand Outlet Branch;  !- Branch 4 Name
 
 <% if loop_config == "PRIMARY-SECONDARY"%>
-BranchList,
-  <%= name %> Sec Demand Branches,!- Name
-  <%= name %> Sec Demand Inlet Branch,  !- Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Branch Name
-  <% end %>
-  <%= name %> Sec Demand Bypass Branch,  !- Branch Name
-  <%= name %> Sec Demand Outlet Branch;  !- Branch Name
-!=====
+ <%iv_branchlist = branch_names.join(" CHW Branch,\n")%>
+
+  BranchList,
+    <%= name %> Sec Demand Branches,  !- Name
+    <%= name %> Sec Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist %> CHW Branch,  !- Branch 2 Name
+    <%= name %> Sec Demand Bypass Branch,  !- Branch 3 Name
+    <%= name %> Sec Demand Outlet Branch;  !- Branch 4 Name
 
   BranchList,
     <%= name %> Sec Supply Branches,  !- Name
@@ -1226,7 +1385,6 @@ end %>
     <%= name %> Demand Inlet Pipe Outlet Node;  !- Outlet Node Name
 
 <% end %>
-!-------------
 
   Branch,
     <%= name %> Demand Bypass Branch,  !- Name
@@ -1261,39 +1419,32 @@ end %>
     Connector:Mixer,         !- Connector 2 Object Type
     <%= name %> Demand Mixer;!- Connector 2 Name
 
-!====manual===
-Connector:Splitter,
-  <%= name %> Demand Splitter,!- Name
-  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% if loop_config == "PRIMARY-SECONDARY" %>
-    <%= name %> Heat Exchanger Demand Branch,  !- Outlet Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Outlet Branch Name
-  <% end %>
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
-Connector:Mixer,
-  <%= name %> Demand Mixer,   !- Name
-  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% if loop_config == "PRIMARY-SECONDARY" %>
-  <%= name %> Heat Exchanger Demand Branch,  !- Outlet Branch Name
-<% else %>
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Inlet Branch Name
-  <% end %>
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
+<% if loop_config == "PRIMARY-SECONDARY"
+    iv_branchlist = name + " Heat Exchanger Demand Branch"
+   else
+    iv_branchlist = branch_names.join(" CHW Branch,\n") + " CHW Branch"
+   end %>
+
+  Connector:Splitter,
+    <%= name %> Demand Splitter,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist %>,    !- Outlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Outlet Branch 2 Name
+
+  Connector:Mixer,
+    <%= name %> Demand Mixer,!- Name
+    <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+    <%= iv_branchlist %>,    !- Inlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Inlet Branch 2 Name
 
 <% if loop_config == "PRIMARY-SECONDARY" %>
-Connector:Mixer,
-  <%= name %> Sec Demand Mixer,    !- Name
-  <%= name %> Sec Demand Outlet Branch,  !- Outlet Branch Name
-  <% for branch_name in branch_names %>
-    <%= branch_name %> CHW Branch,  !- Inlet Branch Name
-  <% end %>
-  <%= name %> Sec Demand Bypass Branch;  !- Inlet Branch 5 Name
-!=======
+<% iv_branchlist = branch_names.join(" CHW Branch,\n") %>
+
+  Connector:Mixer,
+    <%= name %> Sec Demand Mixer,  !- Name
+    <%= name %> Sec Demand Outlet Branch,  !- Outlet Branch Name
+    <% iv_branchlist %> CHW Branch,  !- Inlet Branch 1 Name
+    <%= name %> Sec Demand Bypass Branch;  !- Inlet Branch 2 Name
 
   Pipe:Adiabatic,
     <%= name %> Sec Demand Bypass Pipe,  !- Name

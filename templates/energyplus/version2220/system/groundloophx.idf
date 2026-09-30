@@ -293,6 +293,7 @@ Connector:Mixer,
   <%= system_name %> Supply Outlet Branch,  !- Outlet Branch Name
   <%= system_name %> Supply Equipment Branch,  !- Inlet Branch 1 Name
   <%= system_name %> Supply Equipment Bypass Branch;  !- Inlet Branch 2 Name
+
 !x!<%iv_branchlist = zone_names.join(" GHX Demand Branch,\n")%>
 
 BranchList,

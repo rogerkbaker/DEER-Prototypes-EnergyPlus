@@ -1,5 +1,16 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Foundation:Kiva:Settings                                   |        |
+!  | Foundation:Kiva                                            |        |
+!  | Material                                                   |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "foundation_type", :name => "Foundation Type", :description => "Foundation type",
 !x!  :domain => String,  # ["None", "Full Slab", "Interior Horizontal", "Interior Vertical", "Exterior Horizontal", "Exterior Vertical"]

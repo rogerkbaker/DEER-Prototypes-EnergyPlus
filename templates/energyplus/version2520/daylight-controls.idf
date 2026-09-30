@@ -1,5 +1,15 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Daylighting:Controls                                       |        |
+!  | Daylighting:ReferencePoint                                 |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "zone_name"
 !x!

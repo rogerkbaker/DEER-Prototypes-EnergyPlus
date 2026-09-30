@@ -2,49 +2,49 @@ Version, 22.2;
 ! Inventory of EnergyPlus Objects in this Template, 
 ! and whether manual check/update is required
 !-------------------------------------------------------------------------
-!  | EnergyPlus 						| Manual |
-!  | Object Name						| Update |
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
 !-------------------------------------------------------------------------
-!  | Sizing:System						|        |
-!  | AirLoopHVAC						|        |
-!  | NodeList							|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:NightCycle				|        |
-!  | AvailabilityManagerAssignmentList				|        |
-!  | AvailabilityManager:Scheduled				|        |
-!  | Schedule:Constant						|        |
-!  | Schedule:Compact						|        |
-!  | BranchList							|        |
-!  | Branch							|        |
-!  | Fan:ConstantVolume						|        |
-!  | Fan:VariableVolume						|        |
-!  | AirLoopHVAC:OutdoorAirSystem				|        |
-!  | AirLoopHVAC:ControllerList					|        |
-!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList			|        |
-!  | OutdoorAir:Node						|        |
-!  | SolarCollector:UnglazedTranspired				|        |
-!  | HeatExchanger:AirToAir:SensibleAndLatent			|        |
-!  | EvaporativeCooler:Indirect:ResearchSpecial			|        |
-!  | Coil:Heating:Water						|        |
-!  | Controller:WaterCoil					|        |
-!  | Coil:Cooling:Water						|        |
-!  | SetpointManager:OutdoorAirPretreat				|        |
-!  | Controller:OutdoorAir					|        |
-!  | Humidifier:Steam:Electric					|        |
-!  | Humidifier:Steam:Gas					|        |
-!  | SetpointManager:MixedAir					|        |
-!  | SetpointManager:Scheduled					|        |
-!  | SetpointManager:OutdoorAirReset				|        |
-!  | SetpointManager:MultiZone:Cooling:Average			|        |
-!  | SetpointManager:SingleZone:Heating				|        |
-!  | SetpointManager:SingleZone:Cooling				|        |
-!  | AirLoopHVAC:SupplyPath					|        |
-!  | AirLoopHVAC:ZoneSplitter					|        |
-!  | AirLoopHVAC:ReturnPath					|        |
-!  | AirLoopHVAC:ReturnPlenum					|        |
-!  | Construction						|        |
-!  | Material							|        |
-!  | Zone							|        |
+!  | Sizing:System                                              |        |
+!  | AirLoopHVAC                                                |        |
+!  | NodeList                                                   |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:NightCycle                             |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | Schedule:Constant                                          |        |
+!  | Schedule:Compact                                           |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Fan:VariableVolume                                         |        |
+!  | AirLoopHVAC:OutdoorAirSystem                               |        |
+!  | AirLoopHVAC:ControllerList                                 |        |
+!  | AirLoopHVAC:OutdoorAirSystem:EquipmentList                 |        |
+!  | OutdoorAir:Node                                            |        |
+!  | SolarCollector:UnglazedTranspired                          |        |
+!  | HeatExchanger:AirToAir:SensibleAndLatent                   |        |
+!  | EvaporativeCooler:Indirect:ResearchSpecial                 |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Controller:WaterCoil                                       |        |
+!  | Coil:Cooling:Water                                         |        |
+!  | SetpointManager:OutdoorAirPretreat                         |        |
+!  | Controller:OutdoorAir                                      |        |
+!  | Humidifier:Steam:Electric                                  |        |
+!  | Humidifier:Steam:Gas                                       |        |
+!  | SetpointManager:MixedAir                                   |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | SetpointManager:MultiZone:Cooling:Average                  |        |
+!  | SetpointManager:SingleZone:Heating                         |        |
+!  | SetpointManager:SingleZone:Cooling                         |        |
+!  | AirLoopHVAC:SupplyPath                                     |        |
+!  | AirLoopHVAC:ZoneSplitter                                   |        |
+!  | AirLoopHVAC:ReturnPath                                     |        |
+!  | AirLoopHVAC:ReturnPlenum                                   |        |
+!  | Construction                                               |        |
+!  | Material                                                   |        |
+!  | Zone                                                       |        |
 !-------------------------------------------------------------------------
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
@@ -527,6 +527,7 @@ AirLoopHVAC,
   <%= ahu_name %> Zone Equipment Outlet Node,  !- Demand Side Outlet Node Name
   <%= ahu_name %> Zone Equipment Inlet Nodes,  !- Demand Side Inlet Node Names
   <%= ahu_name %> Equipment Outlet Nodes;  !- Supply Side Outlet Node Names
+
   !;  !- Design Return Air Flow Fraction of Supply Air Flow {}
 
 !x!<%# Naming? < > Equipment Outlet Nodes => < > Supply Equipment Outlet Nodes?
@@ -600,6 +601,7 @@ AvailabilityManager:NightCycle,
   1.0,                     !- Thermostat Tolerance {deltaC}
   FixedRunTime,            !- Cycling Run Time Control Type
   1800;                    !- Cycling Run Time {s}
+
 !x!<% else %>
 AvailabilityManagerAssignmentList,
   <%= ahu_name %> Availability Manager List,  !- Name
@@ -609,6 +611,7 @@ AvailabilityManagerAssignmentList,
 AvailabilityManager:Scheduled,
   <%= ahu_name %> Availability Manager,  !- Name
   <%= ahu_name %> Operation Schedule;  !- Schedule Name
+
 !x!<% end %>
 
 Schedule:Constant,
@@ -616,10 +619,10 @@ Schedule:Constant,
   Any Number,              !- Schedule Type Limits Name
   1;                       !- Hourly Value
 
-!x!Schedule:Compact,
-!x!  <%= ahu_name %> Operation Schedule,  !- Name
-!x!  Binary Control,          !- Schedule Type Limits Name
-!x!  <%= op_sch %>;
+Schedule:Compact,
+  <%= ahu_name %> Operation Schedule,  !- Name
+  Binary Control,          !- Schedule Type Limits Name
+  <%= op_sch %>;
 
 !x!<% if (duct_type == "DUAL")
 !x!  branch1_nm = ahu_name + " Main Branch"
@@ -648,6 +651,7 @@ Branch,
   <%= ahu_name %> Humidifier,  !- Component Name
   <%= ahu_name %> Humidifier Inlet Node,  !- Component Inlet Node Name
   <%= ahu_name %> Humidifier Outlet Node;  !- Component Outlet Node Name
+
 !x!<% end %>
 
 !x!  <% if (fan_speed == "CONSTANT")
@@ -685,6 +689,7 @@ Branch,
   <%= ahu_name %> Unitary,  !- Component Name
   <%= ahu_name %> Unitary Inlet Node,  !- Component Inlet Node Name
   <%= ahu_name %> Unitary Outlet Node;  !- Component Outlet Node Name
+
 ! rb removed if-else for single duct as else condition already commented out
 ! DUAL DUCT
 ! Can this work with Unitary?
@@ -761,6 +766,7 @@ Branch,
     <%= ahu_name %> Supply Equipment Inlet Node,  !- Air Inlet Node Name
     <%= ahu_name %> Return Fan Outlet Node,  !- Air Outlet Node Name
     <%= fan_subcat %>;       !- End-Use Subcategory
+
 !x!  <% elsif (fan_speed == "VARIABLE") %>
   Fan:VariableVolume,
     <%= ahu_name %> Return Fan,  !- Name
@@ -781,6 +787,7 @@ Branch,
     <%= ahu_name %> Supply Equipment Inlet Node,  !- Air Inlet Node Name
     <%= ahu_name %> Return Fan Outlet Node,  !- Air Outlet Node Name
     <%= fan_subcat %>;       !- End-Use Subcategory
+
 !x!  <% end %>
 !x!<% end %>
 
@@ -839,7 +846,8 @@ OutdoorAir:Node,
   <%= ahu_name %> OA Inlet Node;  !- Name
 
 !x!<% if (oa_solar_preheat) %>
-<%iv_surfacelist = oa_solar_surfaces.join(",\n")%>
+!x!<%iv_surfacelist = oa_solar_surfaces.join(",\n")%>
+
 SolarCollector:UnglazedTranspired,
   <%= ahu_name %> Transpired Solar Collector,  !- Name
   GapConvectionModel,      !- Boundary Conditions Model Name
@@ -923,6 +931,7 @@ HeatExchanger:AirToAir:SensibleAndLatent,
   0.167,                   !- Initial Defrost Time Fraction
   1.44,                    !- Rate of Defrost Time Fraction Increase
   Yes;                     !- Economizer Lockout
+
 !x!<% end %>
 
 !x!<%#
@@ -976,6 +985,7 @@ EvaporativeCooler:Indirect:ResearchSpecial,
 
 OutdoorAir:Node,
   <%= ahu_name %> IEC Secondary Inlet Node;  !- Name
+
 !x!<% end %>
 
 !x!<% if (rac) %>
@@ -1064,6 +1074,7 @@ Branch,
   <%= ahu_name %> Run Around Cool Demand Inlet Node,  !- Component 1 Inlet Node Name
   <%= ahu_name %> Run Around Cool Demand Outlet Node,  !- Component 1 Outlet Node Name
   Active;                  !- Component 1 Branch Control Type
+
 !x!<% end %>
 
 !x!<% if (fan_return)
@@ -1217,6 +1228,7 @@ Controller:OutdoorAir,
   ,                        !- High Humidity Outdoor Air Flow Ratio
   ,                        !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
   BypassWhenWithinEconomizerLimits;  !- Heat Recovery Bypass Control Type
+
 !x!<%# only show BypassWhenWithinEconomizerLimits when there is heat recovery %>
 
 Schedule:Compact,
@@ -1385,6 +1397,7 @@ SetpointManager:MixedAir,
 NodeList,
   <%= ahu_name %> Mixed Air Setpoint Nodes,  !- Name
   <%= iv_all_nodes %>;  !- Node Name
+
 !x!<% end %>
 
 !x!<%# aux heat coils still need a setpoint too %>
@@ -1575,6 +1588,7 @@ AirLoopHVAC:ZoneSplitter,
   <%= ahu_name %> Zone Splitter,  !- Name
   <%= ahu_name %> Zone Equipment Inlet Node,  !- Inlet Node Name
  <%= iv_branchlist %> Inlet Node;  !- Outlet Node Name
+
 !x!<% end %>
 
 
@@ -1604,6 +1618,7 @@ AirLoopHVAC:ReturnPlenum,
   <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
   ,                        !- Induced Air Outlet Node or NodeList Name
   <%= iv_branchlist %> Return Node;  !- Inlet Node Name
+
 !x!<% else %>
 !x!<%iv_branchlist = branch_names.join(" Return Node,\n")%>
 
@@ -1611,6 +1626,7 @@ AirLoopHVAC:ZoneMixer,
   <%= ahu_name %> Zone Mixer,   !- Name
   <%= ahu_name %> Zone Equipment Outlet Node,  !- Outlet Node Name
   <%= iv_branchlist %> Return Node;  !- Inlet Node Name
+
 !x!<% end %>
 
 
@@ -1648,6 +1664,7 @@ BuildingSurface:Detailed,
   Floor,                   !- Surface Type
   <%= ahu_name %> Plenum Construction,  !- Construction Name
   <%= return_plenum_zone_name %>,  !- Zone Name
+  ,                        !- Space Name
   Adiabatic,               !- Outside Boundary Condition
   ,                        !- Outside Boundary Condition Object
   NoSun,                   !- Sun Exposure

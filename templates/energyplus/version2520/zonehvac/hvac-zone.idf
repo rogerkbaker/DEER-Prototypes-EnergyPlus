@@ -1,5 +1,38 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Zone                                                |        |
+!  | DesignSpecification:ZoneAirDistribution                    |        |
+!  | DesignSpecification:OutdoorAir                             |        |
+!  | Schedule:Compact                                           |        |
+!  | ZoneControl:Thermostat                                     |        |
+!  | Schedule:Constant                                          |        |
+!  | ThermostatSetpoint:SingleHeating                           |        |
+!  | ThermostatSetpoint:SingleCooling                           |        |
+!  | ThermostatSetpoint:DualSetpoint                            |        |
+!  | SetpointManager:SingleZone:Humidity:Minimum                |        |
+!  | SetpointManager:SingleZone:Humidity:Maximum                |        |
+!  | ZoneControl:Humidistat                                     |        |
+!  | ZoneHVAC:EquipmentConnections                              |        |
+!  | ZoneHVAC:EquipmentList                                     |        |
+!  | NodeList                                                   |        |
+!  | ZoneHVAC:IdealLoadsAirSystem                               |        |
+!  | OutdoorAir:Node                                            |        |
+!  | ZoneHVAC:Baseboard:Convective:Electric                     |        |
+!  | ZoneHVAC:Baseboard:Convective:Water                        |        |
+!  | ZoneHVAC:UnitHeater                                        |        |
+!  | Fan:ConstantVolume                                         |        |
+!  | Coil:Heating:Fuel                                          |        |
+!  | Coil:Heating:Electric                                      |        |
+!  | Coil:Heating:Water                                         |        |
+!  | Fan:ZoneExhaust                                            |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!require "modelkit/energyplus"
 !x!
@@ -113,14 +146,12 @@
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  default :cool_coil_cop => 3.0
 !x!  force :heat_coil_type => "RESISTANCE"
 !x!  force :aux_heat_coil_type => "NONE"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -133,15 +164,12 @@
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "DX-AIR"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  #default :aux_heat_coil_type => "RESISTANCE"  # already set in rule 'heat_coil_type_dx_air'
 !x!    # shows a warning; could skip the warning if the downstream one is setting the _same_ value.
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -154,15 +182,12 @@
 !x!  default :fan_motor_eff => 0.85
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-WATER"
 !x!  force :heat_coil_type => "DX-WATER"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  #default :aux_heat_coil_type => "RESISTANCE"  # already set in rule 'heat_coil_type_dx_air'
 !x!    # shows a warning; could skip the warning if the downstream one is setting the _same_ value.
-!x!
 !x!  default :oa_type => "DOAS"
 !x!end
 !x!
@@ -175,14 +200,11 @@
 !x!  default :fan_motor_eff => 0.65
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "NONE"
 !x!  force :dx_type => "TERMINAL"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "BASEBOARD-RESISTANCE"
 !x!end
 !x!
@@ -195,15 +217,12 @@
 !x!  default :fan_motor_eff => 0.75
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "NONE"  # what's the difference between setting to NONE and disabling?
 !x!  disable :aux_heat_coil_type
 !x!  force :dx_type => "SPLIT"
 !x!  default :dx_comp_speed => "VARIABLE"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "BASEBOARD-RESISTANCE"
 !x!end
 !x!
@@ -216,15 +235,12 @@
 !x!  default :fan_motor_eff => 0.75
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "DX-AIR"
 !x!  force :heat_coil_type => "DX-AIR"
 !x!  disable :aux_heat_coil_type
 !x!  force :dx_type => "SPLIT"
 !x!  default :dx_comp_speed => "VARIABLE"
-!x!
 !x!  default :oa_type => "DOAS"
-!x!
 !x!  default :sub_heat_type => "NONE"
 !x!end
 !x!
@@ -237,13 +253,11 @@
 !x!  default :fan_motor_eff => 0.825
 !x!  force :fan_return => false
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  force :cool_coil_type => "NONE"
 !x!  default :heat_coil_type => "RESISTANCE"
 !x!  disable :aux_heat_coil_type
 !x!  disable :dx_type
 !x!  disable :dx_comp_speed
-!x!
 !x!  default :oa_type => "NONE"
 !x!  default :sub_heat_type => "NONE"
 !x!end
@@ -264,7 +278,6 @@
 !x!
 !x!rule "hvac_type_sz_cav", :parameters => {:hvac_type => "SZ-CAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  default :fan_speed => "CONSTANT"
 !x!  default :fan_mode => "CONTINUOUS"
 !x!  default :fan_config => "DRAW-THROUGH"
@@ -273,7 +286,6 @@
 !x!  default :fan_return => false
 !x!  default :fan_return_rise => 0.75['in H2O']
 !x!  disable :fan_flow_min_frac
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 3.67
 !x!    # problematic gets overridden by rule "cool_coil_type_dx_air"
@@ -281,7 +293,6 @@
 !x!    # ideally (?) setting DX-AIR immediately triggers it's rule? would we want that?
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  force :atu_type => "CAV"
 !x!  force :atu_reheat_coil_type => "NONE"
 !x!end
@@ -328,7 +339,6 @@
 !x!
 !x!rule "hvac_type_mz_cav", :parameters => {:hvac_type => "MZ-CAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  force :fan_speed => "CONSTANT"
 !x!  default :fan_mode => "CONTINUOUS"
 !x!  force :fan_config => "DRAW-THROUGH"
@@ -337,7 +347,6 @@
 !x!  default :fan_motor_eff => 0.85
 !x!  default :fan_return => false
 !x!  force :fan_flow_min_frac => 1.0
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 3.67
 !x!    # problematic gets overridden by rule "cool_coil_type_dx_air"
@@ -346,35 +355,29 @@
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  force :dx_type => "PACKAGED"
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  force :atu_type => "CAV"
 !x!  default :atu_reheat_coil_type => "RESISTANCE"
 !x!end
 !x!
 !x!rule "hvac_type_mz_vav", :parameters => {:hvac_type => "MZ-VAV"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!  force :fan_speed => "VARIABLE"
 !x!  force :fan_config => "DRAW-THROUGH"
-!x!
 !x!  # VAV might not be able to cycle the fan at night?
 !x!  #default :fan_mode => "SCHEDULE"
 !x!  default :fan_mode => "CONTINUOUS"
-!x!
 !x!  default :fan_rise => 3.0['in H2O']
 !x!  default :fan_eff => 0.75
 !x!  default :fan_motor_eff => 0.85
 !x!  default :fan_return => true
 !x!  default :fan_return_rise => 2.25['in H2O']   # or rule to set same as fan_rise
 !x!  default :fan_flow_min_frac => 0.25
-!x!
 !x!  default :cool_coil_type => "DX-AIR"
 !x!  #default :cool_coil_cop => 4.5  # see above
 !x!  default :heat_coil_type => "COMBUSTION"
 !x!  #, :heat_coil_eff => 0.8, :heat_coil_fuel => "NaturalGas"
 !x!  default :dx_type => "PACKAGED"  # do not force temporarily until rule override in import
 !x!  default :dx_comp_speed => "CONSTANT"
-!x!
 !x!  default :atu_type => "VAV"  # restrict to VAV*
 !x!  default :atu_reheat_coil_type => "RESISTANCE"
 !x!end
@@ -382,17 +385,13 @@
 !x!rule "hvac_type_mz_vrf", :parameters => {:hvac_type => "MZ-VRF"} do
 !x!  default :oa_type => "DOAS"  # later need "DOAS-SERIES"
 !x!  default :fan_config => "BLOW-THROUGH"
-!x!
 !x!  disable :dx_type
 !x!  disable :dx_comp_speed
-!x!
 !x!end
 !x!
 !x!rule "hvac_type_ideal", :parameters => {:hvac_type => "IDEAL"} do
 !x!  default :oa_type => "AHU"
-!x!
 !x!# disable sub_heat and exh_fan
-!x!
 !x!end
 !x!
 !x!# Solaris Technical 2024-05-07 for linked sizing
@@ -430,8 +429,8 @@
 !x!<%
 !x!# Use outdoor air schedule as a surrogate for operation hours.
 !x!# NOTE: may need to change regex to replace any value >0 with %1, if oa_sch has fractional values.
-!x!op_sch = oa_sch.gsub(/(?<=,)\s*(1\.0*|1)\s*(?=[,;])/, " %1")  # Match values equal to 1.0
-!x!op_sch.gsub!(/(?<=,)\s*(0\.0*|\.0+|0)\s*(?=[,;])/, " %2")  # Match values equal to 0.0
+!x!op_sch = oa_sch.gsub(/(?<=,)\s*(1\.0*|1)\s*(?=[," "])/, " %1")  # Match values equal to 1.0
+!x!op_sch.gsub!(/(?<=,)\s*(0\.0*|\.0+|0)\s*(?=[," "])/, " %2")  # Match values equal to 0.0
 !x!
 !x!if (tstat_heat_sch.empty?)
 !x!  tstat_heat_sch = op_sch
@@ -458,25 +457,25 @@
 !x!%>
 !######################################################################
 !x!<% if (oa_type == "NONE")
-!x!  des_spec_outdoor_air = ""
+!x!  iv_des_spec_outdoor_air = ""
 !x!else
-!x!  des_spec_outdoor_air = zone_name + " Design OA"
+!x!  iv_des_spec_outdoor_air = zone_name + " Design OA"
 !x!end %>
 !x!
 !x!<% if cooling_min_flow_area
-!x!  cool_des_airflow_method = "DesignDayWithLimit"
-!x!  cool_des_airflow = ""
-!x!  cool_min_airflow = cooling_min_flow_area
+!x!  iv_cool_des_airflow_method = "DesignDayWithLimit"
+!x!  iv_cool_des_airflow = ""
+!x!  iv_cool_min_airflow = cooling_min_flow_area
 !x!else
-!x!  cool_des_airflow_method = "DesignDay"
-!x!  cool_des_airflow = ""
-!x!  cool_min_airflow = ""
+!x!  iv_cool_des_airflow_method = "DesignDay"
+!x!  iv_cool_des_airflow = ""
+!x!  iv_cool_min_airflow = ""
 !x!end %>
 !x!
 !x!<% if (vent_eff > 0)
-!x!  des_spec_zone_air_dist = zone_name + " Air Distribution"
+!x!  iv_des_spec_zone_air_dist = zone_name + " Air Distribution"
 !x!else
-!x!  des_spec_zone_air_dist = ""
+!x!  iv_des_spec_zone_air_dist = ""
 !x!end %>
 !x!
 
@@ -490,12 +489,12 @@
     ,                        !- Zone Heating Design Supply Air Temperature Difference {deltaC}
     0.0085,                  !- Zone Cooling Design Supply Air Humidity Ratio {kgWater/kgDryAir}
     0.008,                   !- Zone Heating Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-    <%= des_spec_outdoor_air %>,  !- Design Specification Outdoor Air Object Name
+    <%= iv_des_spec_outdoor_air %>,  !- Design Specification Outdoor Air Object Name
     ,                        !- Zone Heating Sizing Factor
     ,                        !- Zone Cooling Sizing Factor
-    <%= cool_des_airflow_method %>,  !- Cooling Design Air Flow Method
-    <%= cool_des_airflow %>, !- Cooling Design Air Flow Rate {m3/s}
-    <%= cool_min_airflow %>, !- Cooling Minimum Air Flow per Zone Floor Area {m3/s-m2}
+    <%= iv_cool_des_airflow_method %>,  !- Cooling Design Air Flow Method
+    <%= iv_cool_des_airflow %>,  !- Cooling Design Air Flow Rate {m3/s}
+    <%= iv_cool_min_airflow %>,  !- Cooling Minimum Air Flow per Zone Floor Area {m3/s-m2}
     ,                        !- Cooling Minimum Air Flow {m3/s}
     <%= cool_flow_min_frac %>,  !- Cooling Minimum Air Flow Fraction
     DesignDay,               !- Heating Design Air Flow Method
@@ -503,7 +502,7 @@
     ,                        !- Heating Maximum Air Flow per Zone Floor Area {m3/s-m2}
     ,                        !- Heating Maximum Air Flow {m3/s}
     ,                        !- Heating Maximum Air Flow Fraction
-    <%= des_spec_zone_air_dist %>,  !- Design Specification Zone Air Distribution Object Name
+    <%= iv_des_spec_zone_air_dist %>,  !- Design Specification Zone Air Distribution Object Name
     ,                        !- Account for Dedicated Outdoor Air System
     ,                        !- Dedicated Outdoor Air System Control Strategy
     ,                        !- Dedicated Outdoor Air Low Setpoint Temperature for Design {C}
@@ -548,18 +547,18 @@
 
 !x!<% end %>
 !x!<% if hvac_type == "UH"
-!x!  control_obj_type = "ThermostatSetpoint:SingleHeating"
+!x!  iv_control_obj_type = "ThermostatSetpoint:SingleHeating"
 !x!elsif (((atu_reheat_coil_type == "NONE" || atu_reheat_coil_type == nil) && (heat_coil_type == "NONE" || heat_coil_type == nil)) && (sub_heat_type == "NONE" || sub_heat_type == nil))
-!x!  control_obj_type = "ThermostatSetpoint:SingleCooling"
+!x!  iv_control_obj_type = "ThermostatSetpoint:SingleCooling"
 !x!else
-!x!  control_obj_type = "ThermostatSetpoint:DualSetpoint"
+!x!  iv_control_obj_type = "ThermostatSetpoint:DualSetpoint"
 !x!end %>
 
   ZoneControl:Thermostat,
     <%= zone_name %> Thermostat,  !- Name
     <%= zone_name %>,        !- Zone or ZoneList Name
     <%= zone_name %> Thermostat Type Schedule,  !- Control Type Schedule Name
-    <%= control_obj_type %>, !- Control 1 Object Type
+    <%= iv_control_obj_type %>,  !- Control 1 Object Type
     <%= zone_name %> Setpoints;  !- Control 1 Name
 
 !x!<% if hvac_type == "UH" %>
@@ -624,16 +623,16 @@
     <%= zone_name %> Air Node;  !- Control Zone Air Node Name
 
 !x!  <% if (hstat_max)
-!x!    dehum_rh_setpt_sch = zone_name + " Max Humidity Sch"
+!x!    iv_dehum_rh_setpt_sch = zone_name + " Max Humidity Sch"
 !x!  else
-!x!    dehum_rh_setpt_sch = ""
+!x!    iv_dehum_rh_setpt_sch = ""
 !x!  end %>
 
   ZoneControl:Humidistat,
     <%= zone_name %> Humidistat,  !- Name
     <%= zone_name %>,        !- Zone Name
     <%= zone_name %> Min Humidity Sch,  !- Humidifying Relative Humidity Setpoint Schedule Name
-    <%= dehum_rh_setpt_sch %>;  !- Dehumidifying Relative Humidity Setpoint Schedule Name
+    <%= iv_dehum_rh_setpt_sch %>;  !- Dehumidifying Relative Humidity Setpoint Schedule Name
 
 !x!  <% if (hstat_max) %>
 
@@ -769,15 +768,15 @@
 !x!
 !x!%>
 !x!<% if (exhaust_branches.empty?)
-!x!  zn_air_exh_node = ""
+!x!  iv_zn_air_exh_node = ""
 !x!else
-!x!  zn_air_exh_node = zone_name + " Exhaust Nodes"
+!x!  iv_zn_air_exh_node = zone_name + " Exhaust Nodes"
 !x!end %>
 !x!
 !x!<% if (return_branches.empty?)
-!x!  zn_ret_air_node = ""
+!x!  iv_zn_ret_air_node = ""
 !x!else
-!x!  zn_ret_air_node = zone_name + " Return Nodes"
+!x!  iv_zn_ret_air_node = zone_name + " Return Nodes"
 !x!end %>
 !x!
 
@@ -785,45 +784,59 @@
     <%= zone_name %>,        !- Zone Name
     <%= zone_name %> Equipment,  !- Zone Conditioning Equipment List Name
     <%= zone_name %> Inlet Nodes,  !- Zone Air Inlet Node or NodeList Name
-    <%= zn_air_exh_node %>,  !- Zone Air Exhaust Node or NodeList Name
+    <%= iv_zn_air_exh_node %>,  !- Zone Air Exhaust Node or NodeList Name
     <%= zone_name %> Air Node,  !- Zone Air Node Name
-    <%= zn_ret_air_node %>;  !- Zone Return Air Node or NodeList Name
+    <%= iv_zn_ret_air_node %>;  !- Zone Return Air Node or NodeList Name
 
-!====Manual====
-!x!ZoneHVAC:EquipmentList,
-!x!  <%= zone_name %> Equipment,  !- Name
-!x!  SequentialLoad,          !- Load Distribution Scheme
-!x!<% EnergyPlus.each_with_index(equipment_list) do |equipment, index| %>
-!x!  <%= equipment[0] %>,     !- Zone Equipment Object Type
-!x!  <%= equipment[1] %>,     !- Zone Equipment Name
-!x!  <%= index + 1 %>,        !- Zone Equipment Cooling Sequence
-!x!  <%= index + 1 %>,        !- Zone Equipment Heating or No-Load Sequence
-!x!  ,                        !- Zone Equipment Sequential Cooling Fraction
-!x!  ,                        !- Zone Equipment Sequential Heating Fraction
-!x!<% end %>
+!x!<% equiplist = ""
+!x! numrows = #{equipment_list.count}
+!x! idx = "1"
+!x! EnergyPlus.each_with_index(equipment_list) do |equipment, index|
+!x!  equiplist << equipment[0] + ",\n"
+!x!  equiplist << equipment[1] + ",\n"
+!x!  equiplist << idx
+!x!  equiplist << ",\n"
+!x!  equiplist << idx
+!x!  equiplist << ",\n"
+!x!  if (idx < numrows)
+!x!   equiplist << ",\n"
+!x!  end
+!x!  idx = idx.to_i + 1
+!x! end %>
+
+  ZoneHVAC:EquipmentList,
+    <%= zone_name %> Equipment,  !- Name
+    SequentialLoad,          !- Load Distribution Scheme
+    <%= equiplist %>,        !- Zone Equipment 1 Object Type
+    ,                        !- Zone Equipment 1 Name
+    ,                        !- Zone Equipment 1 Cooling Sequence
+    ,                        !- Zone Equipment 1 Heating or No-Load Sequence
+    ,                        !- Zone Equipment 1 Sequential Cooling Fraction Schedule Name
+    ;                        !- Zone Equipment 1 Sequential Heating Fraction Schedule Name
+
 !x!
-!x!NodeList,
-!x!  <%= zone_name %> Inlet Nodes,  !- Name
-!x!<% EnergyPlus.each(inlet_branches) do |branch| %>
-!x!  <%= branch %> Outlet Node,  !- Node Name
-!x!<% end %>
-!x!
+!x!<%iv_branchlist = inlet_branches.join(" Outlet Node,\n")%>
+
+  NodeList,
+    <%= zone_name %> Inlet Nodes,  !- Name
+    <%= iv_branchlist %> Outlet Node;  !- Node 1 Name
+
 !x!<% if (not exhaust_branches.empty?) %>
-!x!NodeList,
-!x!  <%= zone_name %> Exhaust Nodes,  !- Name
-!x!<% EnergyPlus.each(exhaust_branches) do |branch| %>
-!x!  <%= branch %> Inlet Node,  !- Node Name
+!x!<%iv_branchlist = exhaust_branches.join(" Outlet Node,\n")%>
+
+  NodeList,
+    <%= zone_name %> Exhaust Nodes,  !- Name
+    <%= iv_branchlist %> Inlet Node;  !- Node 1 Name
+
 !x!<% end %>
-!x!<% end %>
-!x!
 !x!<% if (not return_branches.empty?) %>
-!x!NodeList,
-!x!  <%= zone_name %> Return Nodes,  !- Name
-!x!<% EnergyPlus.each(return_branches) do |branch| %>
-!x!  <%= branch %> Return Node,  !- Node Name
+!x!<%iv_branchlist = return_branches.join(" Return Node,\n")%>
+
+  NodeList,
+    <%= zone_name %> Return Nodes,  !- Name
+    <%= iv_branchlist %> Return Node;  !- Node 1 Name
+
 !x!<% end %>
-!x!<% end %>
-!======
 !x!<%
 !x!if (oa_type == "DOAS")
 !x!  insert "zonehvac/atu.pxt",
@@ -967,11 +980,11 @@
 !x!<% if (hvac_mode == "ID") %>
 !x!
 !x! <% if (oa_type == "NONE")
-!x!  des_spec_oa_obj = ""
-!x!  oa_inlet_node = ""
+!x!  iv_des_spec_oa_obj = ""
+!x!  iv_oa_inlet_node = ""
 !x! else
-!x!  des_spec_oa_obj = zone_name + " Design OA"
-!x!  oa_inlet_node = branch_name + " OA Inlet Node"
+!x!  iv_des_spec_oa_obj = zone_name + " Design OA"
+!x!  iv_oa_inlet_node = branch_name + " OA Inlet Node"
 !x! end %>
 !x!
 
@@ -996,8 +1009,8 @@
     ConstantSensibleHeatRatio,  !- Dehumidification Control Type
     ,                        !- Cooling Sensible Heat Ratio {dimensionless}
     None,                    !- Humidification Control Type
-    <%= des_spec_oa_obj %>,  !- Design Specification Outdoor Air Object Name
-    <%= oa_inlet_node %>,    !- Outdoor Air Inlet Node Name
+    <%= iv_des_spec_oa_obj %>,  !- Design Specification Outdoor Air Object Name
+    <%= iv_oa_inlet_node %>, !- Outdoor Air Inlet Node Name
     None,                    !- Demand Controlled Ventilation Type
     NoEconomizer,            !- Outdoor Air Economizer Type
     None,                    !- Heat Recovery Type
@@ -1055,6 +1068,7 @@
 
 !x!<% end %>
 !x!<% if (sub_heat_type != "NONE") %>
+!x!
 
   Schedule:Compact,
     <%= sub_heat_name %> Schedule,  !- Name
@@ -1068,11 +1082,11 @@
 !x!<% if (hvac_mode == "UH") %>
 !x!
 !x! <% if ( heat_coil_type == 'COMBUSTION')
-!x!   heat_coil_obj_type = "Coil:Heating:Fuel"
+!x!   iv_heat_coil_obj_type = "Coil:Heating:Fuel"
 !x! elsif ( heat_coil_type == 'RESISTANCE')
-!x!   heat_coil_obj_type = "Coil:Heating:Electric"
+!x!   iv_heat_coil_obj_type = "Coil:Heating:Electric"
 !x! elsif ( heat_coil_type == 'WATER')
-!x!   heat_coil_obj_type = "Coil:Heating:Water"
+!x!   iv_heat_coil_obj_type = "Coil:Heating:Water"
 !x! end %>
 
   ZoneHVAC:UnitHeater,
@@ -1083,7 +1097,7 @@
     Fan:ConstantVolume,      !- Supply Air Fan Object Type
     <%= zone_name %> UH Fan, !- Supply Air Fan Name
     Autosize,                !- Maximum Supply Air Flow Rate {m3/s}
-    <%= heat_coil_obj_type %>,  !- Heating Coil Object Type
+    <%= iv_heat_coil_obj_type %>,  !- Heating Coil Object Type
     <%= zone_name %> UH Coil,!- Heating Coil Name
     ,                        !- Supply Air Fan Operating Mode Schedule Name
     No,                      !- Supply Air Fan Operation During No Heating
@@ -1163,15 +1177,15 @@
 !x!<% end %>
 !x!<% if (exh_fan_type != "NONE") %>
 !x! <% if exh_fan_frac_sch != ""
-!x!    flow_frac_sched = ""
-!x!    sys_avail_mgr_coupling = ""
-!x!    min_zone_temp_lim_sch = ""
-!x!    bal_exh_frac_sch = exh_fan_name + " Balanced Exhaust Fraction Schedule"
+!x!    iv_flow_frac_sched = ""
+!x!    iv_sys_avail_mgr_coupling = ""
+!x!    iv_min_zone_temp_lim_sch = ""
+!x!    iv_bal_exh_frac_sch = exh_fan_name + " Balanced Exhaust Fraction Schedule"
 !x!  else
-!x!    flow_frac_sched = ""
-!x!    sys_avail_mgr_coupling = ""
-!x!    min_zone_temp_lim_sch = ""
-!x!    bal_exh_frac_sch = ""
+!x!    iv_flow_frac_sched = ""
+!x!    iv_sys_avail_mgr_coupling = ""
+!x!    iv_min_zone_temp_lim_sch = ""
+!x!    iv_bal_exh_frac_sch = ""
 !x!  end %>
 
   Fan:ZoneExhaust,
@@ -1183,12 +1197,13 @@
     <%= exh_fan_name %> Inlet Node,  !- Air Inlet Node Name
     <%= exh_fan_name %> Outlet Node,  !- Air Outlet Node Name
     <%= exh_fan_subcat %>,   !- End-Use Subcategory
-    <%= flow_frac_sched %>,  !- Flow Fraction Schedule Name
-    <%= sys_avail_mgr_coupling %>,  !- System Availability Manager Coupling Mode
-    <%= min_zone_temp_lim_sch %>,  !- Minimum Zone Temperature Limit Schedule Name
-    <%= bal_exh_frac_sch %>; !- Balanced Exhaust Fraction Schedule Name
+    <%= iv_flow_frac_sched %>,  !- Flow Fraction Schedule Name
+    <%= iv_sys_avail_mgr_coupling %>,  !- System Availability Manager Coupling Mode
+    <%= iv_min_zone_temp_lim_sch %>,  !- Minimum Zone Temperature Limit Schedule Name
+    <%= iv_bal_exh_frac_sch %>;  !- Balanced Exhaust Fraction Schedule Name
 
 !x!  <% if exh_fan_frac_sch != "" %>
+!x!
 
   Schedule:Compact,
     <%= exh_fan_name %> Balanced Exhaust Fraction Schedule,  !- Name
@@ -1199,6 +1214,7 @@
 
 !x!  <% end %>
 !x!<% exh_fan_sch = hvac_sch if exh_fan_sch == "" %>
+!x!
 
   Schedule:Compact,
     <%= exh_fan_name %> Schedule,  !- Name

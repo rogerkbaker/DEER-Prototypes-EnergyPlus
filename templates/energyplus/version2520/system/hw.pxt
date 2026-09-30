@@ -1,5 +1,49 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant                                               |        |
+!  | Schedule:Compact                                           |        |
+!  | PlantLoop                                                  |        |
+!  | SetpointManager:Scheduled                                  |        |
+!  | Schedule:Constant                                          |        |
+!  | SetpointManager:OutdoorAirReset                            |        |
+!  | NodeList                                                   |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | PlantEquipmentOperation:HeatingLoad                        |        |
+!  | PlantEquipmentList                                         |        |
+!  | AvailabilityManagerAssignmentList                          |        |
+!  | AvailabilityManager:Scheduled                              |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Pump:VariableSpeed                                         |        |
+!  | Pump:VariableSpeed:Condensate                              |        |
+!  | Boiler:HotWater                                            |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Bicubic                                              |        |
+!  | Boiler:Steam                                               |        |
+!  | DistrictHeating                                            |        |
+!  | HeatPump:WaterToWater:EquationFit:Heating                  |        |
+!  | Generator:MicroCHP                                         |        |
+!  | Generator:MicroCHP:NonNormalizedParameters                 |        |
+!  | Curve:Biquadratic                                          |        |
+!  | Curve:Triquadratic                                         |        |
+!  | Generator:FuelSupply                                       |        |
+!  | ElectricLoadCenter:Distribution                            |        |
+!  | ElectricLoadCenter:Generators                              |        |
+!  | Generator:MicroTurbine                                     |        |
+!  | Pipe:Adiabatic:Steam                                       |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | ConnectorList                                              |        |
+!  | Connector:Splitter                                         |        |
+!  | Connector:Mixer                                            |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -12,11 +56,12 @@ parameter "design_flow", :default=>Autosize
 parameter "design_temp", :default=>180['F']
 parameter "design_delta", :default=>50['deltaF']
 
-#Solaris-Behzad S. Rizi-2026-04-15-Modified the default values for parameters setpoint at outdoor low(supply_temp_at_lo)and high temperatures(supply_temp_at_hi)according to 2025 Title 24-Section 120.2.
+#Solaris-Behzad S. Rizi-2026-04-15-Modified the default values for parameters setpoint at outdoor low(supply_temp_at_lo)and high!temperatures(supply_temp_at_hi)according to 2025 Title 24-Section 120.2.
 parameter "supply_temp_at_lo", :default=>130['F']
 parameter "lo_outdoor_temp", :default=>20['F']
 parameter "supply_temp_at_hi", :default=>105['F']
 parameter "hi_outdoor_temp", :default=>50['F']
+
 
 # supply temp schedule?
 
@@ -27,6 +72,7 @@ parameter "pump_head", :default=>70['ft H2O']
 parameter "pump_control", :default=>"CONTINUOUS"   # (CONTINUOUS | INTERMITTENT)
 parameter "pump_power", :default=>Autosize
 parameter "pump_curve", :default=>"NOT USED"
+
 
 # Updated for steam boiler variant. Behzad Rizi 2024-01-24
 parameter "heating_source", :default=>"BOILER"  # (BOILER | STEAMBOILER | DISTRICT | GSHP | CHP )
@@ -71,7 +117,7 @@ parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n 
   Schedule:Compact,
     <%= name %> Operation Schedule,  !- Name
     Binary Control,          !- Schedule Type Limits Name
-    <%= operation_schedule %>;
+    <%= operation_schedule %>;                        !- Field 3
 
   PlantLoop,
     <%= name %>,             !- Name
@@ -159,26 +205,27 @@ elsif (heating_source == "CHP")
     iv_equip1_obj_name = "Generator:MicroTurbine"
   end
 end %>
-!===manual=====
-PlantEquipmentList,
-  <%= name %> Equipment List, !- Name
-  <%= iv_equip1_obj_name %>,         !- Equipment 1 Object Type
-<% if (chiller_generator_type == "DIRECTFIRED") %>
-  <%= name %> Heating Source,  !- Equipment 1 Name
-  ChillerHeater:Absorption:DirectFired,         !- Equipment 2 Object Type
-  <%= abschiller_name %> Chiller;  !- Equipment 2 Name
-<% elsif (boiler_duplicate and heating_source == "STEAMBOILER") %>
-  <%= name %> Heating Source 1,  !- Equipment 1 Name
-  Boiler:Steam,                      !- Equipment 2 Object Type
- <%= name %> Heating Source 2;  !- Equipment 2 Name
-<% elsif (boiler_duplicate) %>
-  <%= name %> Heating Source 1,  !- Equipment 1 Name
-  Boiler:HotWater,                      !- Equipment 2 Object Type
-  <%= name %> Heating Source 2;  !- Equipment 2 Name
-<% else %>
-  <%= name %> Heating Source;  !- Equipment 1 Name
-<% end %>
-!=========
+<% plantequip = ""
+if (chiller_generator_type == "DIRECTFIRED")
+  plantequip << name + " Heating Source,\n"
+  plantequip << "ChillerHeater:Absorption:DirectFired,\n"
+  plantequip << abschiller_name + " Chiller"
+elsif (boiler_duplicate and heating_source == "STEAMBOILER")
+  plantequip << name + " Heating Source 1,\n"
+  plantequip << "Boiler:Steam,\n"
+  plantequip << name + " Heating Source 2"
+elsif (boiler_duplicate)
+  plantequip << name + " Heating Source 1,\n"
+  plantequip << "Boiler:HotWater,\n"
+  plantequip << name + " Heating Source 2"
+else
+  plantequip << name + " Heating Source"
+end %>
+
+  PlantEquipmentList,
+    <%= name %> Equipment List,  !- Name
+    <%= iv_equip1_obj_name %>,  !- Equipment 1 Object Type
+    <%= plantequip %>;       !- Equipment 1 Name
 
   AvailabilityManagerAssignmentList,
     <%= name %> Availability Managers,  !- Name
@@ -217,7 +264,6 @@ elsif (pump_type == "VARIABLE")
 elsif (pump_type == "VARIABLESPEEDCONDENSATE")
   iv_comp1_obj_type = "Pump:VariableSpeed:Condensate"
 end %>
-
 <% if (chiller_cond_hr) || (chiller_heatpump_hr)
  comp1_outlet_node = name + " Pump Outlet Node"
  comp2_obj_type = "WaterHeater:Mixed"
@@ -367,6 +413,7 @@ end %>
     ;                        !- Pump Flow Rate Schedule Name
 
 <% end %>
+
 <% if (heating_source == "BOILER") %>
   <% if (boiler_duplicate) %>
 
@@ -455,7 +502,6 @@ end %>
     ;                        !- Sizing Factor
 
   <% end %>
-!-------------
 <% if (boiler_type == "ELECTRIC") %>
   ! Constant Efficiency Boiler Curve
 
@@ -601,6 +647,74 @@ end %>
     <%= name %> Supply Equipment Outlet Node,  !- Hot Water Outlet Node Name
     1000000000000000;        !- Nominal Capacity {W}
 
+<% elsif (heating_source == "GSHP") %>
+
+  <% gshp_heating_power = gshp_heating_capacity / gshp_heating_cop %>
+
+  HeatPump:WaterToWater:EquationFit:Heating,
+    <%= name %> Heating Source,  !- Name
+    <%= name %> Evaporator Inlet Node,  !- Source Side Inlet Node Name
+    <%= name %> Evaporator Outlet Node,  !- Source Side Outlet Node Name
+    <%= name %> Heating Source Inlet Node,  !- Load Side Inlet Node Name
+    <%= name %> Supply Equipment Outlet Node,  !- Load Side Outlet Node Name
+    1,                       !- Reference Load Side Flow Rate {m3/s}
+    1,                       !- Reference Source Side Flow Rate {m3/s}
+    <%= gshp_heating_capacity %>,  !- Reference Heating Capacity {W}
+    <%= gshp_heating_power %>,  !- Reference Heating Power Consumption {W}
+    <%= name %> Heating Source CapacityCurve,  !- Heating Capacity Curve Name
+    <%= name %> Heating Source PowerCurve,  !- Heating Compressor Power Curve Name
+    ,                        !- Reference Coefficient of Performance {W/W}
+    ,                        !- Sizing Factor
+    ;                        !- Companion Cooling Heat Pump Name
+
+  CURVE:QUADLINEAR,
+    <%= name %> Heating Source CapacityCurve,  !- Name
+    -3.52,                   !- Coefficient1 Constant
+    0,                       !- Coefficient2 w
+    4.52,                    !- Coefficient3 x
+    0.,                      !- Coefficient4 y
+    0.,                      !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+  CURVE:QUADLINEAR,
+    <%= name %> Heating Source PowerCurve,  !- Name
+    -8.87,                   !- Coefficient1 Constant
+    8.57,                    !- Coefficient2 w
+    1.30,                    !- Coefficient3 x
+    0.,                      !- Coefficient4 y
+    0.,                      !- Coefficient5 z
+    ,                        !- Minimum Value of w
+    ,                        !- Maximum Value of w
+    ,                        !- Minimum Value of x
+    ,                        !- Maximum Value of x
+    ,                        !- Minimum Value of y
+    ,                        !- Maximum Value of y
+    ,                        !- Minimum Value of z
+    ,                        !- Maximum Value of z
+    ,                        !- Minimum Curve Output
+    ;                        !- Maximum Curve Output
+
+! Convert to curves for HPW2W
+!  -3.52, !-3.01,           !- Heating Capacity Coefficient 1
+!  0, !-0.51,               !- Heating Capacity Coefficient 2 <%# A non-zero coefficient causes negative capacities since the actual performance is not linear %>
+!  4.52,                    !- Heating Capacity Coefficient 3
+!  0,                       !- Heating Capacity Coefficient 4
+!  0,                       !- Heating Capacity Coefficient 5
+!  -8.87,                   !- Heating Compressor Power Coefficient 1
+!  8.57,                    !- Heating Compressor Power Coefficient 2
+!  1.30,                    !- Heating Compressor Power Coefficient 3
+!  0,                       !- Heating Compressor Power Coefficient 4
+!  0;                       !- Heating Compressor Power Coefficient 5
+
   Branch,
     <%= name %> GHX Branch,  !- Name
     ,                        !- Pressure Drop Curve Name
@@ -612,6 +726,7 @@ end %>
 <% elsif (heating_source == "CHP") %>
 
   <% chp_rated_elec_output = 100000000 %>
+
 
   <% if (chp_type == "CHP") %>
 
@@ -642,7 +757,7 @@ end %>
     100000000,               !- Heat Exchanger U-Factor Times Area Value {W/K}
     0.0001,                  !- Skin Loss U-Factor Times Area Value {W/K}
     0.5000,                  !- Skin Loss Radiative Fraction
-    0.0001,                  !- Aggregated Thermal Mass of Energy Conversion Portion of Generator {W/K}
+    0.0001,                  !- Aggregated Thermal Mass of Energy Con!Version Portion of Generator {W/K}
     0.0001,                  !- Aggregated Thermal Mass of Heat Recovery Portion of Generator {W/K}
     0.0000,                  !- Standby Power {W}
     TimeDelay,               !- Warm Up Mode
@@ -964,7 +1079,6 @@ end %>
 else
   iv_gen_branch = ""  + name + " Supply Bypass Branch"
 end %>
-!  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
 
   Connector:Splitter,
     <%= name %> Supply Splitter,  !- Name
@@ -973,7 +1087,6 @@ end %>
     <%= iv_gen_branch %>;    !- Outlet Branch 2 Name
 
 !  <%= name %> Supply Bypass Branch;  !- Outlet Branch 2 Name
-!  <%= outlet_branch2_name %>,  !- Outlet Branch 1 Name
 
   Connector:Mixer,
     <%= name %> Supply Mixer,!- Name
@@ -982,16 +1095,14 @@ end %>
     <%= iv_gen_branch %>;    !- Inlet Branch 2 Name
 
 !  <%= name %> Supply Bypass Branch;  !- Inlet Branch 2 Name
-!====manual====
-BranchList,
-  <%= name %> Demand Branches,!- Name
-  <%= name %> Demand Inlet Branch,  !- Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-  <%= name %> Demand Outlet Branch;  !- Branch Name
-!=====
+<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
+
+  BranchList,
+    <%= name %> Demand Branches,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist%> HW Branch,  !- Branch 2 Name
+    <%= name %> Demand Bypass Branch,  !- Branch 3 Name
+    <%= name %> Demand Outlet Branch;  !- Branch 4 Name
 
   Branch,
     <%= name %> Demand Inlet Branch,  !- Name
@@ -1072,23 +1183,20 @@ BranchList,
     Connector:Mixer,         !- Connector 2 Object Type
     <%= name %> Demand Mixer;!- Connector 2 Name
 
-!====manual====
-Connector:Splitter,
-  <%= name %> Demand Splitter,!- Name
-  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Outlet Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Outlet Branch Name
+<%iv_branchlist = branch_names.join(" HW Branch,\n")%>
 
-Connector:Mixer,
-  <%= name %> Demand Mixer,   !- Name
-  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-<% for branch_name in branch_names %>
-  <%= branch_name %> HW Branch,  !- Inlet Branch Name
-<% end %>
-  <%= name %> Demand Bypass Branch;  !- Inlet Branch Name
-!========
+  Connector:Splitter,
+    <%= name %> Demand Splitter,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist %> HW Branch,  !- Outlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Outlet Branch 2 Name
+
+  Connector:Mixer,
+    <%= name %> Demand Mixer,!- Name
+    <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+    <%= iv_branchlist %> HW Branch,  !- Inlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Inlet Branch 2 Name
+
 <% if (chiller_cond_hr) || (chiller_heatpump_hr) %>
   <%= insert 'chillerheatrecovery.imf',
     :name=>name,

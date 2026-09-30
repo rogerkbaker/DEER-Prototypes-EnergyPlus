@@ -1,5 +1,15 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Exterior:FuelEquipment                                     |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "ext_equip_name"
 parameter "power"
@@ -20,5 +30,5 @@ parameter "schedule", :default=>"Through: 12/31,\n  For: AllDays,\n  Until: 24:0
   Schedule:Compact,
     <%= ext_equip_name %> Schedule,  !- Name
     Unit Interval,           !- Schedule Type Limits Name
-    <%= schedule %>;
+    <%= schedule %>;                        !- Field 3
 

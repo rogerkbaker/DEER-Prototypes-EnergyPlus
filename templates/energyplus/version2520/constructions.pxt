@@ -1,5 +1,19 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Material                                                   |        |
+!  | Construction                                               |        |
+!  | ConstructionProperty:InternalHeatSource                    |        |
+!  | WindowMaterial:SimpleGlazingSystem                         |        |
+!  | WindowMaterial:Glazing                                     |        |
+!  | WindowMaterial:Shade                                       |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -149,34 +163,39 @@ end
     8.17,                    !- Density {kg/m3}
     837;                     !- Specific Heat {J/kg-K}
 
-!====manual===
-Construction,
-  Exterior Roof,           !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+<%iv_layerlist = layers.join(",\n")%>
+
+  Construction,
+    Exterior Roof,           !- Name
+    <%= iv_layerlist %>;     !- Outside Layer
+
 
 <% if (radiant_ceilings) %>
-ConstructionProperty:InternalHeatSource,
-  Radiant Exterior Roof,  !- Name
-  <%= layers.count - 1 %>,                       !- Source Present After Layer Number
-  <%= layers.count - 1 %>,                       !- Temperature Calculation Requested After Layer Number
-  1,                       !- Dimensions for the CTF Calculation
-  <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
-  ;
-Construction,
-  Radiant Exterior Roof,
-  <% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+
+  ConstructionProperty:InternalHeatSource,
+    Radiant Exterior Roof,   !- Name
+    ,                        !- Construction Name
+    <%= layers.count - 1 %>, !- Thermal Source Present After Layer Number
+    <%= layers.count - 1 %>, !- Temperature Calculation Requested After Layer Number
+    1,                       !- Dimensions for the CTF Calculation
+    <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
+    ;                        !- Two-Dimensional Temperature Calculation Position {dimensionless}
+
+
+<%iv_layerlist = layers.join(",\n")%>
+
+  Construction,
+    Radiant Exterior Roof,   !- Name
+    <%= iv_layerlist %>;     !- Outside Layer
+
 <% else %>
-Construction,
-  Radiant Exterior Roof,  !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
+<%iv_layerlist = layers.join(",\n")%>
+
+  Construction,
+    Radiant Exterior Roof,   !- Name
+    <%= iv_layerlist %>;     !- Outside Layer
+
 <% end %>
-<% end %>
-!========
 <%# Exterior Wall Constructions %>
 
 <%
@@ -235,15 +254,14 @@ end
     8.17,                    !- Density {kg/m3}
     837;                     !- Specific Heat {J/kg-K}
 
-!====manual
+<%iv_layerlist = layers.join(",\n")%>
 
-Construction,
-  Exterior Wall,           !- Name
-<% EnergyPlus.each(layers) do |layer| %>
-  <%= layer %>,  !- Layer
-<% end %>
+  Construction,
+    Exterior Wall,           !- Name
+    <%= iv_layerlist %>;     !- Outside Layer
 
-!========
+
+!
 
   Construction,
     Basement Wall,           !- Name
@@ -264,11 +282,11 @@ Construction,
 
   ConstructionProperty:InternalHeatSource,
     Radiant Interior Floor,  !- Name
-    1,                       !- Construction Name
+    ,                        !- Construction Name
     1,                       !- Thermal Source Present After Layer Number
     1,                       !- Temperature Calculation Requested After Layer Number
-    <%= radiant_tube_spacing %>,  !- Dimensions for the CTF Calculation
-    ,                        !- Tube Spacing {m}
+    1,                       !- Dimensions for the CTF Calculation
+    <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
     ;                        !- Two-Dimensional Temperature Calculation Position {dimensionless}
 
   Construction,
@@ -303,11 +321,11 @@ Construction,
 
   ConstructionProperty:InternalHeatSource,
     Radiant Interior Ceiling,!- Name
-    4,                       !- Construction Name
+    ,                        !- Construction Name
     4,                       !- Thermal Source Present After Layer Number
-    1,                       !- Temperature Calculation Requested After Layer Number
-    <%= radiant_tube_spacing %>,  !- Dimensions for the CTF Calculation
-    ,                        !- Tube Spacing {m}
+    4,                       !- Temperature Calculation Requested After Layer Number
+    1,                       !- Dimensions for the CTF Calculation
+    <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
     ;                        !- Two-Dimensional Temperature Calculation Position {dimensionless}
 
   Construction,
@@ -337,10 +355,10 @@ Construction,
   ConstructionProperty:InternalHeatSource,
     Radiant Attic Floor,     !- Name
     1,                       !- Construction Name
-    1,                       !- Thermal Source Present After Layer Number
+    ,                        !- Thermal Source Present After Layer Number
     1,                       !- Temperature Calculation Requested After Layer Number
-    <%= radiant_tube_spacing %>,  !- Dimensions for the CTF Calculation
-    ,                        !- Tube Spacing {m}
+    1,                       !- Dimensions for the CTF Calculation
+    <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
     ;                        !- Two-Dimensional Temperature Calculation Position {dimensionless}
 
   Construction,
@@ -371,11 +389,11 @@ Construction,
 
   ConstructionProperty:InternalHeatSource,
     Radiant Interior Ceiling To Attic,  !- Name
-    3,                       !- Construction Name
+    ,                        !- Construction Name
     3,                       !- Thermal Source Present After Layer Number
-    1,                       !- Temperature Calculation Requested After Layer Number
-    <%= radiant_tube_spacing %>,  !- Dimensions for the CTF Calculation
-    ,                        !- Tube Spacing {m}
+    3,                       !- Temperature Calculation Requested After Layer Number
+    1,                       !- Dimensions for the CTF Calculation
+    <%= radiant_tube_spacing %>,  !- Tube Spacing {m}
     ;                        !- Two-Dimensional Temperature Calculation Position {dimensionless}
 
   Construction,

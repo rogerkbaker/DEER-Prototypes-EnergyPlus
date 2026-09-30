@@ -1,5 +1,31 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Sizing:Plant                                               |        |
+!  | PlantLoop                                                  |        |
+!  | ConnectorList                                              |        |
+!  | PlantEquipmentOperationSchemes                             |        |
+!  | Schedule:Compact                                           |        |
+!  | PlantEquipmentOperation:CoolingLoad                        |        |
+!  | PlantEquipmentOperation:HeatingLoad                        |        |
+!  | PlantEquipmentList                                         |        |
+!  | BranchList                                                 |        |
+!  | Branch                                                     |        |
+!  | Pump:ConstantSpeed                                         |        |
+!  | Connector:Splitter                                         |        |
+!  | EvaporativeFluidCooler:SingleSpeed                         |        |
+!  | Boiler:HotWater                                            |        |
+!  | Pipe:Adiabatic                                             |        |
+!  | Connector:Mixer                                            |        |
+!  | Curve:Quadratic                                            |        |
+!  | Curve:Bicubic                                              |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 require "modelkit/energyplus"
 
@@ -76,9 +102,7 @@ parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n 
   Schedule:Compact,
     <%= name %> Operation Schedule,  !- Name
     On/Off,                  !- Schedule Type Limits Name
-    <%= operation_schedule %>, !- Field 1
-    ,                        !- Field 2
-    ;                        !- Field 3
+    <%= operation_schedule %>;                        !- Field 3
 
   PlantEquipmentOperation:CoolingLoad,
     <%= name %> Cool Operation Scheme,  !- Name
@@ -250,32 +274,26 @@ parameter "operation_schedule", :default => "Through: 12/31,\n  For: AllDays,\n 
     For: Alldays,            !- Field 2
     Until: 24:00,<%= low_temp_setpoint %>; !- Field 3
 
-!====manual===
-BranchList,
-  <%= name %> Demand Branches,
-  <%= name %> Demand Inlet Branch,  !- Branch 1 Name
-  <% for i in (0...branch_names.length()) %>
-  <%= branch_names[i] %>, !- Branch Name
-  <% end %>
-  <%= name %> Demand Bypass Branch,  !- Branch Name
-  <%= name %> Demand Outlet Branch;  !- Branch Name
+<%iv_branchlist = branch_names.join(",\n")%>
 
-Connector:Splitter,
-  <%= name %> Demand Splitter,
-  <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
-  <% for i in (0...branch_names.length()) %>
-  <%= branch_names[i] %>, !- Outlet Branch Name
-  <% end %>
-  <%= name %> Demand Bypass Branch;
+  BranchList,
+    <%= name %> Demand Branches,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Branch 1 Name
+    <%= iv_branchlist %>,    !- Branch 2 Name
+    <%= name %> Demand Bypass Branch,  !- Branch 3 Name
+    <%= name %> Demand Outlet Branch;  !- Branch 4 Name
 
-Connector:Mixer,
-  <%= name %> Demand Mixer,
-  <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
-  <% for i in (0...branch_names.length()) %>
-  <%= branch_names[i] %>, !- Outlet Branch Name
-  <% end %>
-  <%= name %> Demand Bypass Branch;
-!===========
+  Connector:Splitter,
+    <%= name %> Demand Splitter,  !- Name
+    <%= name %> Demand Inlet Branch,  !- Inlet Branch Name
+    <%= iv_branchlist %>,    !- Outlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Outlet Branch 2 Name
+
+  Connector:Mixer,
+    <%= name %> Demand Mixer,!- Name
+    <%= name %> Demand Outlet Branch,  !- Outlet Branch Name
+    <%= iv_branchlist %>,    !- Inlet Branch 1 Name
+    <%= name %> Demand Bypass Branch;  !- Inlet Branch 2 Name
 
   ConnectorList,
     <%= name %> Demand Connectors,  !- Name

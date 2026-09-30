@@ -349,6 +349,7 @@ Curve:Quadratic,
   0.0,                     !- Coefficient3 x**2
   0,                       !- Minimum Value of x
   1;                       !- Maximum Value of x
+
 !x!<% elsif (boiler_type == "NONCONDENSING") %>
   ! Noncondensing Boiler Curve from EnergyPlusV7-0-0\DataSets\Boilers.idf
   ! NOTE:  This curve is for leaving water temperature, not entering water!
@@ -370,6 +371,7 @@ Curve:Bicubic,
   85.0,                    !- Maximum Value of y
   0.60,                    !- Minimum Curve Output
   0.85;                    !- Maximum Curve Output
+
 !x!<% elsif (boiler_type == "CONDENSING") %>
   ! AERCO MLX-454 Condensing Boiler
   ! NOTE:  Curve is for entering water temperature.
@@ -392,4 +394,5 @@ Curve:Bicubic,
   85.0,                    !- Maximum Value of y
   0.85,                    !- Minimum Curve Output
   0.99;                    !- Maximum Curve Output
+
 !x!<% end %>

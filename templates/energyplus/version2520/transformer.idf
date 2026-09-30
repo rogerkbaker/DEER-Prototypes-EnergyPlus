@@ -1,5 +1,24 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | ElectricLoadCenter:Transformer                             |        |
+!  | Meter:CustomDecrement                                      |        |
+!  | InteriorEquipment:Electricity                              |        |
+!  | Wired_INT_EQUIP                                            |        |
+!  | EnergyManagementSystem:GlobalVariable                      |        |
+!  | EnergyManagementSystem:OutputVariable                      |        |
+!  | EnergyManagementSystem:Sensor                              |        |
+!  | EnergyManagementSystem:ProgramCallingManager               |        |
+!  | EnergyManagementSystem:Program                             |        |
+!  | Meter:Custom                                               |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "name", :default=>"Transformer 1"
 !x!parameter "capacity", :default=>50000['W']

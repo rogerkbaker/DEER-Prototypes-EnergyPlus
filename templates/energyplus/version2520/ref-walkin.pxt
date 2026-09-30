@@ -1,5 +1,16 @@
-!  Version,25.2;
+  !Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Refrigeration:WalkIn                                       |        |
+!  | Schedule:Constant                                          |        |
+!  | Schedule:Compact                                           |        |
+!-------------------------------------------------------------------------
+!
 <%#INITIALIZE
 parameter "walkin_name"
 parameter "zone_name"
@@ -29,12 +40,12 @@ parameter "lighting_Schedule", :default=>
 "
 parameter "door_opening_sch", :default=>
 "
-  Through: 12/31,
-  For: AllDays,
-  Interpolate:No,
-  Until: 7:00,0.02,
-  Until: 21:00,0.2,
-  Until: 24:00,0.02
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Interpolate:No,          !- Field 3
+  Until: 7:00,0.02,        !- Field 4
+  Until: 21:00,0.2,        !- Field 6
+  Until: 24:00,0.02       !- Field 8
 "
 # Behzad Rizi - Defined "available" to switch off/on refrigerated cases if needed
 parameter "available", :default=> true # (true | false)
@@ -93,24 +104,24 @@ end %>
   Schedule:Compact,
     <%= walkin_name %> Walkin Light Sch,  !- Name
     Unit Interval,           !- Schedule Type Limits Name
-    <%= lighting_Schedule %>;!- Field 1
+    <%= lighting_Schedule %>;                        !- Field 3
 
-  Schedule:Compact,        !- Field 2
-    <%= walkin_name %> Stocking Door Opening Sch, !- Field 3
-    Fraction,                !- Field 4
-    <%= door_opening_sch %>; !- Field 5
+  Schedule:Compact,
+    <%= walkin_name %> Stocking Door Opening Sch,  !- Name
+    Fraction,                !- Schedule Type Limits Name
+    <%= door_opening_sch %>;                        !- Field 3
 
-  Schedule:Compact,        !- Field 6
-    <%= walkin_name %> Defrost Sch, !- Field 7
-    Binary Control,          !- Field 8
-    Through: 12/31,          !- Field 9
-    For:AllDays,             !- Field 10
-    Interpolate:Average,     !- Field 11
-    Until: 11:00,0,          !- Field 12
-    Until: 11:20,1,          !- Field 14
-    Until: 23:00,0,          !- Field 16
-    Until: 23:20,1,          !- Field 18
-    Until: 24:00,0;          !- Field 20
+  Schedule:Compact,
+    <%= walkin_name %> Defrost Sch,  !- Name
+    Binary Control,          !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For:AllDays,             !- Field 2
+    Interpolate:Average,     !- Field 3
+    Until: 11:00,0,          !- Field 4
+    Until: 11:20,1,          !- Field 6
+    Until: 23:00,0,          !- Field 8
+    Until: 23:20,1,          !- Field 10
+    Until: 24:00,0;          !- Field 12
 
   Schedule:Compact,
     <%= walkin_name %> Restock Sch,  !- Name

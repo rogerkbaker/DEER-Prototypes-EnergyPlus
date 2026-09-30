@@ -1,5 +1,15 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-----------------------------------------------------------------
+!  | EnergyPlus                                         | Manual |
+!  | Object Name                                        | Update |
+!-----------------------------------------------------------------
+!  | ZoneMixing                                         |        |
+!  | Schedule:Compact                                   |        |
+!-----------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "zone_name"         # Primary zone where mixing occurs
 !x!parameter "source_zone_name"  # Secondary zone where mixing air originates from

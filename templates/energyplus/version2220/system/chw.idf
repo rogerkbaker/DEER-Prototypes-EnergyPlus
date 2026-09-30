@@ -290,6 +290,7 @@ PlantLoop,
   <%= avail_mgr_list %>,  !- Availability Manager List Name
   <%= ploop_demand_calc_scheme %>,                        !- Plant Loop Demand Calculation Scheme
   <%= common_pipe_sim %>;        !- Common Pipe Simulation
+
 !<%# NOTE:  Availability Managers added above because of problems seen with lack of a manager in the heat recovery loop. %>
 
 !x!<% if (setpoint_type == "Constant") %>
@@ -427,7 +428,6 @@ BranchList,
   <%= name %> Supply Inlet Branch,  !- Branch 1 Name
   <%= brnchlist %>,  !- Branch 4 Name
   <%= name %> Supply Outlet Branch;  !- Branch 5 Name
- 
 
 !x!<% if (pump_type == "CONSTANT")
 !x!  iv_comp_obj_type = "Pump:ConstantSpeed"
@@ -527,6 +527,7 @@ Pump:VariableSpeed,
   2.5295,                  !- Coefficient 4 of the Part Load Performance Curve
   0,                       !- Design Minimum Flow Rate {m3/s}
   Intermittent;            !- Pump Control Type
+
 !x!<% end %>
 !<%#
 !IMPORTANT!  HeatExchanger:WatersideEconomizer MUST be on the pump branch / inlet branch or it
@@ -551,6 +552,7 @@ HeatExchanger:FluidToFluid,
   <%= name %> Supply Outlet Node,                        !- Heat Exchanger Setpoint Node Name
   0.001,                   !- Minimum Temperature Difference to Activate Heat Exchanger {deltaC}
   FreeCooling;             !- Heat Transfer Metering End Use Type
+
 !<%# NOTE: was 1.0 for old HeatExchanger:WatersideEconomizer object. %>
 
 Branch,
@@ -560,6 +562,7 @@ Branch,
   <%= name %> Free Cooling HX,  !- Component 1 Name
   <%= name %> Free Cooling HX Condenser Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Free Cooling HX Condenser Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 
 !x!<% for i in (1..num_chillers) %>
@@ -735,9 +738,11 @@ Branch,
   <%= name %> Chiller <%= i %>,   !- Component 1 Name
   <%= name %> Chiller <%= i %> Water Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Chiller <%= i %> Water Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% else %>
 OutdoorAir:Node,
   <%= name %> Chiller <%= i %> Condenser Inlet Node;    !- Name
+
 !x!<% end %>
 
 SetpointManager:Scheduled,
@@ -816,6 +821,7 @@ Branch,
 
 OutdoorAir:Node,
   <%= name %> Chiller <%= i %> Condenser Inlet Node;    !- Name
+
 !x!<% end %>
 
 !x!<%# NOTE: Sizing for a steam loop is needed because Chiller:Absorption:Indirect assumes steam as the source if no generator nodes are specified. %>
@@ -824,6 +830,7 @@ Sizing:Plant,
   Steam,                   !- Loop Type
   <%= 230|'F' %>,          !- Design Loop Exit Temperature
   <%= 45|'deltaF' %>;      !- Loop Design Temperature Difference
+
 !x!<% end %>
 
 !x!<% end %>
@@ -1014,6 +1021,7 @@ Curve:Cubic,
   ,                        !- Maximum Curve Output
   Temperature,             !- Input Unit Type for X
   Dimensionless;           !- Output Unit Type
+
 !x!<% end %>
 !x!<% end %>
 
@@ -1025,8 +1033,9 @@ Branch,
   Heat Recovery Chiller,  !- Component 1 Name
   <%= name %> Heat Recovery Chiller Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Heat Recovery Chiller Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
-!-----------
+
 !x!<% if (chiller_cond_hr) %>
 !x!
 !x!<% if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
@@ -1097,10 +1106,10 @@ Branch,
   Heat Recovery Chiller,   !- Component 1 Name
   <%= name %> Heat Recovery Chiller Condenser Inlet Node,  !- Component 1 Inlet Node Name
   <%= name %> Heat Recovery Chiller Condenser Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% else %>
 OutdoorAir:Node,
   <%= name %> Heat Recovery Chiller Condenser Inlet Node;    !- Name
-
 
 !x!<% end %>
 !x!<% end %>
@@ -1268,16 +1277,17 @@ ConnectorList,
 Connector:Splitter,
   <%= name %> Sec Demand Splitter, !- Name
   <%= name %> Sec Demand Inlet Branch,  !- Inlet Branch Name
-  <%iv_branchlist = branch_names.join(" CHW Demand Branch,\n")%>,  !- Branch Name
+  <%= iv_branchlist %> CHW Demand Branch,  !- Branch Name
   <%= name %> Sec Demand Bypass Branch;  !- Outlet Branch 5 Name
-!==========
+
 Connector:Splitter,
   <%= name %> Sec Supply Splitter, !- Name
   <%= name %> Sec Supply Inlet Branch,  !- Inlet Branch Name
   <%= name %> Sec Supply Heat Exchanger Branch,  !- Outlet Branch 1 Name
   <%= name %> Sec Supply Bypass Branch;  !- Outlet Branch 2 Name
+
 !x!<% end %>
-!-------
+
 !x!<% branchlist = ""
 !x!if (chiller_cond_hr) && (chiller_cond_hr_type == "PARALLEL")
 !x!  branchlist << name + " Heat Recovery Chiller Branch,\n"
@@ -1305,6 +1315,7 @@ Connector:Mixer,
     <%= name %> Sec Supply Outlet Branch,  !- Outlet Branch Name
     <%= name %> Sec Supply Heat Exchanger Branch,  !- Inlet Branch 1 Name
     <%= name %> Sec Supply Bypass Branch;  !- Inlet Branch 2 Name
+
 !x!<% end %>
 
 !x!<% if loop_config == "PRIMARY-SECONDARY"
@@ -1330,13 +1341,14 @@ BranchList,
   <%= iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch,  !- Branch Name
   <%= name %> Sec Demand Outlet Branch;  !- Branch Name
-!=====
+
 BranchList,
   <%= name %> Sec Supply Branches,!- Name
   <%= name %> Sec Supply Inlet Branch,  !- Branch 1 Name
   <%= name %> Sec Supply Heat Exchanger Branch,  !- Branch 2 Name
   <%= name %> Sec Supply Bypass Branch,  !- Branch 3 Name
   <%= name %> Sec Supply Outlet Branch;  !- Branch 4 Name
+
 !x!<% end %>
 
 !x!<% if loop_config == "PRIMARY-SECONDARY-COMMON"
@@ -1388,8 +1400,9 @@ Pipe:Adiabatic,
   <%= name %> Demand Inlet Pipe,  !- Name
   <%= name %> Demand Inlet Node,  !- Inlet Node Name
   <%= name %> Demand Inlet Pipe Outlet Node;  !- Outlet Node Name
+
 !x!<% end %>
-!-------------
+
 Branch,
   <%= name %> Demand Bypass Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -1422,7 +1435,7 @@ ConnectorList,
   <%= name %> Demand Splitter,!- Connector 1 Name
   Connector:Mixer,         !- Connector 2 Object Type
   <%= name %> Demand Mixer;   !- Connector 2 Name
-!====manual===
+
 !x!<% if loop_config == "PRIMARY-SECONDARY"
 !x!    iv_branchlist = name + " Heat Exchanger Demand Branch"
 !x!   else
@@ -1449,7 +1462,7 @@ Connector:Mixer,
   <%= name %> Sec Demand Outlet Branch,  !- Outlet Branch Name
   <% iv_branchlist %> CHW Branch,
   <%= name %> Sec Demand Bypass Branch;  !- Inlet Branch 5 Name
-!=======
+
 Pipe:Adiabatic,
   <%= name %> Sec Demand Bypass Pipe,  !- Name
   <%= name %> Sec Demand Bypass Pipe Inlet Node,  !- Inlet Node Name

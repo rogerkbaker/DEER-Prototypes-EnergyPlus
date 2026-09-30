@@ -1,5 +1,16 @@
   Version,25.2;
 
+! Inventory of EnergyPlus Objects in this Template,
+! and whether manual check/update is required
+!-------------------------------------------------------------------------
+!  | EnergyPlus                                                 | Manual |
+!  | Object Name                                                | Update |
+!-------------------------------------------------------------------------
+!  | Schedule:Compact                                           |        |
+!  | WaterUse:Connections                                       |        |
+!  | WaterUse:Equipment                                         |        |
+!-------------------------------------------------------------------------
+!
 !x!<%#INITIALIZE
 !x!parameter "landscaping_area", :name => "Landscaping Irrigation Area", :description => "Area of landscaping requiring irrigation",
 !x!  :domain => Quantity  # Area Quantity

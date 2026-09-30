@@ -711,6 +711,7 @@ Schedule:Compact,
   1.0 ,                                !- Maximum Curve Output
   Dimensionless,                      !- Input Unit Type for X
   Dimensionless;                      !- Output Unit Type
+
 !x!  <% end %>
 !x! <% end %>
 
@@ -750,6 +751,7 @@ Fan:VariableVolume,
   <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
   <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
   <%= fan_subcat %>;       !- End-Use Subcategory
+
 !x!<% end %>
 
 !x!<% if (fan_config == "DRAW-THROUGH")
@@ -881,6 +883,7 @@ Fan:VariableVolume,
   0.0,                     !- Coefficient3 x**2
   0.0,                     !- Minimum Value of x
   1.0;                     !- Maximum Value of x
+
 !x! <% elsif (dx_type == "PNNL") %>
 ! Following performance curves taken from single-speed DX system in PNNL model 90.1-2004 (Retail Strip Mall,Small Office )
 
@@ -919,6 +922,7 @@ Fan:VariableVolume,
   1.156,-0.1816,0.0256,   !- Coefficients (List)
   0.5,                     !- Minimum Value of x
   1.5;                     !- Maximum Value of x
+
 !x! <% elsif (dx_type == "DOE") %>
 ! Following performance curves taken from single-speed DX system in DOE model 90.1-2004 (Retail Supermarket Office PSZ)
 
@@ -1000,8 +1004,8 @@ Fan:VariableVolume,
   2,                                     !- Maximum Value of x
   0,                                     !- Minimum Value of y
   2;                                     !- Maximum Value of y
-!x! <% end # if (dx_type == "TERMINAL") %>
 
+!x! <% end # if (dx_type == "TERMINAL") %>
 
 !x!<% elsif (cool_coil_type == "DX-AIR" and dx_comp_speed_num > 1) %>
 !x!
@@ -1130,7 +1134,6 @@ Fan:VariableVolume,
 !x!  end
 !x! end
 !x!end %>
-
 
 Coil:Cooling:DX:MultiSpeed,
   <%= unitary_name %> Cooling Coil,  !- Name
@@ -1303,6 +1306,7 @@ Curve:Quadratic,
   1.156,-0.1816,0.0256,   !- Coefficients (List)
   0.5,                     !- Minimum Value of x
   1.5;                     !- Maximum Value of x
+
 !x!  <% elsif dx_type == "PNNL-Lennox10ton" %>
   ! Following performance curves taken from multi-speed DX PNNL model 90.1-2004 (RestaurantFastFood)
 !x!    <% for i in 1..2 %>
@@ -1340,6 +1344,7 @@ Curve:Quadratic,
     1.2055,-0.32953,0.12308,   !- Coefficients (List)
     0.75918,                 !- Minimum Value of x
     1.13877;                 !- Maximum Value of x
+
 !x!    <% end %>
 
 !x!  <% elsif dx_type == "Measured_CoolCStandard10Ton" %>
@@ -1394,6 +1399,7 @@ Curve:Quadratic,
     1.192,-0.1917,0,   !- Coefficients (List)
     0.776,                 !- Minimum Value of x
     1.197;                 !- Maximum Value of x
+
 !x!  <% end %>
 
 !x!  <% else %>
@@ -1478,6 +1484,7 @@ Curve:Quadratic,
   2,                                      !- Maximum Value of x
   0,                                      !- Minimum Value of y
   2;                                      !- Maximum Value of y
+
 !x!<% end # if dx_type == "PNNL" %>
 
 !x!<% elsif (dx_comp_speed_num > 2) %>
@@ -1806,6 +1813,7 @@ Curve:Quadratic,
   2,               !- Maximum Value of x
   0,               !- Minimum Value of y
   2;               !- Maximum Value of y
+
 !x!<% end %>
 
 Curve:Biquadratic,
@@ -1815,6 +1823,7 @@ Curve:Biquadratic,
   100,                !- Maximum Value of x
   -100,               !- Minimum Value of y
   100;                !- Maximum Value of y
+
 !x!<% end %>
 
 
@@ -2027,6 +2036,7 @@ Curve:Biquadratic,
   25.6,                    !- Maximum Value of x
   7.2,                     !- Minimum Value of y
   48.9;                    !- Maximum Value of y
+
 !x!  <% end # if (dx_comp_speed_num == 1) %>
 
 !x!<% elsif (cool_coil_type == "WATER") %>
@@ -2068,6 +2078,7 @@ Branch,
   <%= unitary_name %> Cooling Coil,  !- Component 1 Name
   <%= unitary_name %> CoolC Inlet Node,  !- Component 1 Inlet Node Name
   <%= unitary_name %> CoolC Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 
 !x!<% if (heat_coil_type == "COMBUSTION") %>
@@ -2233,7 +2244,6 @@ Coil:Heating:DX:SingleSpeed,
   ,                     !- Defrost Time Period Fraction
   Autosize;                !- Resistive Defrost Heater Capacity
 
-
 !x!<% if dx_type == "PNNL"%>
 ! Following performance curves taken from single-speed DX PNNL model 90.1-2004 (Small Office )
 Curve:Cubic,
@@ -2323,6 +2333,7 @@ Curve:Biquadratic,
   100,                !- Maximum Value of x
   -100,               !- Minimum Value of y
   100;                !- Maximum Value of y
+
 !x!<% end # if dx_type == "PNNL"%>
 !x!<% elsif (heat_coil_type == "DX-AIR" and dx_comp_speed_num > 1) %>
 
@@ -2885,6 +2896,7 @@ Curve:Quadratic,
   2,                  !- Maximum Value of x
   0,                  !- Minimum Value of y
   2;                  !- Maximum Value of y
+
 !x!<% end %>
 
 Curve:Biquadratic,
@@ -2902,6 +2914,7 @@ Curve:Biquadratic,
   100,                !- Maximum Value of x
   -100,               !- Minimum Value of y
   100;                !- Maximum Value of y
+
 !x!<% end %>
 
 !x!<% elsif (heat_coil_type == "DX-WATER") %>
@@ -3080,6 +3093,7 @@ Curve:Biquadratic,
   27.0,                    !- Maximum Value of x
   10.0,                    !- Minimum Value of y
   30.0;                    !- Maximum Value of y
+
 !x!  <% end # (dx_comp_speed_num > 1) %>
 !x!<% elsif (heat_coil_type == "WATER") %>
 
@@ -3152,7 +3166,6 @@ Coil:Heating:Steam,
   <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
    ZoneLoadControl;     !- Coil Control Type
 
-
 Branch,
   <%= unitary_name %> HW Branch,  !- Name
   ,                        !- Pressure Drop Curve Name
@@ -3160,6 +3173,7 @@ Branch,
   <%= unitary_name %> Heating Coil,  !- Component 1 Name
   <%= unitary_name %> HeatCDemand Inlet Node,  !- Component 1 Inlet Node Name
   <%= unitary_name %> HeatCDemand Outlet Node;  !- Component 1 Outlet Node Name
+
 !x!<% end %>
 
 !x!<% if (cool_coil_type == "DX-WATER" or heat_coil_type == "DX-WATER") %>
@@ -3187,6 +3201,7 @@ Branch,
   <%= unitary_name %> Heating Coil,  !- Component 2 Name
   <%= unitary_name %> Water Source Intermediate Node,  !- Component 2 Inlet Node Name
   <%= unitary_name %> Water Source Outlet Node;  !- Component 2 Outlet Node Name
+
 !x!<% end %>
 !x!<% end %>
 
@@ -3240,6 +3255,7 @@ Branch,
   <%= iv_air_inlet_node_nm %>,  !- Air Inlet Node Name
   <%= iv_air_outlet_node_nm %>,  !- Air Outlet Node Name
   <%= iv_temp_setpt_node_nm %>;  !- Temperature Setpoint Node Name
+
 !x!<% end %>
 
 !x!<% if (cool_coil_type == "DX-AIR" and dx_comp_speed_num == 2) %>
@@ -3254,6 +3270,7 @@ UnitarySystemPerformance:Multispeed,
   <%= low_cooling_supply_air_ratio %>,                    !- Cooling Speed 1 Supply Air Flow Ratio
   1,                     !- Heating Speed 2 Supply Air Flow Ratio
   1;                     !- Cooling Speed 2 Supply Air Flow Ratio
+
 !x!  <% else %>
 UnitarySystemPerformance:Multispeed,
   <%= unitary_name %> Multispeed Performance,  !- Name
@@ -3265,6 +3282,7 @@ UnitarySystemPerformance:Multispeed,
   0.72,                    !- Cooling Speed 1 Supply Air Flow Ratio
   1.0,                     !- Heating Speed 2 Supply Air Flow Ratio
   1.0;                     !- Cooling Speed 2 Supply Air Flow Ratio
+
 !x!  <% end %>
 !x!<% elsif (cool_coil_type == "DX-AIR" and dx_comp_speed_num == 4) %>
 UnitarySystemPerformance:Multispeed,
@@ -3281,6 +3299,7 @@ UnitarySystemPerformance:Multispeed,
   0.75,                    !- Cooling Speed 3 Supply Air Flow Ratio
   1.0,                     !- Heating Speed 4 Supply Air Flow Ratio
   1.0;                     !- Cooling Speed 4 Supply Air Flow Ratio
+
 !x!<% end %>
 
 !x!<%#
@@ -3381,5 +3400,6 @@ EnergyManagementSystem:InternalVariable,
     <%= unitary_name_ems %>_HMFLOW,  !- Name
     <%= unitary_name %>,  !- Internal Data Index Key Name
     Intermediate Air System Heating Volume Flow Rate;  !- Internal Data Type
+
 !x!<% end %>
 !x!<% end %>

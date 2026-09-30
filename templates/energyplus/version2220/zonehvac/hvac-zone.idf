@@ -517,6 +517,7 @@ DesignSpecification:ZoneAirDistribution,
   ,                        !- Zone Air Distribution Effectiveness Schedule Name
   ,                        !- Zone Secondary Recirculation Fraction
   <%= vent_eff %>;                     !- Minimum Zone Ventilation Efficiency
+
 !x!<% end %>
 
 !x!<% if (oa_type != "NONE") %>
@@ -799,11 +800,15 @@ ZoneHVAC:EquipmentConnections,
 !x!  idx = idx.to_i + 1
 !x! end %>
 
-
 ZoneHVAC:EquipmentList,
   <%= zone_name %> Equipment,  !- Name
   SequentialLoad,          !- Load Distribution Scheme
-  <%= equiplist %>;
+  <%= equiplist %>,
+  ,
+  ,
+  ,
+  ,
+  ;
 
 !x!
 !x!<%iv_branchlist = inlet_branches.join(" Outlet Node,\n")%>
@@ -817,6 +822,7 @@ NodeList,
 NodeList,
   <%= zone_name %> Exhaust Nodes,  !- Name
   <%= iv_branchlist %> Inlet Node;  !- Node Name
+
 !x!<% end %>
 
 !x!<% if (not return_branches.empty?) %>
@@ -824,8 +830,9 @@ NodeList,
 NodeList,
   <%= zone_name %> Return Nodes,  !- Name
   <%= iv_branchlist %> Return Node;  !- Node Name
+
 !x!<% end %>
-!======
+
 !x!<%
 !x!if (oa_type == "DOAS")
 !x!  insert "zonehvac/atu.pxt",
@@ -1014,6 +1021,7 @@ NodeList,
 !x!<% if (oa_type != "NONE") %>
   OutdoorAir:Node,
     <%= branch_name %> OA Inlet Node;  !- Name
+
 !x!<% end %>
 !x!
 !x!<% end %>
@@ -1107,6 +1115,7 @@ Schedule:Compact,
     Autosize,                !- Nominal Capacity {W}
     <%= zone_name %> UH Fan Outlet Node,  !- Air Inlet Node Name
     <%= zone_name %> UH Outlet Node;  !- Air Outlet Node Name
+
 !x! <% elsif ( heat_coil_type == 'RESISTANCE') %>
   Coil:Heating:Electric,
     <%= zone_name %> UH Coil,  !- Name
@@ -1116,6 +1125,7 @@ Schedule:Compact,
     <%= zone_name %> UH Fan Outlet Node,  !- Air Inlet Node Name
     <%= zone_name %> UH Outlet Node,  !- Air Outlet Node Name
     ;                        !- Temperature Setpoint Node Name
+
 !x! <% elsif ( heat_coil_type == 'WATER') %>
   Coil:Heating:Water,
     <%= zone_name %> UH Coil,  !- Name
@@ -1140,6 +1150,7 @@ Schedule:Compact,
     <%= zone_name %> UH Coil,  !- Component 1 Name
     <%= zone_name %> UH Coil HW Inlet Node,  !- Component 1 Inlet Node Name
     <%= zone_name %> UH Coil HW Outlet Node;  !- Component 1 Outlet Node Name
+
 !x! <% end %>
 
 Schedule:Compact,
@@ -1185,7 +1196,7 @@ Schedule:Compact,
     <%= exh_fan_name %> Balanced Exhaust Fraction Schedule,  !- Name
     Fraction,          !- Schedule Type Limits Name
     <%= exh_fan_frac_sch %>;
-!x!
+
 !x!  <% end %>
 
 
@@ -1196,6 +1207,5 @@ Schedule:Compact,
   <%= exh_fan_name %> Schedule,  !- Name
   Binary Control,          !- Schedule Type Limits Name
   <%= exh_fan_sch %>;
-
 
 !x!<% end %>
