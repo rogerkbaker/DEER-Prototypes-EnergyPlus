@@ -19,7 +19,7 @@ require("json")
 require("modelkit/config")
 require("modelkit/multitable")
 require("modelkit/parametrics")
-require("modelkit/parametrics/worksheet")
+require("modelkit/worksheet")
 require("modelkit/energyplus")
 
 
@@ -78,13 +78,14 @@ end
 require("open3")
 require("set")
 
+MUTEX = Mutex.new  # Thread lock for when something needs to run in a single thread
 $child_pids = Set.new  # Global tracking of child PIDs
 
 # Return PID?
 def run_process(command, dir)
   # NOTE: Separate processes are required to make the EnergyPlus runs thread safe!
   Open3.popen3(command, :chdir => dir) do |stdin, stdout, stderr, thread|
-    $child_pids.add(thread.pid)
+    MUTEX.synchronize { $child_pids.add(thread.pid) }
     # This might work with just an instance variable or similar.
 
     stdin.close  # All input already sent with command
@@ -110,7 +111,7 @@ def run_process(command, dir)
     file_err.close
 
     #print "Completed: #{File.basename(dir)}\n"
-    $child_pids.delete(thread.pid)
+    MUTEX.synchronize { $child_pids.delete(thread.pid) }
   end
 end
 
@@ -180,8 +181,6 @@ results_paths = [results_summary_path, results_profile_elec_path, results_profil
 cases_dir = "#{study_dir}/cases"
 runs_dir = "#{study_dir}/runs"
 runs_pathname = Pathname.new(runs_dir)
-
-MUTEX = Mutex.new  # Thread lock for when something needs to run in a single thread
 
 config_path = search_parent_dirs(study_dir, ".modelkit-config")
 if (not config_path)
@@ -594,13 +593,15 @@ if (not rake_task_name =~ /^(clean|none)$/)
           site_dir = File.dirname(site_path)
 
           begin
-            Modelkit::Parametrics.template_compose(root_path,
-              :annotate => CONFIG["template-compose.annotate"],
-              :indent => CONFIG["template-compose.indent"],
-              :esc_line => CONFIG["template-compose.esc-line"],
-              :dirs => [site_dir, *config[:templates_dir]],
-              :files => [global_pxv_path, pxv_path].compact,  # If no path for global.pxv, remove nil element
-              :output => compose_idf_path)
+            MUTEX.synchronize do
+              Modelkit::Parametrics.template_compose(root_path,
+                :annotate => CONFIG["template-compose.annotate"],
+                :indent => CONFIG["template-compose.indent"],
+                :esc_line => CONFIG["template-compose.esc-line"],
+                :dirs => [site_dir, *config[:templates_dir]],
+                :files => [global_pxv_path, pxv_path].compact,  # If no path for global.pxv, remove nil element
+                :output => compose_idf_path)
+            end
           rescue Exception => exception
             puts "#{exception.class.name}: #{exception.message}\n"
             puts "#{exception.backtrace.first}\n" if (not SyntaxError === exception)
